@@ -1,0 +1,14 @@
+.sender{
+  background: lightblue;
+}
+.message{
+    background: floralwhite;
+}
+.date{
+    background: grey;
+}
+.table-fixed {
+    table-layout: fixed;
+    word-wrap: break-word;
+    over-flow:break-word;
+}

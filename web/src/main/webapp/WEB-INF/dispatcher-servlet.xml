@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jee
+        http://www.springframework.org/schema/jee/spring-jee-2.5.xsd">
+       <context:component-scan base-package="network.controllers"/>
+       <bean
+               class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+              <property name="prefix">
+                     <value>/jsp/</value>
+              </property>
+              <property name="suffix">
+                     <value>.jsp</value>
+              </property>
+       </bean>
+    <bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+       <mvc:resources mapping="/resources/**" location="/resources/"/>
+       <mvc:annotation-driven />
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10000000" />
+    </bean>
+
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor">
+        <property name="alwaysUseJndiLookup" value="true"/>
+    </bean>
+
+
+
+    <jee:local-slsb id="albumDao" jndi-name="java:module/AlbumService"
+                    business-interface="network.dao.AlbumDao"/>
+    <jee:local-slsb id="cityDao" jndi-name="java:module/CityService"
+                    business-interface="network.dao.CityDao"/>
+    <jee:local-slsb id="continentDao" jndi-name="java:module/ContinentService"
+                    business-interface="network.dao.ContinentDao"/>
+    <jee:local-slsb id="countryDao" jndi-name="java:module/CountryService"
+                    business-interface="network.dao.CountryDao"/>
+    <jee:local-slsb id="dialogDao" jndi-name="java:module/DialogService"
+                    business-interface="network.dao.DialogDao"/>
+    <jee:local-slsb id="fileDao" jndi-name="java:module/FileService"
+                    business-interface="network.dao.FileDao"/>
+    <jee:local-slsb id="friendRequestDao" jndi-name="java:module/FriendRequestService"
+                    business-interface="network.dao.FriendRequestDao"/>
+    <jee:local-slsb id="genderDao" jndi-name="java:module/GenderService"
+                    business-interface="network.dao.GenderDao"/>
+    <jee:local-slsb id="languageDao" jndi-name="java:module/LanguageService"
+                    business-interface="network.dao.LanguageDao"/>
+    <jee:local-slsb id="languageLevelDao" jndi-name="java:module/LanguageLevelService"
+                    business-interface="network.dao.LanguageLevelDao"/>
+    <jee:local-slsb id="languageUserDao" jndi-name="java:module/LanguageUserService"
+                    business-interface="network.dao.LanguageUserDao"/>
+    <jee:local-slsb id="messageDao" jndi-name="java:module/MessageService"
+                    business-interface="network.dao.MessageDao"/>
+    <jee:local-slsb id="photoDao" jndi-name="java:module/PhotoService"
+                    business-interface="network.dao.PhotoDao"/>
+    <jee:local-slsb id="userDao" jndi-name="java:module/UserService"
+                    business-interface="network.dao.UserDao"/>
+    <jee:local-slsb id="userDialogDao" jndi-name="java:module/UserDialogService"
+                    business-interface="network.dao.UserDialogDao"/>
+
+
+    <bean id="dialogController" class="network.controllers.DialogController">
+        <property name="userService" ref="userDao"/>
+        <property name="userDialogService" ref="userDialogDao"/>
+        <property name="dialogService" ref="dialogDao"/>
+        <property name="messageService" ref="messageDao"/>
+    </bean>
+
+    <bean id="mainController" class="network.controllers.MainController">
+        <property name="cityService" ref="cityDao"/>
+        <property name="countryService" ref="countryDao"/>
+        <property name="genderService" ref="genderDao"/>
+        <property name="userService" ref="userDao"/>
+    </bean>
+
+    <bean id="peopleController" class="network.controllers.PeopleController">
+        <property name="cityService" ref="cityDao"/>
+        <property name="continentService" ref="continentDao"/>
+        <property name="countryService" ref="countryDao"/>
+        <property name="friendRequestService" ref="friendRequestDao"/>
+        <property name="genderService" ref="genderDao"/>
+        <property name="userService" ref="userDao"/>
+    </bean>
+
+    <bean id="profileController" class="network.controllers.ProfileController">
+        <property name="friendRequestService" ref="friendRequestDao"/>
+        <property name="userService" ref="userDao"/>
+    </bean>
+
+    <bean id="registrationController" class="network.controllers.RegistrationController">
+        <property name="albumService" ref="albumDao"/>
+        <property name="cityService" ref="cityDao"/>
+        <property name="countryService" ref="countryDao"/>
+        <property name="genderService" ref="genderDao"/>
+        <property name="photoService" ref="photoDao"/>
+        <property name="userService" ref="userDao"/>
+    </bean>
+
+    <bean id="networkUserDetailsService" class="network.services.NetworkUserDetailsService">
+        <property name="userService" ref="userDao"/>
+    </bean>
+
+</beans>

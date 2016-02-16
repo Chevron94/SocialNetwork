@@ -1,0 +1,100 @@
+package network.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Created by roman on 13.09.15.
+ */
+@Entity
+@Table(name="CITY")
+public class City {
+    @Id
+    @Column(name="ID_CITY")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name="NAME")
+    private String name;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_COUNTRY", nullable = false)
+    private Country country;
+
+
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "city")
+    @JsonIgnore
+    private transient Set<User> users = new HashSet<User>();
+
+
+
+    public City() {
+    }
+
+    public City(String name, Country country) {
+        this.name = name;
+        this.country = country;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        City city = (City) o;
+
+        return !(id != null ? !id.equals(city.id) : city.id != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "City{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", country=" + country +
+                '}';
+    }
+}
