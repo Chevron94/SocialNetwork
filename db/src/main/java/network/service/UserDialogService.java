@@ -35,13 +35,13 @@ public class UserDialogService extends UserDialogDaoImplementation implements Us
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Collection getUsersByDialog(Dialog dialog) {
+    public List<UserDialog> getUsersByDialog(Dialog dialog) {
         return super.getUsersByDialog(dialog);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Collection getDialogsByUser(User user) {
+    public List<UserDialog> getDialogsByUser(User user) {
         return super.getDialogsByUser(user);
     }
 
@@ -95,5 +95,17 @@ public class UserDialogService extends UserDialogDaoImplementation implements Us
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     protected List<UserDialog> executeQuery(String jpql) {
         return super.executeQuery(jpql);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<UserDialog> executeQuery(String jpql, Map<String, Object> parameters, Integer start, Integer limit) {
+        return super.executeQuery(jpql, parameters, start, limit);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<UserDialog> executeQuery(String jpql, Integer start, Integer limit) {
+        return super.executeQuery(jpql, start, limit);
     }
 }

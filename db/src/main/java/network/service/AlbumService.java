@@ -63,6 +63,18 @@ public class AlbumService extends AlbumDaoImplementation implements AlbumDao {
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<Album> executeQuery(String jpql, Map<String, Object> parameters, Integer start, Integer limit) {
+        return super.executeQuery(jpql, parameters, start, limit);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<Album> executeQuery(String jpql, Integer start, Integer limit) {
+        return super.executeQuery(jpql, start, limit);
+    }
+
+    @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
     public void delete(List<Album> t) {
@@ -97,7 +109,6 @@ public class AlbumService extends AlbumDaoImplementation implements AlbumDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-
     public Album create(Album album) {
         return super.create(album);
     }

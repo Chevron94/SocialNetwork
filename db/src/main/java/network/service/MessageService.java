@@ -119,4 +119,16 @@ public class MessageService extends MessageDaoImplementation implements MessageD
     protected List<Message> executeQuery(String jpql) {
         return super.executeQuery(jpql);
     }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<Message> executeQuery(String jpql, Map<String, Object> parameters, Integer start, Integer limit) {
+        return super.executeQuery(jpql, parameters, start, limit);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<Message> executeQuery(String jpql, Integer start, Integer limit) {
+        return super.executeQuery(jpql, start, limit);
+    }
 }

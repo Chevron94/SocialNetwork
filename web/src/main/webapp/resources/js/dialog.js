@@ -3,12 +3,13 @@ var serviceLocation = "ws://" + document.location.host + "/dialog";
 var $nickName;
 var $message;
 var $chatWindow;
-var room = '';
+var $dialog;
 
 function chatClick(idDialog)
 {
-    $("dialogId").val(idDialog);
     var url = window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/dialog/getMessages';
+    $('#'+idDialog).html($('#'+idDialog).val());
+
     $.getJSON(url,
         {
         idDialog:idDialog,
@@ -21,11 +22,12 @@ function chatClick(idDialog)
             var text = data[i].messageText.replace(/\n\r/g,"<br>");
             messageLine+='<tr><td class="sender col-xs-2">' + data[i].sender
                 + '</td><td class="sender col-xs-8">' + text
-                + '</td><td class="sender col-xs-2">' + data[i].received
+                + '</td><td class="sender col-xs-2">' + data[i].received;
                 + '</td></tr>';
         }
         $('#dialogName').html($('#'+idDialog).html());
         $('#response').html(messageLine);
+        $('#current').val(idDialog);
         var elem = document.getElementById('tableDiv');
         elem.scrollTop = elem.scrollHeight;
     })
@@ -34,7 +36,7 @@ function chatClick(idDialog)
 function onMessageReceived(evt) {
     //var msg = eval('(' + evt.data + ')');
     var msg = JSON.parse(evt.data); // native API
-  //  if($("#dialogID").val() == msg.idDialog) {
+    if($dialog.val() == msg.receiver){
         var text = msg.messageText.replace(/\n\r/g, "<br>");
         var $messageLine = $('<tr><td class="sender col-xs-2">' + msg.sender
             + '</td><td class="sender col-xs-8">' + text
@@ -43,26 +45,27 @@ function onMessageReceived(evt) {
         $chatWindow.append($messageLine);
         var elem = document.getElementById('tableDiv');
         elem.scrollTop = elem.scrollHeight;
-  /*  }else
-    {
-        $("#"+msg.idDialog).val($("#"+msg.idDialog).val()+' NEW!!!')
-    }*/
+    }else {
+        $('#'+msg.receiver).html($('#'+msg.receiver).val()+" <b>NEW!!!</b>");
+    }
 }
 function sendMessage() {
     if($message.val().trim()!="") {
         var msg = '{"messageText":"' + $message.val().trim() + '", "sender":"'
-            + $nickName.val() + '", "received":""}';
+            + $nickName.val() + '", "received":"","dialog":"'+$dialog.val()+'"}';
         wsocket.send(msg);
     }
     $message.val('').focus();
 }
-
-function connectToChatserver() {
+function connectToChatServer() {
     wsocket = new WebSocket(serviceLocation);
     wsocket.onmessage = onMessageReceived;
-   // var msg = '{"id":"'+ $("#idUser").val() + '", "sender":"' ADD ID TO MESSAGE AND CHECK IT IN ENDPOINT
-   //     + $nickName.val() + '", "received":""}';
-  //  wsocket.send(msg);
+    wsocket.onopen = function(){
+        var msg = '{"id":"'+ $("#idUser").val() + '", "sender":"' //ADD ID TO MESSAGE AND CHECK IT IN ENDPOINT
+            + $nickName.val() + '", "received":""}';
+        wsocket.send(msg);
+    };
+    wsocket.open();
 }
 
 function leaveRoom() {
@@ -78,19 +81,21 @@ function buttonAction()
 
 function pageLoad()
 {
-    connectToChatserver();
     $nickName = $('#nickname');
     $message = $('#message');
     $chatWindow = $('#response');
+    $dialog = $('#current');
     $('.chat-wrapper h4').text('Chat # '+$nickName.val());
     $message.focus();
+    connectToChatServer();
 }
-
+/*
 $(document).ready(function() {
     $nickName = $('#nickname');
     $message = $('#message');
     $chatWindow = $('#response');
-    connectToChatserver();
+    $dialog = $('#current');
     $('.chat-wrapper h4').text('Chat # '+$nickName.val());
     $message.focus();
-});
+    connectToChatServer();
+});*/

@@ -100,4 +100,16 @@ public class CityService extends CityDaoImplementation implements CityDao {
     protected List<City> executeQuery(String jpql) {
         return super.executeQuery(jpql);
     }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<City> executeQuery(String jpql, Map<String, Object> parameters, Integer start, Integer limit) {
+        return super.executeQuery(jpql, parameters, start, limit);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<City> executeQuery(String jpql, Integer start, Integer limit) {
+        return super.executeQuery(jpql, start, limit);
+    }
 }

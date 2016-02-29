@@ -7,6 +7,7 @@ import network.entity.UserDialog;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by roman on 22.09.15.
@@ -17,14 +18,14 @@ public class UserDialogDaoImplementation extends GenericDaoImplementation<UserDi
         super(UserDialog.class);
     }
 
-    public Collection getUsersByDialog(Dialog dialog) {
+    public List<UserDialog> getUsersByDialog(Dialog dialog) {
         String jpa = "select u from UserDialog u WHERE u.dialog = :dialog";
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("dialog",dialog);
         return this.executeQuery(jpa, parameters);
     }
 
-    public Collection getDialogsByUser(User user) {
+    public List<UserDialog> getDialogsByUser(User user) {
         String jpa = "select u from UserDialog u WHERE u.user = :user";
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("user",user);

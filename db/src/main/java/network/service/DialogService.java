@@ -91,4 +91,16 @@ public class DialogService extends DialogDaoImplementation implements DialogDao{
     protected List<Dialog> executeQuery(String jpql) {
         return super.executeQuery(jpql);
     }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<Dialog> executeQuery(String jpql, Map<String, Object> parameters, Integer start, Integer limit) {
+        return super.executeQuery(jpql, parameters, start, limit);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<Dialog> executeQuery(String jpql, Integer start, Integer limit) {
+        return super.executeQuery(jpql, start, limit);
+    }
 }

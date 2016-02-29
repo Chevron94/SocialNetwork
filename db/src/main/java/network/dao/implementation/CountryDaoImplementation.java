@@ -61,4 +61,18 @@ public class CountryDaoImplementation extends GenericDaoImplementation<Country,L
         return this.executeQuery(jpa, parameters);
     }
 
+    @Override
+    public Country getCountryByIso(String iso) {
+        String jpa = "SELECT c FROM Country c WHERE c.iso= :iso";
+        HashMap<String,Object> parameters = new HashMap<String, Object>();
+        parameters.put("iso", iso);
+        List<Country> countries = this.executeQuery(jpa, parameters);
+        return countries.get(0);
+    }
+
+    @Override
+    public List<Country> readAll() {
+        String jpa = "SELECT c FROM Country c order by c.name";
+        return this.executeQuery(jpa);
+    }
 }

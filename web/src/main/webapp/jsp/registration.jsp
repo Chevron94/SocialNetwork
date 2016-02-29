@@ -2,9 +2,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="network.entity.City" %>
 <%@ page import="network.entity.Gender" %>
-<%@ page import="network.dao.implementation.CityDaoImplementation" %>
-<%@ page import="network.service.CountryService" %>
-<%@ page import="network.service.CityService" %>
 <%@ page import="network.dto.UserDto" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -45,6 +42,14 @@
         $('#city').val($('#city_select').select().val());
     }
   </script>
+  <script type="text/javascript">
+    function hashPassword(form)
+    {
+      var i = form.elements.length;
+      $('#password').val(md5($('#open_password').val()));
+      $('#open_password').val('');
+    }
+  </script>
   <title>Registration</title>
   <%@include file="templates/scripts.jsp"%>
   <script type="text/javascript" src="/resources/js/md5.js"></script>
@@ -60,14 +65,6 @@
 
   UserDto user = (UserDto)request.getAttribute("user");
 %>
-<script type="text/javascript">
-  function hashPassword(form)
-  {
-    var i = form.elements.length;
-    $('#password').val(md5($('#open_password').val()));
-    $('#open_password').val('');
-  }
-</script>
 
 <%@include file="templates/menu.jsp"%>
 
@@ -234,12 +231,12 @@
           <label class="control-label" for="country_select">Country</label>
         </div>
         <div class="col-xs-2" align="left">
-          <select name="country_select" id="country_select" onchange="updateSelectOptions()">
+          <select name="country_select" class="icon-menu" id="country_select" onchange="updateSelectOptions()">
             <option value="0" selected>Select country</option>
             <% for (int i=0;i<countryList.size(); i++)
             {
             %>
-              <option value="<%=countryList.get(i).getId()%>"
+              <option style="background-image:url(<%=countryList.get(i).getFlagURL()%>); background-size: 20px 20px; background-position: left center;" value="<%=countryList.get(i).getId()%>"
                       <%
                         if(user!=null && user.getCountry().equals(countryList.get(i).getId().toString()))
                         {

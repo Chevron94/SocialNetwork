@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/security"
              xmlns:beans="http://www.springframework.org/schema/beans"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	http://www.springframework.org/schema/security
-	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
 
        <http auto-config="true">
            <intercept-url pattern="/favicon.ico" access="IS_AUTHENTICATED_ANONYMOUSLY" />
@@ -13,13 +13,14 @@
            <intercept-url pattern="/registration/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/resources/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/resources/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+           <intercept-url pattern="/resources/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/admin**" access="ROLE_ADMIN" />
            <intercept-url pattern="/**" access="ROLE_USER" />
            <form-login
                    login-page="/login"
-                   default-target-url="/"
+                   default-target-url="/profile"
                    authentication-failure-url="/login?error"
-                   />
+           />
            <remember-me services-ref="rememberMeServices"/>
        </http>
 
@@ -27,12 +28,15 @@
         <authentication-provider user-service-ref="networkDetailsService">
             <password-encoder hash="md5">
             </password-encoder>
-
         </authentication-provider>
     </authentication-manager>
 
+    <jee:local-slsb id="userDao" jndi-name="java:module/UserService"
+                    business-interface="network.dao.UserDao"/>
 
-    <beans:bean id="networkDetailsService" class="network.services.NetworkUserDetailsService"/>
+    <beans:bean id="networkDetailsService" class="network.services.NetworkUserDetailsService">
+        <beans:property name="userService" ref="userDao"/>
+    </beans:bean>
     <beans:bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
         <beans:property name="userDetailsService" ref="networkDetailsService" />
         <beans:property name="tokenValiditySeconds" value="999999999"/>

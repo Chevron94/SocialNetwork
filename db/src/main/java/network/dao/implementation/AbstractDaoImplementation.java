@@ -24,9 +24,27 @@ public abstract class AbstractDaoImplementation<T, PK> {
         return result;
     }
 
+    protected List<T> executeQuery(String jpql, Map<String, Object> parameters, Integer start, Integer limit){
+        em = getEntityManager();
+        Query query = em.createQuery(jpql);
+        for(Map.Entry<String,Object> entry : parameters.entrySet()){
+            query.setParameter(entry.getKey(),entry.getValue());
+        }
+        List<T> result = query.setFirstResult(start).setMaxResults(limit).getResultList();
+        closeEntityManager();
+        return result;
+    }
+
     protected List<T> executeQuery(String jpql){
         em = getEntityManager();
         List<T> result = em.createQuery(jpql).getResultList();
+        closeEntityManager();
+        return result;
+    }
+
+    protected List<T> executeQuery(String jpql, Integer start, Integer limit){
+        em = getEntityManager();
+        List<T> result = em.createQuery(jpql).setFirstResult(start).setMaxResults(limit).getResultList();
         closeEntityManager();
         return result;
     }

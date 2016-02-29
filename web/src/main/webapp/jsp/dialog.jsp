@@ -27,7 +27,7 @@
 <body onload="pageLoad()">
 <%@include file="templates/menu.jsp"%>
 <!-- /container -->
-<input type="hidden" class="input-block-level" id="nickname" value="<%=user.getName()%>">
+<input type="hidden" class="input-block-level" id="nickname" value="<%=user.getLogin()%>">
 <input type="hidden" id="idUser" value="<%=idUser%>">
 <input type="hidden" id="dialogId" value="0">
 <div class="row table-fixed table-bordered">
@@ -50,6 +50,7 @@
         }
       }
     %>
+    <input type="hidden" name="current" id="current" value="">
   </div>
   <div class="col-xs-9 table-bordered">
 

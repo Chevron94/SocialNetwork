@@ -103,7 +103,7 @@
               <b>From</b>
             </div>
             <div class="col-xs-9">
-              <img src="/<%=user.getCountry().getFlagURL()%>"> <%=user.getCity().getName()+" ("+ user.getCountry().getName()+")"%>
+              <img style="height: 20px" src="<%=user.getCountry().getFlagURL()%>"> <%=user.getCity().getName()+" ("+ user.getCountry().getName()+")"%>
             </div>
           </div>
 

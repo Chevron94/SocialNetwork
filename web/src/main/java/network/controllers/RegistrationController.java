@@ -6,6 +6,7 @@ import network.entity.*;
 import network.service.*;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import network.services.SHAService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -125,10 +126,6 @@ public class RegistrationController {
             for (FieldError error : bindingResult.getFieldErrors()) {
                 validationErrors.add(error.getDefaultMessage());
             }
-            model.addAttribute("countries", countryService.readAll());
-            model.addAttribute("genders", genderService.readAll());
-            modelMap.addAttribute("errors", validationErrors);
-            return "registration";
         }
         List<String> validationErrors = new ArrayList<String>();
         if (userService.getUserByLogin(user.getLogin()) != null) {

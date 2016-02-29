@@ -14,5 +14,6 @@ public interface CountryDao extends GenericDao<Country,Long> {
     public String getName(Country country);
     public String getFlagUrl(Country country);
     public Country getCountryById(Long id);
+    public Country getCountryByIso(String iso);
     public List<Country> getCountryByContinentId(Long id);
 }

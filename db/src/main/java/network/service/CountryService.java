@@ -51,6 +51,12 @@ public class CountryService extends CountryDaoImplementation implements CountryD
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public Country getCountryByIso(String iso) {
+        return super.getCountryByIso(iso);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<Country> getCountryByContinentId(Long id) {
         return super.getCountryByContinentId(id);
     }
@@ -107,5 +113,17 @@ public class CountryService extends CountryDaoImplementation implements CountryD
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     protected List<Country> executeQuery(String jpql) {
         return super.executeQuery(jpql);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<Country> executeQuery(String jpql, Map<String, Object> parameters, Integer start, Integer limit) {
+        return super.executeQuery(jpql, parameters, start, limit);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<Country> executeQuery(String jpql, Integer start, Integer limit) {
+        return super.executeQuery(jpql, start, limit);
     }
 }

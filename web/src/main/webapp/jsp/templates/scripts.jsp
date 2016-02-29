@@ -14,3 +14,4 @@
 <link rel="stylesheet" href="/resources/css/jquery-ui.css" />
 <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/resources/css/text.css" rel="stylesheet">
+<link href="/resources/css/dropdown-picture.css" rel="stylesheet">

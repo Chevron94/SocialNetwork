@@ -24,6 +24,9 @@ public class Country
     @Column(name = "FLAG_URL")
     private String flagURL;
 
+    @Column(name = "ISO")
+    private String iso;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_CONTINENT", nullable = false)
     private Continent continent;
@@ -95,6 +98,14 @@ public class Country
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    public String getIso() {
+        return iso;
+    }
+
+    public void setIso(String iso) {
+        this.iso = iso;
     }
 
     @Override

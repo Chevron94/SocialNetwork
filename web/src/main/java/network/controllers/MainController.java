@@ -5,6 +5,7 @@ import network.dao.CountryDao;
 import network.dao.GenderDao;
 import network.dao.UserDao;
 import network.dao.implementation.*;
+import network.dto.AuthDto;
 import network.dto.UserDto;
 import network.entity.City;
 import network.entity.Continent;
@@ -18,8 +19,13 @@ import network.services.MD5Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -34,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.prefs.Preferences;
@@ -42,7 +49,7 @@ import java.util.prefs.Preferences;
  * Created by roman on 9/26/15.
  */
 @Controller
-public class MainController {
+public class MainController{
 
     @EJB
     UserDao userService;
@@ -118,4 +125,5 @@ public class MainController {
 
         return model;
     }
+
 }

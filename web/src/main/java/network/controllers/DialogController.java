@@ -9,11 +9,6 @@ import network.entity.Dialog;
 import network.entity.Message;
 import network.entity.User;
 import network.entity.UserDialog;
-import network.service.DialogService;
-import network.service.MessageService;
-import network.service.UserDialogService;
-import network.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -71,7 +66,7 @@ public class DialogController {
             user = userService.getUserById(idUser);
         }
         model.addAttribute("user", user);
-        List<UserDialog> userDialogs = (List<UserDialog>)userDialogService.getDialogsByUser(user);
+        List<UserDialog> userDialogs = userDialogService.getDialogsByUser(user);
         List<Dialog> dialogs = new ArrayList<>();
         for(UserDialog ud: userDialogs)
         {
@@ -103,8 +98,9 @@ public class DialogController {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
             for (Message message : messages) {
                 MessageDto m = new MessageDto();
-                m.setSender(userService.getUserById(message.getUser().getId()).getName());
+                m.setSender(userService.getUserById(message.getUser().getId()).getLogin());
                 m.setMessageText(message.getText());
+                m.setReceivedDate(message.getDateTime());
                 m.setReceived(simpleDateFormat.format(message.getDateTime()));
                 messagesDto.add(m);
             }

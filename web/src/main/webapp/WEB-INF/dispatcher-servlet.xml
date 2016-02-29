@@ -109,4 +109,11 @@
         <property name="userService" ref="userDao"/>
     </bean>
 
+    <bean id="dialogEndpoint" class="network.dialogs.DialogEndpoint">
+        <property name="userService" ref="userDao"/>
+        <property name="dialogService" ref="dialogDao"/>
+        <property name="messageService" ref="messageDao"/>
+        <property name="userDialogService" ref="userDialogDao"/>
+    </bean>
+
 </beans>

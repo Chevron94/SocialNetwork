@@ -9,6 +9,7 @@ import javax.json.Json;
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
+import java.text.SimpleDateFormat;
 
 public class DialogMessageEncoder implements Encoder.Text<MessageDto> {
     @Override
@@ -21,10 +22,12 @@ public class DialogMessageEncoder implements Encoder.Text<MessageDto> {
 
     @Override
     public String encode(final MessageDto chatMessage) throws EncodeException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         return Json.createObjectBuilder()
                 .add("messageText", chatMessage.getMessageText())
                 .add("sender", chatMessage.getSender())
-                .add("received", chatMessage.getReceived().toString()).build()
+                .add("receiver", chatMessage.getReceiverDialog())
+                .add("received", simpleDateFormat.format(chatMessage.getReceivedDate())).build()
                 .toString();
     }
 }

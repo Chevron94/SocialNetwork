@@ -39,43 +39,22 @@ public class ProfileController {
         this.friendRequestService = friendRequestService;
     }
     
-    /*
+
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public String getMainProfile(Model model, HttpServletRequest request) {
-
-
         Long idUser = (Long)request.getSession().getAttribute("idUser");
-        User user=null;
         if (idUser == null)
         {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            user = userService.getUserByLogin(auth.getName());
-            request.getSession().setAttribute("idUser",user.getId());
-        }else
-        {
-            user = userService.getUserById(idUser);
+            User user = userService.getUserByLogin(auth.getName());
+            request.getSession().setAttribute("idUser",idUser);
+            if (user!=null) {
+                idUser = user.getId();
+            }else return "redirect:/login";
         }
-
-        List<FriendRequest> friendRequests = friendRequestService.getFriendsByUserId(user.getId());
-        List<Long> ids=new ArrayList<Long>();
-        for(FriendRequest req:friendRequests)
-        {
-            if (req.getSender().getId() != user.getId())
-                ids.add(req.getSender().getId());
-            if (req.getReceiver().getId() != user.getId())
-                ids.add(req.getReceiver().getId());
-        }
-        List<User> users = new ArrayList<User>();
-        for(Long id:ids)
-        {
-            users.add(userService.getUserById(id));
-        }
-        model.addAttribute("friends",users);
-
-        model.addAttribute("user",user);
-        return "profile";
+        return "redirect:/user"+idUser;
     }
- */
+
 
     @RequestMapping(value = "/user{id}", method = RequestMethod.GET)
     public String getUserProfile(Model model, HttpServletRequest request, @PathVariable String id) {

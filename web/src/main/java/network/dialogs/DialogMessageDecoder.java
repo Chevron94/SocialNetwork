@@ -29,11 +29,17 @@ public class DialogMessageDecoder implements Decoder.Text<MessageDto> {
         String tmp = textMessage.replaceAll("\n","\\\\n\\\\r");
         JsonObject obj = Json.createReader(new StringReader(tmp))
                 .readObject();
-        message.setMessageText(obj.getString("messageText"));
-        message.setMessageText(StringUtils.replaceEach(obj.getString("messageText"), new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"}));
+        try {
+            message.setMessageText(obj.getString("messageText"));
+            message.setMessageText(StringUtils.replaceEach(obj.getString("messageText"), new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"}));
+            message.setReceiverDialog(obj.getString("dialog"));
+        }catch (NullPointerException e){
+            message.setId((obj.getString("id")));
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         message.setSender(obj.getString("sender"));
         Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        message.setReceivedDate((date));
         message.setReceived(simpleDateFormat.format(date));
         System.out.println(message);
         return message;
