@@ -30,10 +30,11 @@ function updateCountrySelectOptions() {
     updateValues("country-select","country")
     $.getJSON(url,
         {searchId: id,
+            name: '',
             ajax : 'true'},
 
         function(data) {
-            var html = '<option value="0" selected>Select city</option>';
+            var html = '<option value="0" selected></option>';
             var len = data.length;
             for (var i = 0; i< len; i++) {
                 html += '<option value="' + data[i].id + '">' + data[i].name + '</option>';

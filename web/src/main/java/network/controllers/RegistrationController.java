@@ -75,10 +75,11 @@ public class RegistrationController {
     @RequestMapping(value = "/registration/citiesByCountry", method = RequestMethod.GET)
     public @ResponseBody
     List<City> getCities(
-            @RequestParam(value="searchId") Long searchId) {
-        List<City> cities = cityService.getCitiesByCountryId(searchId);
+            @RequestParam(value="searchId") Long searchId,
+            @RequestParam(value="name") String name) {
+        List<City> cities = cityService.getCitiesByCountryIdAndPartOfCityName(searchId, name);
 
-        return cityService.getCitiesByCountryId(searchId);
+        return cities;
     }
 
     @RequestMapping(value = "/registration/countriesByContinent", method = RequestMethod.GET)

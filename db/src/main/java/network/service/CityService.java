@@ -45,6 +45,12 @@ public class CityService extends CityDaoImplementation implements CityDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public List<City> getCitiesByCountryIdAndPartOfCityName(Long id, String name) {
+        return super.getCitiesByCountryIdAndPartOfCityName(id, name);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<City> getCitiesByCountryId(Long id) {
         return super.getCitiesByCountryId(id);
     }

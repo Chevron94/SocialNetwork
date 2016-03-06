@@ -21,7 +21,7 @@
     <%@include file="templates/scripts.jsp" %>
     <%
         List<User> friends = (List<User>) request.getAttribute("friends");
-        List<User> sended_friends_requests = (List<User>) request.getAttribute("sended_friends_requests");
+        List<User> sent_friends_requests = (List<User>) request.getAttribute("sent_friends_requests");
         List<User> received_friends_requests = (List<User>) request.getAttribute("received_friends_requests");
         List<User> users = (List<User>) request.getAttribute("users");
 
@@ -301,7 +301,7 @@
                                     </div>
                                     <div class="col-xs-9">
                                         <label class="control-label"><img
-                                                src="/<%=received_friends_requests.get(i).getCountry().getFlagURL()%>"> <%=received_friends_requests.get(i).getCity().getName() + " (" + received_friends_requests.get(i).getCountry().getName() + ")"%>
+                                                src="<%=received_friends_requests.get(i).getCountry().getFlagURL()%>"> <%=received_friends_requests.get(i).getCity().getName() + " (" + received_friends_requests.get(i).getCountry().getName() + ")"%>
                                         </label>
                                     </div>
                                 </div>
@@ -405,7 +405,7 @@
                                     </div>
                                     <div class="col-xs-9">
                                         <label class="control-label"><img
-                                                src="/<%=friends.get(i).getCountry().getFlagURL()%>"> <%=friends.get(i).getCity().getName() + " (" + friends.get(i).getCountry().getName() + ")"%>
+                                                src="<%=friends.get(i).getCountry().getFlagURL()%>"> <%=friends.get(i).getCity().getName() + " (" + friends.get(i).getCountry().getName() + ")"%>
                                         </label>
                                     </div>
                                 </div>
@@ -475,19 +475,19 @@
     <div id="sended_requests">
 
         <%
-            if (sended_friends_requests != null && sended_friends_requests.size() > 0) {
+            if (sent_friends_requests != null && sent_friends_requests.size() > 0) {
                 %>
         <h4 align="center">Sended Requests</h4>
         <%
-                for (int i = 0; i < sended_friends_requests.size(); i++) {
+                for (int i = 0; i < sent_friends_requests.size(); i++) {
         %>
         <div class="row scale-text" style="margin: auto">
             <div class="col-xs-9">
                 <div class="row" style="margin: auto">
                     <div class="col-xs-12">
-                        <div id="<%=sended_friends_requests.get(i).getId()%>" class="row">
+                        <div id="<%=sent_friends_requests.get(i).getId()%>" class="row">
                             <div class="col-xs-3">
-                                <img src="<%=sended_friends_requests.get(i).getPhotoURL()%>" class="img img-responsive"
+                                <img src="<%=sent_friends_requests.get(i).getPhotoURL()%>" class="img img-responsive"
                                      alt="Responsive image">
                             </div>
                             <div class="col-xs-9">
@@ -496,7 +496,7 @@
                                         <label class="control-label">Name</label>
                                     </div>
                                     <div class="col-xs-9">
-                                        <label class="control-label"><%=sended_friends_requests.get(i).getName()%>
+                                        <label class="control-label"><%=sent_friends_requests.get(i).getName()%>
                                         </label>
                                     </div>
                                 </div>
@@ -506,7 +506,7 @@
                                         <label class="control-label">Birthday</label>
                                     </div>
                                     <div class="col-xs-9">
-                                        <label class="control-label"><%=sended_friends_requests.get(i).getBirthday().toString().split(" ")[0]%>
+                                        <label class="control-label"><%=sent_friends_requests.get(i).getBirthday().toString().split(" ")[0]%>
                                         </label>
                                     </div>
                                 </div>
@@ -517,7 +517,7 @@
                                     </div>
                                     <div class="col-xs-9">
                                         <label class="control-label"><img
-                                                src="/<%=sended_friends_requests.get(i).getCountry().getFlagURL()%>"> <%=sended_friends_requests.get(i).getCity().getName() + " (" + sended_friends_requests.get(i).getCountry().getName() + ")"%>
+                                                src="<%=sent_friends_requests.get(i).getCountry().getFlagURL()%>"> <%=sent_friends_requests.get(i).getCity().getName() + " (" + sent_friends_requests.get(i).getCountry().getName() + ")"%>
                                         </label>
                                     </div>
                                 </div>
@@ -527,7 +527,7 @@
                                         <label class="control-label">Gender</label>
                                     </div>
                                     <div class="col-xs-9">
-                                        <label class="control-label"><%=sended_friends_requests.get(i).getGender().getName()%>
+                                        <label class="control-label"><%=sent_friends_requests.get(i).getGender().getName()%>
                                         </label>
                                     </div>
                                 </div>
@@ -536,7 +536,7 @@
                                         <label class="control-label">Languages</label>
                                     </div>
                                     <div class="col-xs-9">
-                                        <label class="control-label"><%=sended_friends_requests.get(i).getCountry().getName()%>
+                                        <label class="control-label"><%=sent_friends_requests.get(i).getCountry().getName()%>
                                         </label>
                                     </div>
                                 </div>
@@ -546,24 +546,24 @@
                                         <label class="control-label">Profile</label>
                                     </div>
                                     <div class="col-xs-9">
-                                        <a href="/user<%=sended_friends_requests.get(i).getId()%>">
+                                        <a href="/user<%=sent_friends_requests.get(i).getId()%>">
                                             <%=pageContext.getRequest().getScheme() + "://"
                                                     + pageContext.getRequest().getServerName() + ":"
                                                     + pageContext.getRequest().getServerPort() + "/user"
-                                                    + sended_friends_requests.get(i).getId()%>
+                                                    + sent_friends_requests.get(i).getId()%>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="row table-bordered table-fixed btn-xs" align="center">
-                                    <button id="add_<%=sended_friends_requests.get(i).getId()%>" type="button" disabled
+                                    <button id="add_<%=sent_friends_requests.get(i).getId()%>" type="button" disabled
                                             class="Add btn btn-success btn-xs" onclick="acceptRequest(
-                                        <%=sended_friends_requests.get(i).getId()%>,
+                                        <%=sent_friends_requests.get(i).getId()%>,
                                         <%=idUser%>); return false">Add
                                     </button>
-                                    <button id="send_<%=sended_friends_requests.get(i).getId()%>" type="button"
+                                    <button id="send_<%=sent_friends_requests.get(i).getId()%>" type="button"
                                             class="btn btn-info btn-xs">Send Message
                                     </button>
-                                    <button id="delete_<%=sended_friends_requests.get(i).getId()%>" type="button"
+                                    <button id="delete_<%=sent_friends_requests.get(i).getId()%>" type="button"
                                             class="Add btn btn-danger btn-xs">Delete
                                     </button>
                                 </div>

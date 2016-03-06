@@ -5,7 +5,6 @@ import network.dao.CountryDao;
 import network.dao.GenderDao;
 import network.dao.UserDao;
 import network.dao.implementation.*;
-import network.dto.AuthDto;
 import network.dto.UserDto;
 import network.entity.City;
 import network.entity.Continent;

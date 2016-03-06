@@ -189,7 +189,7 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
             ageFrom = tmp;
         }
         Date date = new Date();
-        jpa += "AND DATEDIFF(year, u.birthday, :date) >= :ageFrom AND DATEDIFF(year, u.birthday, :date) <= :ageTo";
+        jpa += "AND EXTRACT(year FROM age(:date, u.birthday)) >= :ageFrom AND EXTRACT(year FROM age(:date, u.birthday)) <= :ageTo";
         parameters.put("date",date);
         parameters.put("ageFrom", ageFrom);
         parameters.put("ageTo",ageTo);

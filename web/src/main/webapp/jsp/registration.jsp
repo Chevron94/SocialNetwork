@@ -16,16 +16,17 @@
 <html>
 <head>
   <script type="text/javascript">
-    function updateSelectOptions() {
+    function updateSelectOptions(name) {
       var url = window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/registration/citiesByCountry';
       var id = $('#country_select').select().val();
       $('#country').val($('#country_select').select().val());
       $.getJSON(url,
               {searchId: id,
+                name: name,
                 ajax : 'true'},
 
               function(data) {
-                var html = '<option value="0" selected>Select city</option>';
+                var html = '<option value="0" selected></option>';
                 var len = data.length;
                 for (var i = 0; i< len; i++) {
                   html += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
@@ -53,6 +54,8 @@
   <title>Registration</title>
   <%@include file="templates/scripts.jsp"%>
   <script type="text/javascript" src="/resources/js/md5.js"></script>
+  <script type="text/javascript" src="/resources/js/select2.js"></script>
+  <link href="/resources/css/select2.css" rel="stylesheet">
 </head>
 <body>
 <%
@@ -231,7 +234,7 @@
           <label class="control-label" for="country_select">Country</label>
         </div>
         <div class="col-xs-2" align="left">
-          <select name="country_select" class="icon-menu" id="country_select" onchange="updateSelectOptions()">
+          <select name="country_select" class="icon-menu" id="country_select" onchange="updateSelectOptions('')">
             <option value="0" selected>Select country</option>
             <% for (int i=0;i<countryList.size(); i++)
             {
@@ -261,8 +264,8 @@
           <label class="control-label" for="city_select">City</label>
         </div>
         <div class="col-xs-2" align="left">
-          <select name="city_select" id="city_select" onchange="updateCity()">
-            <option value="0" selected>Select city</option>
+          <select name="city_select" id="city_select"  class="js-data-example-ajax form-control" style="width: 500px;" onchange="updateCity()">
+            <option value="0"></option>
             <%
               if (cities != null)
               {
@@ -360,6 +363,48 @@
               }
     %>
   >
+  <script>
+
+    function formatCity (data) {
+      return data.name;
+    }
+
+    function formatCitySelection (data) {
+      return data.name;
+    }
+
+    $('#city_select').select2({
+      placeholder: "Select a city",
+      allowClear: true,
+      ajax: {
+        url : window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/registration/citiesByCountry',
+        dataType:'json',
+        type: "GET",
+        quietMillis: 250,
+        data:function(params){
+          return{
+            searchId : $('#country_select').select().val(),
+            name: params.term
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: $.map(data, function (item) {
+              return {
+                name: item.name,
+                id: item.id
+              }
+            })
+          };
+        }
+      },
+      templateResult: formatCity,
+      templateSelection: formatCitySelection,
+      escapeMarkup: function (m) {
+        return m;
+      }
+    });
+  </script>
 </form>
 </body>
 </html>

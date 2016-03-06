@@ -46,4 +46,17 @@ public class CityDaoImplementation extends GenericDaoImplementation<City,Long> i
         parameters.put("id",id);
         return this.executeQuery(jpa, parameters);
     }
+
+    @Override
+    public List<City> getCitiesByCountryIdAndPartOfCityName(Long id, String name) {
+        String jpa;
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        if (!name.equals("")) {
+            jpa = "SELECT c FROM City c WHERE c.country.id = :id AND c.name LIKE :name ORDER BY c.name";
+            parameters.put("name",name+"%");
+        }else jpa = "SELECT c FROM City c WHERE c.country.id = :id ORDER BY c.name";
+        parameters.put("id",id);
+
+        return this.executeQuery(jpa, parameters,0,20);
+    }
 }

@@ -47,9 +47,9 @@ public class ProfileController {
         {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.getUserByLogin(auth.getName());
-            request.getSession().setAttribute("idUser",idUser);
             if (user!=null) {
                 idUser = user.getId();
+                request.getSession().setAttribute("idUser",idUser);
             }else return "redirect:/login";
         }
         return "redirect:/user"+idUser;

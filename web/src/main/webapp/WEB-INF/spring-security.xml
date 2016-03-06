@@ -18,7 +18,7 @@
            <intercept-url pattern="/**" access="ROLE_USER" />
            <form-login
                    login-page="/login"
-                   default-target-url="/profile"
+                   default-target-url="/login"
                    authentication-failure-url="/login?error"
            />
            <remember-me services-ref="rememberMeServices"/>
