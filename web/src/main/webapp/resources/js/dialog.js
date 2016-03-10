@@ -1,5 +1,5 @@
 var wsocket;
-var serviceLocation = "ws://" + document.location.host + "/dialog";
+var serviceLocation = "wss://" + document.location.host + "/dialog";
 var $nickName;
 var $message;
 var $chatWindow;
@@ -59,13 +59,13 @@ function sendMessage() {
 }
 function connectToChatServer() {
     wsocket = new WebSocket(serviceLocation);
-    wsocket.onmessage = onMessageReceived;
     wsocket.onopen = function(){
         var msg = '{"id":"'+ $("#idUser").val() + '", "sender":"' //ADD ID TO MESSAGE AND CHECK IT IN ENDPOINT
             + $nickName.val() + '", "received":""}';
         wsocket.send(msg);
     };
-    wsocket.open();
+    wsocket.onmessage = onMessageReceived;
+
 }
 
 function leaveRoom() {

@@ -23,8 +23,8 @@
   </style>
 </head>
 <body>
-  <%@include file="templates/menu.jsp"%>
-
+<br>
+<%@include file="templates/header.jsp"%>
   <div class="row scale-text" style="margin: auto">
     <div class="col-xs-12">
       <div class="row" style="margin-left: 20%">
@@ -34,8 +34,7 @@
           </div>
           <div class="row" style="background: lightgrey; margin-top: 1%">
             <a href="<%=pageContext.getRequest().getScheme()+"://"
-                            + pageContext.getRequest().getServerName()+":"
-                            + pageContext.getRequest().getServerPort()+"/user"+user.getId()+"/friends"%>">
+                            + pageContext.getRequest().getServerName()+"/user"+user.getId()+"/friends"%>">
                             <b>Friends <%="("+friends.size()+")"%></b>
             </a>
           </div>

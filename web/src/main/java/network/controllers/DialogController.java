@@ -73,6 +73,10 @@ public class DialogController {
             dialogs.add(ud.getDialog());
         }
         model.addAttribute("dialogs",dialogs);
+        if (dialogs.size()>0){
+            List<Message> messages = messageService.getMessagesByDialogId(dialogs.get(0).getId());
+            model.addAttribute("messages",messages);
+        }
         return "dialog";
     }
 
@@ -107,5 +111,16 @@ public class DialogController {
             return messagesDto;
         }
         else return null;
+    }
+
+    @RequestMapping(value = "/dialog/new", method = RequestMethod.POST)
+    public @ResponseBody Integer getOrCreateDialog(@RequestParam(value = "idSender") Long idSender, @RequestParam(value = "idReceiver") Long idReceiver){
+        /*  SELECT *
+            FROM USER_DIALOG u1, USER_DIALOG u2
+            WHERE 	u1.id_dialog = u2.id_dialog AND
+	        u1.id_user = 1 AND u2.id_user = 2 AND
+	        2 = (SELECT COUNT(u3.id_user) FROM USER_DIALOG u3 WHERE u3.id_dialog = u1.id_dialog);
+	    */
+        return null;
     }
 }

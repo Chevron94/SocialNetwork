@@ -25,24 +25,9 @@ function updateContinentSelectOptions() {
 
 
 function updateCountrySelectOptions() {
-    var url = window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/registration/citiesByCountry';
-    var id = $('#country-select').select().val();
     updateValues("country-select","country")
-    $.getJSON(url,
-        {searchId: id,
-            name: '',
-            ajax : 'true'},
-
-        function(data) {
-            var html = '<option value="0" selected></option>';
-            var len = data.length;
-            for (var i = 0; i< len; i++) {
-                html += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-            }
-            $('#city-select').html(html);
-            $('#city').val('0');
-        }
-    );
+    $("#city-select").empty().append('<option value="0"></option>').val('0').trigger('change');
+    $('#city').val('0');
 }
 
 function updateValues(dropdown,input) {

@@ -55,7 +55,7 @@ public class CountryDaoImplementation extends GenericDaoImplementation<Country,L
     }
 
     public List<Country> getCountryByContinentId(Long id) {
-        String jpa = "SELECT c FROM Country c WHERE c.continent.id= :id";
+        String jpa = "SELECT c FROM Country c WHERE c.continent.id= :id ORDER BY c.name";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id", id);
         return this.executeQuery(jpa, parameters);

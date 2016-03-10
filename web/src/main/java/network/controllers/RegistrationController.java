@@ -167,8 +167,8 @@ public class RegistrationController {
             model.addAttribute("genders", genderService.readAll());
             model.addAttribute("user", user);
             model.addAttribute("errors", validationErrors);
-            if (countryId != 0)
-                model.addAttribute("cities", cityService.getCitiesByCountryId(countryId));
+            if (countryId != 0 && cityId != 0)
+                model.addAttribute("city", cityService.getCityById(cityId));
             return "registration";
         }
 
@@ -199,9 +199,9 @@ public class RegistrationController {
                 uploadResult = cloudinary.uploader().upload(stream2file(file.getInputStream()), options);
                 Album album = new Album("Main", newUser);
                 album = albumService.create(album);
-                Photo photo = new Photo((String) uploadResult.get("url"), true, album);
+                Photo photo = new Photo((String) uploadResult.get("secure_url"), true, album);
                 photoService.create(photo);
-                newUser.setPhotoURL((String) uploadResult.get("url"));
+                newUser.setPhotoURL((String) uploadResult.get("secure_url"));
                 userService.update(newUser);
             } catch (IOException e) {
                 e.printStackTrace();

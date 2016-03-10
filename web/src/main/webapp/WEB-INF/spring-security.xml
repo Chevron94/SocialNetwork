@@ -9,16 +9,18 @@
 
        <http auto-config="true">
            <intercept-url pattern="/favicon.ico" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+           <intercept-url pattern="/404" access="IS_AUTHENTICATED_ANONYMOUSLY" />
            <intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/registration/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/resources/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/resources/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+           <intercept-url pattern="/resources/fonts/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/resources/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/admin**" access="ROLE_ADMIN" />
            <intercept-url pattern="/**" access="ROLE_USER" />
            <form-login
                    login-page="/login"
-                   default-target-url="/login"
+                   default-target-url="/"
                    authentication-failure-url="/login?error"
            />
            <remember-me services-ref="rememberMeServices"/>

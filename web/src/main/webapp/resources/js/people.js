@@ -3,6 +3,7 @@
  */
 var acceptUrl = window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/people/confirmRequest';
 var sendUrl = window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/people/sendRequest';
+var deleteUrl = window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/people/deleteRequest';
 
 function updateFriends(sender)
 {
@@ -17,6 +18,7 @@ function updateFriends(sender)
     html +='</div></div></div></div></div>';
     $('#'+sender).html('');
     $('#friends').append(html);
+    $('#friendsNotFound').html('');
 }
 
 function updateRequests(receiver)
@@ -31,14 +33,19 @@ function updateRequests(receiver)
     html += x.innerHTML;
     html +='</div></div></div></div></div>';
     $('#'+receiver).html('');
-    $('#sended_requests').append(html);
+    $('#sentRequests').append(html);
+    $('#sentRequestsNotFound').html('');
 
+}
+
+function deleteFriend(receiver){
+    $('#'+receiver).html('');
 }
 
 function acceptRequest(sender,receiver)
 {
     var x = sender + receiver;
-    $.getJSON(acceptUrl,
+    $.post(acceptUrl,
         {
             idSender: sender,
             idReceiver: receiver,
@@ -50,7 +57,7 @@ function acceptRequest(sender,receiver)
 function sendRequest(sender,receiver)
 {
     var x=sender+receiver;
-    $.getJSON(sendUrl,
+    $.post(sendUrl,
         {
             idSender: sender,
             idReceiver: receiver,
@@ -61,6 +68,19 @@ function sendRequest(sender,receiver)
                 updateRequests(receiver)
             }
         }
+
+    );
+}
+
+function deleteRequest(sender,receiver){
+    var x=sender+receiver;
+    $.post(deleteUrl,
+        {
+            idSender: sender,
+            idReceiver: receiver,
+            ajax : 'true'},function(data){
+                deleteFriend(receiver);
+            }
 
     );
 }

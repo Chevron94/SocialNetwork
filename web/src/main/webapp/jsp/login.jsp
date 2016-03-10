@@ -9,42 +9,8 @@
 <body>
 <link rel="stylesheet" href="/resources/css/menu.css">
 <br>
-<div class="row menu-style" style="margin-right: auto; margin-left: auto">
-    <div class="col-xs-10" align="center">
-
-    </div>
-    <div class="col-xs-2" align="center">
-        <a class="btn btn-info" href="/registration" role="button">Registration</a>
-    </div>
-</div>
+<%@include file="templates/header.jsp"%>
 <br>
-<!--
-<div id="login-box">
-
-
-    <form name='loginForm' action='j_spring_security_check'  method='POST'>
-
-        <table>
-            <tr>
-                <td>User:</td>
-                <td><input type='text' name='j_username' value=''></td>
-            </tr>
-            <tr>
-                <td>Password:</td>
-                <td><input type='password' name='j_password' /></td>
-            </tr>
-            <tr>
-                <td colspan='2'>
-                    <input name="submit" class="btn btn-primary" type="submit" value="submit" />
-                </td>
-            </tr>
-        </table>
-
-    </form>
-</div>
-
-</body>
--->
 <form class="form-horizontal login-box" action='j_spring_security_check'  method='POST'>
     <c:if test="${not empty error}">
         <div class="error">${error}</div>

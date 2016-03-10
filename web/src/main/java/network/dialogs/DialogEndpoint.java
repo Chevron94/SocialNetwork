@@ -65,6 +65,8 @@ public class DialogEndpoint {
             } else {
                 Dialog d = dialogService.getDialogById(Long.valueOf(chatMessage.getReceiverDialog()));
                 messageService.create(new Message(userService.getUserByLogin(chatMessage.getSender()), d, chatMessage.getMessageText(), chatMessage.getReceivedDate(),false));
+                d.setLastMessageDate(chatMessage.getReceivedDate());
+                d = dialogService.update(d);
                 List<UserDialog> userDialogs = userDialogService.getUsersByDialog(d);
                 List<Session> sessions = new ArrayList<>();
                 for (UserDialog ud:userDialogs){

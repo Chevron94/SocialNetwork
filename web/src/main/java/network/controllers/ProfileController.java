@@ -67,23 +67,22 @@ public class ProfileController {
             request.getSession().setAttribute("idUser",loginUser.getId());
         }
         User user = userService.getUserById(Long.valueOf(id));
-
-        List<FriendRequest> friendRequests = friendRequestService.getFriendsByUserId(user.getId());
-        List<Long> ids=new ArrayList<Long>();
-        for(FriendRequest req:friendRequests)
-        {
-            if (req.getSender().getId() != user.getId())
-                ids.add(req.getSender().getId());
-            if (req.getReceiver().getId() != user.getId())
-                ids.add(req.getReceiver().getId());
-        }
-        List<User> users = new ArrayList<User>();
-        for(Long userId:ids)
-        {
-            users.add(userService.getUserById(userId));
-        }
-        model.addAttribute("friends",users);
-        model.addAttribute("user",user);
-        return "profile";
+        if (user != null) {
+            List<FriendRequest> friendRequests = friendRequestService.getFriendsByUserId(user.getId());
+            List<Long> ids = new ArrayList<Long>();
+            for (FriendRequest req : friendRequests) {
+                if (req.getSender().getId() != user.getId())
+                    ids.add(req.getSender().getId());
+                if (req.getReceiver().getId() != user.getId())
+                    ids.add(req.getReceiver().getId());
+            }
+            List<User> users = new ArrayList<User>();
+            for (Long userId : ids) {
+                users.add(userService.getUserById(userId));
+            }
+            model.addAttribute("friends", users);
+            model.addAttribute("user", user);
+            return "profile";
+        }return "forward:/404";
     }
 }

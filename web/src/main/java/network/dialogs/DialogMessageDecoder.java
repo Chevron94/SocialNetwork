@@ -41,7 +41,6 @@ public class DialogMessageDecoder implements Decoder.Text<MessageDto> {
         Date date = new Date();
         message.setReceivedDate((date));
         message.setReceived(simpleDateFormat.format(date));
-        System.out.println(message);
         return message;
     }
 

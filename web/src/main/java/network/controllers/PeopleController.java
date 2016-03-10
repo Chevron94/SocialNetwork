@@ -90,36 +90,25 @@ public class PeopleController {
         if (idRequestUser == idUser) {
 
             List<FriendRequest> receivedFriendRequestsList = friendRequestService.getFriendRequestsByReceiverId(idRequestUser);
-            List<FriendRequest> sendedFriendRequestsList = friendRequestService.getFriendRequestsBySenderId(idRequestUser);
-            List<User> sendedRequests = new ArrayList<>();
+            List<FriendRequest> sentFriendRequestsList = friendRequestService.getFriendRequestsBySenderId(idRequestUser);
+            List<User> sentRequests = new ArrayList<>();
             List<User> receivedRequests = new ArrayList<>();
 
             for (FriendRequest fr : receivedFriendRequestsList) {
                 receivedRequests.add(fr.getSender());
             }
 
-            for (FriendRequest fr : sendedFriendRequestsList) {
-                sendedRequests.add(fr.getReceiver());
+            for (FriendRequest fr : sentFriendRequestsList) {
+                sentRequests.add(fr.getReceiver());
             }
-            model.addAttribute("received_friends_requests",receivedRequests);
-            model.addAttribute("sended_friends_requests",sendedRequests);
-            /*List<User> others = userService.readAll();
-            for(User u:friends)
-                others.remove(u);
-            for(User u:receivedRequests)
-                others.remove(u);
-            for(User u:sendedRequests)
-                others.remove(u);
-            others.remove(userService.getUserById(idUser));
-            model.addAttribute("users",others); */
+            model.addAttribute("receivedFriendsRequests",receivedRequests);
+            model.addAttribute("sentFriendsRequests",sentRequests);
         }
         return "people";
     }
 
     @RequestMapping(value = "/user{id}/friends", method = RequestMethod.POST)
     public String searchPeople(@ModelAttribute("searchDto") @Valid SearchDto searchDto,
-                               BindingResult bindingResult,
-                               ModelMap modelMap,
                                Model model, HttpServletRequest request, @PathVariable String id)
     {
         Long idRequestUser = Long.parseLong(id);
@@ -173,16 +162,16 @@ public class PeopleController {
         model.addAttribute("continents", continentService.readAll());
             if (idContinent>0) {
                 model.addAttribute("countries", countryService.getCountryByContinentId(idContinent));
-                if (idCountry>0)
-                    model.addAttribute("cities", cityService.getCitiesByCountryId(idCountry));
+                if (idCountry>0 && idCity>0)
+                    model.addAttribute("city", cityService.getCityById(idCity));
             }
 
         model.addAttribute("searchDto", searchDto);
         if (idRequestUser == idUser) {
 
             List<FriendRequest> receivedFriendRequestsList = friendRequestService.getFriendRequestsByReceiverId(idRequestUser);
-            List<FriendRequest> sendedFriendRequestsList = friendRequestService.getFriendRequestsBySenderId(idRequestUser);
-            List<User> sendedRequests = new ArrayList<>();
+            List<FriendRequest> sentFriendRequestsList = friendRequestService.getFriendRequestsBySenderId(idRequestUser);
+            List<User> sentRequests = new ArrayList<>();
             List<User> receivedRequests = new ArrayList<>();
 
             for (FriendRequest fr : receivedFriendRequestsList) {
@@ -193,18 +182,18 @@ public class PeopleController {
                 }
             }
 
-            for (FriendRequest fr : sendedFriendRequestsList) {
+            for (FriendRequest fr : sentFriendRequestsList) {
                 if(users.contains(fr.getReceiver()))
                 {
-                    sendedRequests.add(fr.getReceiver());
+                    sentRequests.add(fr.getReceiver());
                     users.remove(fr.getReceiver());
                 }
             }
 
             User curUser = userService.getUserById(idRequestUser);
             if (users.contains(curUser)) users.remove(curUser);
-            model.addAttribute("received_friends_requests",receivedRequests);
-            model.addAttribute("sended_friends_requests",sendedRequests);
+            model.addAttribute("receivedFriendsRequests",receivedRequests);
+            model.addAttribute("sentFriendsRequests",sentRequests);
             model.addAttribute("users", users);
         }
         return "people";
@@ -212,7 +201,7 @@ public class PeopleController {
 
 
     /**            КОНТРОЛЛЕРЫ ЗАПРОСОВ                  **/
-    @RequestMapping(value = "/people/sendRequest", method = RequestMethod.GET)
+    @RequestMapping(value = "/people/sendRequest", method = RequestMethod.POST)
     public @ResponseBody
     Boolean sendFriendRequest(
             @RequestParam(value="idSender") Long idSender,
@@ -237,7 +226,7 @@ public class PeopleController {
         }return null;
     }
 
-    @RequestMapping(value = "/people/confirmRequest", method = RequestMethod.GET)
+    @RequestMapping(value = "/people/confirmRequest", method = RequestMethod.POST)
     public @ResponseBody
     Boolean confirmRequest(
             @RequestParam(value="idSender") Long idSender,
@@ -255,7 +244,7 @@ public class PeopleController {
         }return null;
     }
 
-    @RequestMapping(value = "/people/deleteRequest", method = RequestMethod.GET)
+    @RequestMapping(value = "/people/deleteRequest", method = RequestMethod.POST)
     public @ResponseBody
     Boolean deleteRequest(
             @RequestParam(value="idSender") Long idSender,

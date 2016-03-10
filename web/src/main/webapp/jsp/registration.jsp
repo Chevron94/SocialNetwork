@@ -16,25 +16,10 @@
 <html>
 <head>
   <script type="text/javascript">
-    function updateSelectOptions(name) {
-      var url = window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/registration/citiesByCountry';
-      var id = $('#country_select').select().val();
+    function updateSelectOptions() {
       $('#country').val($('#country_select').select().val());
-      $.getJSON(url,
-              {searchId: id,
-                name: name,
-                ajax : 'true'},
-
-              function(data) {
-                var html = '<option value="0" selected></option>';
-                var len = data.length;
-                for (var i = 0; i< len; i++) {
-                  html += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-                }
-                $('#city_select').html(html);
-                $('#city').val('0');
-              }
-      );
+      $("#city_select").empty().append('<option value="0"></option>').val('0').trigger('change');
+      $('#city').val('0');
     }
     function updateGender() {
         $('#gender').val($('#gender_select').select().val());
@@ -64,12 +49,12 @@
   List<Gender> genders = (List<Gender>) request
           .getAttribute("genders");
   List<String> errors = (List<String>)request.getAttribute("errors");
-  List<City> cities = (List<City>)request.getAttribute("cities");
+  City city = (City) request.getAttribute("city");
 
   UserDto user = (UserDto)request.getAttribute("user");
 %>
-
-<%@include file="templates/menu.jsp"%>
+<br>
+<%@include file="templates/header.jsp"%>
 
 
 <% if(errors != null)
@@ -95,8 +80,8 @@
         <div class="col-xs-2" align="left">
           <label class="control-label" for="login">Login</label>
         </div>
-        <div class="col-xs-2" align="left">
-          <input type="text" id="login" name="login" required
+        <div class="col-xs-6" align="left">
+          <input type="text" id="login" class="form-control" name="login" required
             <%
               if(user!=null)
               {
@@ -114,8 +99,8 @@
         <div class="col-xs-2" align="left">
           <label class="control-label" for="open_password">Password</label>
         </div>
-        <div class="col-xs-2" align="left">
-          <input type="password" id="open_password" name="open_password" required>
+        <div class="col-xs-6" align="left">
+          <input type="password" id="open_password" class="form-control" name="open_password" required>
           <input type="hidden" id="password" name="password">
         </div>
       </div>
@@ -126,8 +111,8 @@
         <div class="col-xs-2" align="left">
           <label class="control-label" for="email">E-mail</label>
         </div>
-        <div class="col-xs-2" align="left">
-          <input type="email" id="email" name="email" required
+        <div class="col-xs-6" align="left">
+          <input type="email" id="email" class="form-control" name="email" required
             <%
               if(user!=null)
               {
@@ -145,8 +130,8 @@
         <div class="col-xs-2" align="left">
           <label class="control-label" for="name">Name</label>
         </div>
-        <div class="col-xs-2" align="left">
-          <input type="text" id="name" name="name"required
+        <div class="col-xs-6" align="left">
+          <input type="text" id="name" class="form-control" name="name"required
             <%
               if(user!=null)
               {
@@ -165,7 +150,7 @@
         <div class="col-xs-2" align="left">
           <label class="control-label" for="filePhoto">Photo</label>
         </div>
-        <div class="col-xs-2" align="left">
+        <div class="col-xs-6" align="left">
           <input type="file" id="filePhoto" name="filePhoto" placeholder="http://site.com/photo.jpg">
         </div>
       </div>
@@ -176,8 +161,8 @@
         <div class="col-xs-2" align="left">
           <label class="control-label" for="gender_select">Gender</label>
         </div>
-        <div class="col-xs-2" align="left">
-          <select name="gender_select" id="gender_select" onchange="updateGender()">
+        <div class="col-xs-6" align="left">
+          <select name="gender_select" class="form-control" id="gender_select" onchange="updateGender()">
             <option value="0" selected>Select gender</option>
             <% for (int i=0;i<genders.size(); i++)
             {
@@ -214,8 +199,8 @@
         <div class="col-xs-2" align="left">
           <label class="control-label" for="birthday">Birthday</label>
         </div>
-        <div class="col-xs-2" align="left">
-          <input type="text" id="birthday" name="birthday" required readonly
+        <div class="col-xs-6" align="left">
+          <input type="text" id="birthday" class="form-control" name="birthday" required readonly
             <%
               if(user!=null)
               {
@@ -233,8 +218,8 @@
         <div class="col-xs-2" align="left">
           <label class="control-label" for="country_select">Country</label>
         </div>
-        <div class="col-xs-2" align="left">
-          <select name="country_select" class="icon-menu" id="country_select" onchange="updateSelectOptions('')">
+        <div class="col-xs-6" align="left">
+          <select name="country_select" class="icon-menu form-control" id="country_select" onchange="updateSelectOptions()">
             <option value="0" selected>Select country</option>
             <% for (int i=0;i<countryList.size(); i++)
             {
@@ -263,29 +248,16 @@
         <div class="col-xs-2" align="left">
           <label class="control-label" for="city_select">City</label>
         </div>
-        <div class="col-xs-2" align="left">
-          <select name="city_select" id="city_select"  class="js-data-example-ajax form-control" style="width: 500px;" onchange="updateCity()">
-            <option value="0"></option>
-            <%
-              if (cities != null)
-              {
-                for(int i = 0; i < cities.size(); i++)
-                {
+        <div class="col-xs-6" align="left">
+          <select name="city_select" id="city_select"  class="js-example-data-ajax form-control" onchange="updateCity()">
+            <% if (city != null){
             %>
-                  <option value="<%=cities.get(i).getId()%>"
-                          <%
-                            if(user!=null && user.getCity().equals(cities.get(i).getId().toString()))
-                            {
-                          %>
-                          selected
-                          <%
-                            }
-                          %>
-                  ><%=cities.get(i).getName()%></option>
+            <option value="<%=city.getId()%>" selected="selected"><%=city.getName()%></option>
             <%
-                }
-              }
-            %>
+            }else{
+            %><option value="0" selected="selected">Select city</option><%
+            }
+          %>
           </select>
         </div>
       </div>
@@ -374,8 +346,6 @@
     }
 
     $('#city_select').select2({
-      placeholder: "Select a city",
-      allowClear: true,
       ajax: {
         url : window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/registration/citiesByCountry',
         dataType:'json',
@@ -398,12 +368,25 @@
           };
         }
       },
+      placeholder: 'Select a city',
+      minimumInputLength: 1,
+      allowClear: true,
       templateResult: formatCity,
       templateSelection: formatCitySelection,
       escapeMarkup: function (m) {
         return m;
       }
-    });
+    }).val(<%
+              if(user!=null)
+              { out.print(user.getCity());
+              }
+              else
+              {
+    %>
+    '0'
+    <%
+              }
+    %>).trigger('change');
   </script>
 </form>
 </body>

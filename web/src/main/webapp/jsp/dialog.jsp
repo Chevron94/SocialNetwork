@@ -1,6 +1,8 @@
 <%@ page import="network.entity.User" %>
 <%@ page import="java.util.List" %>
 <%@ page import="network.entity.Dialog" %>
+<%@ page import="network.entity.Message" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%--
   Created by IntelliJ IDEA.
   User: roman
@@ -21,15 +23,17 @@
 
   <%
     List<Dialog> dialogs = (List<Dialog>)request.getAttribute("dialogs");
+    List<Message> messages =  (List<Message>)request.getAttribute("messages");
   %>
 
 </head>
 <body onload="pageLoad()">
-<%@include file="templates/menu.jsp"%>
+<br>
+<%@include file="templates/header.jsp"%>
 <!-- /container -->
 <input type="hidden" class="input-block-level" id="nickname" value="<%=user.getLogin()%>">
 <input type="hidden" id="idUser" value="<%=idUser%>">
-<input type="hidden" id="dialogId" value="0">
+<input type="hidden" id="dialogId" value="<%=dialogs!=null && dialogs.size()>0 ? dialogs.get(0).getId() : 0%>">
 <div class="row table-fixed table-bordered">
   <div class="col-xs-3">
     <div class="row">
@@ -54,14 +58,26 @@
   </div>
   <div class="col-xs-9 table-bordered">
 
-      <h4 id="dialogName" align="center"><%=user.getName()%></h4>
+      <h4 id="dialogName" align="center"><%=dialogs!=null && dialogs.size()>0 ? dialogs.get(0).getName() : "SELECT A DIALOG"%></h4>
       <div id="tableDiv" class="table-responsive" style="height: 300px; overflow-y: scroll">
         <table id="response" class="table table-bordered table-fixed" style="font-size: 100%">
+          <%if(messages!= null && messages.size()>0){
+            for(Message message:messages){
+              %>
+              <tr><td class="sender col-xs-2"> <%=message.getUser().getLogin()%>
+                      </td><td class="sender col-xs-8">  <%=message.getText()%>
+                      </td><td class="sender col-xs-2"><%
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+                out.print(simpleDateFormat.format(message.getDateTime()));%>
+              </td></tr><%
+            }
+          }else{%>
           <tr>
             <td class="col-xs-2"></td>
             <td class="col-xs-8"></td>
             <td class="col-xs-3"></td>
           </tr>
+          <%}%>
         </table>
       </div>
       <div class="row">

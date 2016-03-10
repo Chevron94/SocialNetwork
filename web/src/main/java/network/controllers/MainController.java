@@ -125,4 +125,9 @@ public class MainController{
         return model;
     }
 
+    @RequestMapping(value = "/404", method = RequestMethod.GET)
+    public String error404() {
+        return "404";
+    }
+
 }

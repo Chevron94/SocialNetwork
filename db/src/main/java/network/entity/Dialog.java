@@ -21,6 +21,9 @@ public class Dialog {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name="LAST_MESSAGE_DATETIME")
+    private Date lastMessageDate;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dialog")
     @JsonIgnore
     private transient Set<Message> messages = new HashSet<Message>();
@@ -54,6 +57,13 @@ public class Dialog {
         this.name = name;
     }
 
+    public Date getLastMessageDate() {
+        return lastMessageDate;
+    }
+
+    public void setLastMessageDate(Date lastMessageDate) {
+        this.lastMessageDate = lastMessageDate;
+    }
 
     public Set<Message> getMessages() {
         return messages;

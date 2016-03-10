@@ -4,7 +4,10 @@ import network.dao.UserDialogDao;
 import network.entity.Dialog;
 import network.entity.User;
 import network.entity.UserDialog;
+import org.hibernate.criterion.CriteriaQuery;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +29,8 @@ public class UserDialogDaoImplementation extends GenericDaoImplementation<UserDi
     }
 
     public List<UserDialog> getDialogsByUser(User user) {
-        String jpa = "select u from UserDialog u WHERE u.user = :user";
+        String jpa = "SELECT ud FROM UserDialog ud WHERE ud.user = :user " +
+                "ORDER BY ud.dialog.lastMessageDate DESC";
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("user",user);
         return this.executeQuery(jpa, parameters);
