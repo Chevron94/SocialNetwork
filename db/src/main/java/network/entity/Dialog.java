@@ -21,7 +21,7 @@ public class Dialog {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name="LAST_MESSAGE_DATETIME")
+    @Column(name="LAST_MESSAGE_DATETIME", nullable = true)
     private Date lastMessageDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dialog")

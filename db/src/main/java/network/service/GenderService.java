@@ -33,12 +33,6 @@ public class GenderService extends GenderDaoImplementation implements GenderDao 
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getName(Gender gender) {
-        return super.getName(gender);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Gender getGenderById(Long id) {
         return super.getGenderById(id);
     }

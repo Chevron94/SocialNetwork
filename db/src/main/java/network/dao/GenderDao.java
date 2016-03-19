@@ -10,7 +10,6 @@ import javax.ejb.Remote;
  */
 @Local
 public interface GenderDao extends GenericDao<Gender,Long>{
-    public String getName(Gender gender);
     public Gender getGenderById(Long id);
 
 

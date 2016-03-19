@@ -1,5 +1,9 @@
+var senderId;
+var receiverId;
+var messageUrl = window.location.protocol+'//'+window.location.hostname+':'+window.location.port+"/message"
 function newMessage(sender, receiver, receiverName){
-    var x = sender+receiver;
+    senderId = sender;
+    receiverId = receiver;
     $('#receiverName').val(receiverName);
     $('#overlay').fadeIn(400, // снaчaлa плaвнo пoкaзывaем темную пoдлoжку
         function(){ // пoсле выпoлнения предъидущей aнимaции
@@ -18,4 +22,34 @@ function newMessage(sender, receiver, receiverName){
             );
     });
 
+}
+
+function send(){
+    var msg = $('#messageText').val();
+    if (msg.trim() != "") {
+        $.post(messageUrl,
+            {
+                idSender: senderId,
+                idReceiver: receiverId,
+                text: msg,
+                ajax: 'true'
+            }, function (data) {
+                if (data==="true") {
+                    alert("Message was sent");
+                    $('#messageWindow')
+                        .animate({opacity: 0, top: '45%'}, 200,  // плaвнo меняем прoзрaчнoсть нa 0 и oднoвременнo двигaем oкнo вверх
+                            function () { // пoсле aнимaции
+                                $(this).css('display', 'none'); // делaем ему display: none;
+                                $('#overlay').fadeOut(400); // скрывaем пoдлoжку
+                            }
+                        );
+                } else {
+                    alert("error");
+                }
+
+            }
+        );
+    }else{
+        alert("you can't send empty message");
+    }
 }

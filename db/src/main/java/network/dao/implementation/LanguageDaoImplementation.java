@@ -18,34 +18,6 @@ public class LanguageDaoImplementation extends GenericDaoImplementation<Language
         super(Language.class);
     }
 
-    public String getName(Language language) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idLanguage = language.getId();
-            return em.find(Language.class, idLanguage).getName();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public String getPictureUrl(Language language) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idLanguage = language.getId();
-            return em.find(Language.class, idLanguage).getPictureURL();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
     public Language getLanguageById(Long id) {
         String jpa = "SELECT l FROM Language l WHERE l.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();

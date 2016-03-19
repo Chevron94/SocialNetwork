@@ -11,9 +11,7 @@ import java.util.List;
  */
 @Local
 public interface PhotoDao extends GenericDao<Photo,Long> {
-    public String getPhotoUrl(Photo photo);
-    public boolean getIsMain(Photo photo);
 
     public Photo getPhotoByID(Long id);
-    public List<Photo> getPhotosByAlbumId(Long id);
+    public List<Photo> getPhotosByAlbumId(Long id, Integer start, Integer limit);
 }

@@ -1,6 +1,7 @@
 package network.console;
 
 import network.dao.ContinentDao;
+import network.dao.DialogDao;
 import network.dao.implementation.*;
 import network.entity.*;
 import org.json.JSONArray;
@@ -24,9 +25,10 @@ public class Launcher {
     private static ContinentDaoImplementation continentDao = new ContinentDaoImplementation();
     private static CountryDaoImplementation countryDao = new CountryDaoImplementation();
     private static CityDaoImplementation cityDao = new CityDaoImplementation();
+    private static DialogDao dialogDao = new DialogDaoImplementation();
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-
+/*
         Continent africa = new Continent("Africa");
         Continent asia = new Continent("Asia");
         Continent australia = new Continent("Australia and Oceania");
@@ -239,6 +241,8 @@ public class Launcher {
                 ex.printStackTrace();
             }
         }
-        System.exit(0);*/
+        */
+        Dialog d = dialogDao.getDialogByTwoUser(1l,2l);
+        System.exit(0);
     }
 }

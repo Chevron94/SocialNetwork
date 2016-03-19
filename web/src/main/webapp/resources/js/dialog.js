@@ -27,7 +27,7 @@ function chatClick(idDialog)
         }
         $('#dialogName').html($('#'+idDialog).html());
         $('#response').html(messageLine);
-        $('#current').val(idDialog);
+        $('#dialogId').val(idDialog);
         var elem = document.getElementById('tableDiv');
         elem.scrollTop = elem.scrollHeight;
     })
@@ -49,13 +49,20 @@ function onMessageReceived(evt) {
         $('#'+msg.receiver).html($('#'+msg.receiver).val()+" <b>NEW!!!</b>");
     }
 }
-function sendMessage() {
-    if($message.val().trim()!="") {
-        var msg = '{"messageText":"' + $message.val().trim() + '", "sender":"'
-            + $nickName.val() + '", "received":"","dialog":"'+$dialog.val()+'"}';
+function sendMessage(messageText,sender,dialog){
+    var msg;
+    if(sender == null && messageText==null && dialog==null){
+        if($message.val().trim()!="") {
+            msg = '{"messageText":"' + $message.val().trim() + '", "sender":"'
+                + $nickName.val() + '", "received":"","dialog":"'+$dialog.val()+'"}';
+            wsocket.send(msg);
+        }
+        $message.val('').focus();
+    }else {
+        msg = '{"messageText":"' + messageText.trim() + '", "sender":"'
+            + sender + '", "received":"","dialog":"' + dialog + '"}';
         wsocket.send(msg);
     }
-    $message.val('').focus();
 }
 function connectToChatServer() {
     wsocket = new WebSocket(serviceLocation);
@@ -76,7 +83,7 @@ function leaveRoom() {
 
 function buttonAction()
 {
-    sendMessage();
+    sendMessage(null,null,null);
 }
 
 function pageLoad()
@@ -84,7 +91,7 @@ function pageLoad()
     $nickName = $('#nickname');
     $message = $('#message');
     $chatWindow = $('#response');
-    $dialog = $('#current');
+    $dialog = $('#dialogId');
     $('.chat-wrapper h4').text('Chat # '+$nickName.val());
     $message.focus();
     connectToChatServer();

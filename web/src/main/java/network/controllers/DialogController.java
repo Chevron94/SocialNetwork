@@ -9,6 +9,7 @@ import network.entity.Dialog;
 import network.entity.Message;
 import network.entity.User;
 import network.entity.UserDialog;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,7 +68,7 @@ public class DialogController {
             user = userService.getUserById(idUser);
         }
         model.addAttribute("user", user);
-        List<UserDialog> userDialogs = userDialogService.getDialogsByUser(user);
+        List<UserDialog> userDialogs = userDialogService.getDialogsByUser(user,0,20);
         List<Dialog> dialogs = new ArrayList<>();
         for(UserDialog ud: userDialogs)
         {
@@ -74,7 +76,7 @@ public class DialogController {
         }
         model.addAttribute("dialogs",dialogs);
         if (dialogs.size()>0){
-            List<Message> messages = messageService.getMessagesByDialogId(dialogs.get(0).getId());
+            List<Message> messages = messageService.getMessagesByDialogId(dialogs.get(0).getId(),0,20);
             model.addAttribute("messages",messages);
         }
         return "dialog";
@@ -85,7 +87,7 @@ public class DialogController {
     List<MessageDto> getMessages(@RequestParam(value="idDialog") Long idDialog, HttpServletRequest request)
     {
         Long userId = (Long)(request.getSession().getAttribute("idUser"));
-        List<UserDialog> userDialogs = (List<UserDialog>)userDialogService.getDialogsByUser(userService.getUserById(userId));
+        List<UserDialog> userDialogs = userDialogService.getDialogsByUser(userService.getUserById(userId), 0, 20);
         Dialog dialog = dialogService.getDialogById(idDialog);
         boolean ok = false;
         for(UserDialog d:userDialogs)
@@ -97,7 +99,7 @@ public class DialogController {
             }
         }
         if (ok) {
-            List<Message> messages = messageService.getMessagesByDialogId(Long.valueOf(idDialog));
+            List<Message> messages = messageService.getMessagesByDialogId(Long.valueOf(idDialog), 0, 20);
             List<MessageDto> messagesDto = new ArrayList<>();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
             for (Message message : messages) {
@@ -113,14 +115,26 @@ public class DialogController {
         else return null;
     }
 
-    @RequestMapping(value = "/dialog/new", method = RequestMethod.POST)
-    public @ResponseBody Integer getOrCreateDialog(@RequestParam(value = "idSender") Long idSender, @RequestParam(value = "idReceiver") Long idReceiver){
-        /*  SELECT *
-            FROM USER_DIALOG u1, USER_DIALOG u2
-            WHERE 	u1.id_dialog = u2.id_dialog AND
-	        u1.id_user = 1 AND u2.id_user = 2 AND
-	        2 = (SELECT COUNT(u3.id_user) FROM USER_DIALOG u3 WHERE u3.id_dialog = u1.id_dialog);
-	    */
-        return null;
+    @RequestMapping(value = "/message", method = RequestMethod.POST)
+    public @ResponseBody Boolean getOrCreateDialog(@RequestParam(value = "idSender") Long idSender, @RequestParam(value = "idReceiver") Long idReceiver,@RequestParam(value = "text") String text, HttpServletRequest request){
+        Long userId = (Long)(request.getSession().getAttribute("idUser"));
+        if(userId==idSender  && idReceiver!=idSender){
+            User sender = userService.getUserById(idSender);
+            User receiver = userService.getUserById(idReceiver);
+            Dialog dialog = dialogService.getDialogByTwoUser(idSender,idReceiver);
+            if(dialog==null){
+                dialog = new Dialog(sender.getLogin()+" / "+receiver.getLogin());
+                dialog = dialogService.create(dialog);
+                UserDialog senderUserDialog = new UserDialog(dialog,sender);
+                UserDialog receiverUserDialog = new UserDialog(dialog,receiver);
+                userDialogService.create(receiverUserDialog);
+                userDialogService.create(senderUserDialog);
+            }
+            Message message = new Message(sender,dialog,text,new Date(),false);
+            message = messageService.create(message);
+            dialog.setLastMessageDate(message.getDateTime());
+            dialogService.update(dialog);
+            return true;
+        }else return false;
     }
 }

@@ -33,12 +33,6 @@ public class CountryService extends CountryDaoImplementation implements CountryD
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getName(Country country) {
-        return super.getName(country);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public String getFlagUrl(Country country) {
         return super.getFlagUrl(country);
     }

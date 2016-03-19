@@ -19,81 +19,23 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
         super(User.class);
     }
 
-    public String getLogin(User user) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idUser = user.getId();
-            return em.find(User.class, idUser).getLogin();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public String getPassword(User user) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idUser = user.getId();
-            return em.find(User.class, idUser).getPassword();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public Date getBirthday(User user) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idUser = user.getId();
-            return em.find(User.class, idUser).getBirthday();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public String getEmail(User user) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idUser = user.getId();
-            return em.find(User.class, idUser).getEmail();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public String getPhotoUrl(User user) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idUser = user.getId();
-            return em.find(User.class, idUser).getPhotoURL();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
     public User Login(String login, String password) {
         String jpa = "SELECT u FROM User u WHERE u.login = :login and u.password = :password";
         HashMap<String,Object> parameters = new HashMap<String,Object>();
         parameters.put("login", login);
         parameters.put("password", password);
+        List<User> users = this.executeQuery(jpa, parameters);
+        if (users.size() != 1){
+            return null;
+        }
+        return users.get(0);
+    }
+
+    @Override
+    public User Login(String token) {
+        String jpa = "SELECT u FROM User u WHERE u.token = :token";
+        HashMap<String,Object> parameters = new HashMap<String,Object>();
+        parameters.put("token", token);
         List<User> users = this.executeQuery(jpa, parameters);
         if (users.size() != 1){
             return null;
@@ -134,54 +76,58 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
         return users.get(0);
     }
 
-    public List<User> getUsersByCityId(Long id) {
+    public List<User> getUsersByCityId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT u FROM User u WHERE u.city.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 
-    @Override
-    public List<User> getUsersByGenderId(Long id) {
+    public List<User> getUsersByGenderId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT u FROM User u WHERE u.gender.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 
-    @Override
-    public List<User> getUsersByCountryId(Long id) {
+    public List<User> getUsersByCountryId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT u FROM User u WHERE u.country.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 
-    @Override
-    public List<User> getUsersByCustomFilter(Long idContinent, Long idCountry, Long idCity, boolean isMale, boolean isFemale, int ageFrom, int ageTo, Long idLanguage) {
-        String jpa = "SELECT u FROM User u ";
+    public List<User> getUsersByCustomFilter(Long idUser, HashMap<String,Object> params, Integer start, Integer limit) {
+
         HashMap<String,Object> parameters = new HashMap<String, Object>();
-        if (idCity > 0) {
-            jpa += "WHERE u.city.id = :idCity ";
-            parameters.put("idCity", idCity);
-        }else
-        {
-            if (idCountry > 0)
-            {
-                jpa += "WHERE u.country.id = :idCountry ";
-                parameters.put("idCountry", idCountry);
-            }else
-            {
-                if (idContinent > 0) {
-                    jpa += "WHERE u.country.continent.id = :idContinent ";
-                    parameters.put("idContinent", idContinent);
-                }else jpa += "WHERE 1 = 1 ";
-            }
+        parameters.put("idUser",idUser);
+        String jpa = "SELECT DISTINCT u FROM User u";
+        String list = (String) params.get("list");
+        if(list!= null) {
+            jpa+= ", FriendRequest f ";
+            if (list.equals("friends")) {
+                jpa+="WHERE (f.sender.id = :idUser OR f.receiver.id = :idUser) AND (f.sender.id = u.id OR f.receiver.id = u.id) AND u.id <> :idUser AND f.confirmed = true ";
+            }else if(list.equals("received")){
+                jpa+="WHERE (f.receiver.id = :idUser AND u.id = f.sender.id) AND f.confirmed = false ";
+            }else if(list.equals("sent")){
+                jpa+="WHERE (f.sender.id = :idUser AND u.id = f.receiver.id) AND f.confirmed = false ";
+            }else jpa+="WHERE NOT(f.sender.id = :idUser OR f.receiver.id = :idUser) AND f.confirmed = false ";
         }
+
+
+
+        Boolean isMale = (Boolean)params.get("male");
+        Boolean isFemale = (Boolean)params.get("female");
+
         if (isFemale != isMale)
         {
-            jpa += isMale ? "AND u.gender.id = 1 " : "AND u.gender.id = 2 ";
+            if(list==null) {
+                jpa += isMale ? "WHERE u.gender.id = 1 " : "WHERE u.gender.id = 2 ";
+            }else jpa += isMale ? "AND u.gender.id = 1 " : "AND u.gender.id = 2 ";
         }
+
+        Integer ageFrom = (Integer)params.get("ageFrom");
+        Integer ageTo = (Integer)params.get("ageTo");
         if (ageFrom > ageTo)
         {
             int tmp = ageTo;
@@ -193,6 +139,26 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
         parameters.put("date",date);
         parameters.put("ageFrom", ageFrom);
         parameters.put("ageTo",ageTo);
-        return this.executeQuery(jpa, parameters);
+        Long idCity = (Long)params.get("idCity");
+        if (idCity != null && idCity > 0) {
+            jpa += "AND u.city.id = :idCity ";
+            parameters.put("idCity", idCity);
+        }else
+        {
+            Long idCountry =(Long)params.get("idCountry");
+            if (idCountry != null && idCountry > 0)
+            {
+                jpa += "AND u.country.id = :idCountry ";
+                parameters.put("idCountry", idCountry);
+            }else
+            {
+                Long idContinent = (Long)params.get("idContinent");
+                if (idContinent != null && idContinent > 0) {
+                    jpa += "AND u.country.continent.id = :idContinent ";
+                    parameters.put("idContinent", idContinent);
+                }
+            }
+        }
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 }

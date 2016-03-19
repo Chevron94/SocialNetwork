@@ -28,11 +28,12 @@ public class UserDialogDaoImplementation extends GenericDaoImplementation<UserDi
         return this.executeQuery(jpa, parameters);
     }
 
-    public List<UserDialog> getDialogsByUser(User user) {
+    public List<UserDialog> getDialogsByUser(User user, Integer start, Integer limit) {
         String jpa = "SELECT ud FROM UserDialog ud WHERE ud.user = :user " +
                 "ORDER BY ud.dialog.lastMessageDate DESC";
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("user",user);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
+
 }

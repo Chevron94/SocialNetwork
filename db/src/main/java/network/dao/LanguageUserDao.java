@@ -14,7 +14,7 @@ import java.util.Collection;
  */
 @Local
 public interface LanguageUserDao extends GenericDao<LanguageUser,Long> {
-    public Collection getLanguagesByUser(User user);
-    public Collection getUsersByLanguage(Language language);
+    public Collection getLanguagesByUser(User user, Integer start, Integer limit);
+    public Collection getUsersByLanguage(Language language, Integer start, Integer limit);
     public LanguageUser getLanguageUserByUserAndLanguageId(Long idUser, Long idLanguage);
 }

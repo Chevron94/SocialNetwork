@@ -1,6 +1,5 @@
 <%@ page import="network.entity.User" %>
 <%@ page import="java.util.List" %>
-<%@ page import="network.service.FriendRequestService" %>
 <%@ page import="network.entity.Country" %>
 <%@ page import="network.entity.City" %>
 <%@ page import="network.dto.SearchDto" %>
@@ -35,15 +34,10 @@
 <body>
 <br>
 <%@include file="templates/header.jsp"%>
-<script src="/resources/js/people.js"></script>
-<script type="text/javascript" src="/resources/js/select2.js"></script>
-<script src="/resources/js/dropdown.js"></script>
-<link href="/resources/css/select2.css" rel="stylesheet">
-
-<%@include file="message.jsp"%>
-<div class="col-xs-5">
+<%@include file="templates/message.jsp"%>
+<div class="col-xs-4">
     <div class="row">
-        <div class="col-xs-3"></div>
+        <div class="col-xs-2"></div>
         <div class="col-xs-9">
             <h4>Search</h4>
 
@@ -291,15 +285,13 @@
         </div>
     </div>
 </div>
-<div class="col-xs-7">
-
+<div class="col-xs-8">
     <ul class="nav nav-pills nav-justified" id="tabMenu">
         <li class="active"><a data-toggle="pill" href="#friendsRequestsTab">Received requests</a></li>
         <li><a data-toggle="pill" href="#friendsTab">Friends</a></li>
         <li><a data-toggle="pill" href="#sentRequestsTab">Sent requests</a></li>
         <li><a data-toggle="pill" href="#otherUsersTab">Other users</a></li>
     </ul>
-
     <div class="tab-content">
         <div id="friendsRequestsTab" class="tab-pane fade in active" style="max-height: 500px; overflow-y: scroll">
             <h4 align="center">Received requests</h4>
@@ -309,7 +301,7 @@
                         for (int i = 0; i < receivedFriendsRequests.size(); i++) {
                 %>
                 <div class="row scale-text" style="margin: auto">
-                    <div class="col-xs-9">
+                    <div class="col-xs-11">
                         <div class="row" style="margin: auto">
                             <div class="col-xs-12">
                                 <div id="<%=receivedFriendsRequests.get(i).getId()%>" class="row">
@@ -417,7 +409,7 @@
                         for (int i = 0; i < friends.size(); i++) {
                 %>
                 <div class="row scale-text" style="margin: auto">
-                    <div class="col-xs-9">
+                    <div class="col-xs-11">
                         <div class="row" style="margin: auto">
                             <div class="col-xs-12">
                                 <div id="<%=friends.get(i).getId()%>" class="row">
@@ -528,7 +520,7 @@
                     for (int i = 0; i < sentFriendsRequests.size(); i++) {
                 %>
                 <div class="row scale-text" style="margin: auto">
-                    <div class="col-xs-9">
+                    <div class="col-xs-11">
                         <div class="row" style="margin: auto">
                             <div class="col-xs-12">
                                 <div id="<%=sentFriendsRequests.get(i).getId()%>" class="row">
@@ -636,7 +628,7 @@
                     for (int i = 0; i < users.size(); i++) {
                 %>
                 <div class="row scale-text" style="margin: auto">
-                    <div class="col-xs-9">
+                    <div class="col-xs-11">
                         <div class="row" style="margin: auto">
                             <div class="col-xs-12">
                                 <div id="<%=users.get(i).getId()%>" class="row">

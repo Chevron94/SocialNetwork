@@ -6,6 +6,7 @@ import network.entity.FriendRequest;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,20 +17,6 @@ public class FriendRequestDaoImplementation extends GenericDaoImplementation<Fri
     public FriendRequestDaoImplementation()
     {
         super(FriendRequest.class);
-    }
-
-    public boolean getConfirmation(FriendRequest friendRequest) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idFriendRequest = friendRequest.getId();
-            return em.find(FriendRequest.class, idFriendRequest).isConfirmed();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
     }
 
     public FriendRequest getFriendRequestById(Long id) {
@@ -51,27 +38,26 @@ public class FriendRequestDaoImplementation extends GenericDaoImplementation<Fri
         return dialogs.get(0);
     }
 
-    public List<FriendRequest> getFriendRequestsBySenderId(Long id) {
+    public List<FriendRequest> getFriendRequestsBySenderId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT f FROM FriendRequest f WHERE f.sender.id = :id AND f.confirmed='FALSE'";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id", id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 
-    public List<FriendRequest> getFriendRequestsByReceiverId(Long id) {
+    public List<FriendRequest> getFriendRequestsByReceiverId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT f FROM FriendRequest f WHERE f.receiver.id = :id AND f.confirmed='FALSE'";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 
-    @Override
-    public List<FriendRequest> getFriendsByUserId(Long id) {
+    public List<FriendRequest> getFriendsByUserId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT f FROM FriendRequest f WHERE (f.receiver.id = :id " +
                     "OR f.sender.id =:id) " +
                     "AND f.confirmed='TRUE'";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 }

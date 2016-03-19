@@ -10,6 +10,6 @@ import javax.ejb.Remote;
  */
 @Local
 public interface DialogDao extends GenericDao<Dialog,Long> {
-    public String getName(Dialog dialog);
     public Dialog getDialogById(Long id);
+    public Dialog getDialogByTwoUser(Long idUser1, Long idUser2);
 }

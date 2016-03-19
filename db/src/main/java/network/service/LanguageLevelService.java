@@ -32,12 +32,6 @@ public class LanguageLevelService extends LanguageLevelDaoImplementation impleme
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getName(LanguageLevel languageLevel) {
-        return super.getName(languageLevel);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public LanguageLevel getLanguageLevelById(Long id) {
         return super.getLanguageLevelById(id);
     }

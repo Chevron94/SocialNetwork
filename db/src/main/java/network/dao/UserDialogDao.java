@@ -14,5 +14,5 @@ import java.util.List;
 @Local
 public interface UserDialogDao extends GenericDao<UserDialog, Long> {
     public List<UserDialog> getUsersByDialog(Dialog dialog);
-    public List<UserDialog> getDialogsByUser(User user);
+    public List<UserDialog> getDialogsByUser(User user, Integer start, Integer limit);
 }

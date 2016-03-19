@@ -32,12 +32,6 @@ public class FriendRequestService extends FriendRequestDaoImplementation impleme
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public boolean getConfirmation(FriendRequest friendRequest) {
-        return super.getConfirmation(friendRequest);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public FriendRequest getFriendRequestById(Long id) {
         return super.getFriendRequestById(id);
     }
@@ -50,19 +44,20 @@ public class FriendRequestService extends FriendRequestDaoImplementation impleme
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<FriendRequest> getFriendRequestsBySenderId(Long id) {
-        return super.getFriendRequestsBySenderId(id);
+    public List<FriendRequest> getFriendRequestsBySenderId(Long id, Integer start, Integer limit) {
+        return super.getFriendRequestsBySenderId(id, start, limit);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<FriendRequest> getFriendRequestsByReceiverId(Long id) {
-        return super.getFriendRequestsByReceiverId(id);
+    public List<FriendRequest> getFriendRequestsByReceiverId(Long id, Integer start, Integer limit) {
+        return super.getFriendRequestsByReceiverId(id, start, limit);
     }
 
     @Override
-    public List<FriendRequest> getFriendsByUserId(Long id) {
-        return super.getFriendsByUserId(id);
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public List<FriendRequest> getFriendsByUserId(Long id, Integer start, Integer limit) {
+        return super.getFriendsByUserId(id, start, limit);
     }
 
     @Override

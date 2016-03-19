@@ -33,27 +33,14 @@ public class AlbumService extends AlbumDaoImplementation implements AlbumDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getName(Album album)
-    {
-        return super.getName(album);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Album getAlbumById(Long id) {
         return super.getAlbumById(id);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<Album> getAlbumsByUserId(Long id) {
-        return super.getAlbumsByUserId(id);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    protected List<Album> executeQuery(String jpql) {
-        return super.executeQuery(jpql);
+    public List<Album> getAlbumsByUserId(Long id, Integer start, Integer limit) {
+        return super.getAlbumsByUserId(id, start, limit);
     }
 
     @Override
@@ -70,13 +57,18 @@ public class AlbumService extends AlbumDaoImplementation implements AlbumDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    protected List<Album> executeQuery(String jpql) {
+        return super.executeQuery(jpql);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     protected List<Album> executeQuery(String jpql, Integer start, Integer limit) {
         return super.executeQuery(jpql, start, limit);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-
     public void delete(List<Album> t) {
         super.delete(t);
     }

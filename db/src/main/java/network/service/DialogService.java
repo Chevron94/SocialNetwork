@@ -30,14 +30,14 @@ public class DialogService extends DialogDaoImplementation implements DialogDao{
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getName(Dialog dialog) {
-        return super.getName(dialog);
+    public Dialog getDialogById(Long id) {
+        return super.getDialogById(id);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Dialog getDialogById(Long id) {
-        return super.getDialogById(id);
+    public Dialog getDialogByTwoUser(Long idUser1, Long idUser2) {
+        return super.getDialogByTwoUser(idUser1, idUser2);
     }
 
     @Override

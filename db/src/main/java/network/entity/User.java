@@ -49,6 +49,9 @@ public class User {
     @Column(name = "DESCRIPTION", columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "TOKEN", nullable = true)
+    private String token;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_CITY", nullable = false)
     private City city;
@@ -262,6 +265,22 @@ public class User {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(Boolean locked) {
+        isLocked = locked;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override

@@ -10,8 +10,5 @@ import javax.ejb.Remote;
  */
 @Local
 public interface LanguageDao extends GenericDao<Language,Long> {
-    public String getName(Language language);
-    public String getPictureUrl(Language language);
-
     public Language getLanguageById(Long id);
 }

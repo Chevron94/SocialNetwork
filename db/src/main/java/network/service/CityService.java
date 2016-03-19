@@ -33,12 +33,6 @@ public class CityService extends CityDaoImplementation implements CityDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getName(City city) {
-        return super.getName(city);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public City getCityById(Long id) {
         return super.getCityById(id);
     }

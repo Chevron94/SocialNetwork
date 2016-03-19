@@ -19,23 +19,6 @@ public class GenderDaoImplementation extends GenericDaoImplementation<Gender,Lon
     }
 
     @Override
-    public String getName(Gender gender) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try
-        {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idGender = gender.getId();
-            return em.find(Gender.class, idGender).getName();
-        }
-        finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    @Override
     public Gender getGenderById(Long id) {
         String jpa = "SELECT g FROM Gender g WHERE g.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();

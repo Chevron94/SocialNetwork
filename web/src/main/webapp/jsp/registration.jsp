@@ -38,9 +38,6 @@
   </script>
   <title>Registration</title>
   <%@include file="templates/scripts.jsp"%>
-  <script type="text/javascript" src="/resources/js/md5.js"></script>
-  <script type="text/javascript" src="/resources/js/select2.js"></script>
-  <link href="/resources/css/select2.css" rel="stylesheet">
 </head>
 <body>
 <%

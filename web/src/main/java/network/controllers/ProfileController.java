@@ -2,12 +2,8 @@ package network.controllers;
 
 import network.dao.FriendRequestDao;
 import network.dao.UserDao;
-import network.dao.implementation.UserDaoImplementation;
 import network.entity.FriendRequest;
 import network.entity.User;
-import network.service.FriendRequestService;
-import network.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -68,7 +64,7 @@ public class ProfileController {
         }
         User user = userService.getUserById(Long.valueOf(id));
         if (user != null) {
-            List<FriendRequest> friendRequests = friendRequestService.getFriendsByUserId(user.getId());
+            List<FriendRequest> friendRequests = friendRequestService.getFriendsByUserId(user.getId(), 0, 9);
             List<Long> ids = new ArrayList<Long>();
             for (FriendRequest req : friendRequests) {
                 if (req.getSender().getId() != user.getId())

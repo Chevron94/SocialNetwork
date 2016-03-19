@@ -18,20 +18,6 @@ public class LanguageLevelDaoImplementation extends GenericDaoImplementation<Lan
         super(LanguageLevel.class);
     }
 
-    public String getName(LanguageLevel languageLevel) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idLanguageLevel = languageLevel.getId();
-            return em.find(LanguageLevel.class, idLanguageLevel).getName();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
     public LanguageLevel getLanguageLevelById(Long id) {
         String jpa = "SELECT l FROM LanguageLevel l WHERE l.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();

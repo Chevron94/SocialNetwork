@@ -16,12 +16,9 @@
 <head>
   <title id="title">Dialogs</title>
   <script type="text/javascript" src="/resources/js/dialog.js"></script>
+
   <%@include file="templates/scripts.jsp"%>
-  <link href="/resources/css/dialog.css" rel="stylesheet">
-  <link href="/resources/css/text.css" rel="stylesheet">
-
-
-  <%
+    <%
     List<Dialog> dialogs = (List<Dialog>)request.getAttribute("dialogs");
     List<Message> messages =  (List<Message>)request.getAttribute("messages");
   %>
@@ -95,7 +92,7 @@
 $('#message').keydown(function (e) {
 if (e.ctrlKey && e.keyCode == 13) {
   if($('#message').val().trim() != "")
-    sendMessage();
+    sendMessage(null,null,null);
 }
 });
 </script>

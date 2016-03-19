@@ -19,48 +19,6 @@ public class MessageDaoImplementation extends GenericDaoImplementation<Message,L
         super(Message.class);
     }
 
-    public String getText(Message message) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idMessage = message.getId();
-            return em.find(Message.class, idMessage).getText();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public Date getDateTime(Message message) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idMessage = message.getId();
-            return em.find(Message.class, idMessage).getDateTime();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public boolean getIsRead(Message message) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idMessage = message.getId();
-            return em.find(Message.class, idMessage).isRead();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
     public Message getMessageById(Long id) {
         String jpa = "SELECT m FROM Message m WHERE m.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
@@ -69,17 +27,17 @@ public class MessageDaoImplementation extends GenericDaoImplementation<Message,L
         return messages.get(0);
     }
 
-    public List<Message> getMessagesByUserId(Long id) {
+    public List<Message> getMessagesByUserId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT m FROM Message m WHERE m.user.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id", id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 
-    public List<Message> getMessagesByDialogId(Long id) {
+    public List<Message> getMessagesByDialogId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT m FROM Message m WHERE m.dialog.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 }

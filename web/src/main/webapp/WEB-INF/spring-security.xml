@@ -12,10 +12,7 @@
            <intercept-url pattern="/404" access="IS_AUTHENTICATED_ANONYMOUSLY" />
            <intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/registration/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-           <intercept-url pattern="/resources/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-           <intercept-url pattern="/resources/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-           <intercept-url pattern="/resources/fonts/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-           <intercept-url pattern="/resources/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+           <intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/admin**" access="ROLE_ADMIN" />
            <intercept-url pattern="/**" access="ROLE_USER" />
            <form-login
@@ -23,9 +20,7 @@
                    default-target-url="/"
                    authentication-failure-url="/login?error"
            />
-           <remember-me services-ref="rememberMeServices"/>
        </http>
-
     <authentication-manager>
         <authentication-provider user-service-ref="networkDetailsService">
             <password-encoder hash="md5">
@@ -33,16 +28,12 @@
         </authentication-provider>
     </authentication-manager>
 
+
     <jee:local-slsb id="userDao" jndi-name="java:module/UserService"
                     business-interface="network.dao.UserDao"/>
 
     <beans:bean id="networkDetailsService" class="network.services.NetworkUserDetailsService">
         <beans:property name="userService" ref="userDao"/>
     </beans:bean>
-    <beans:bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
-        <beans:property name="userDetailsService" ref="networkDetailsService" />
-        <beans:property name="tokenValiditySeconds" value="999999999"/>
-        <beans:property name="cookieName" value="SPRING_RM"/>
-        <beans:property name="key" value="RememberMe"/>
-    </beans:bean>
+
 </beans:beans>

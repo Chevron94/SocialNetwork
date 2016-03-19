@@ -10,7 +10,7 @@
 <div id="messageWindow"><!-- Сaмo oкнo -->
     <span id="closeWindow">X</span> <!-- Кнoпкa зaкрыть -->
     <br>
-    <form method="post" id="messageForm" action="/dialog/new">
+    <form method="post" id="messageForm">
 
         <div class="control-group">
             <div class="row">
@@ -36,7 +36,7 @@
         <br>
         <div class="row">
             <div class="col-xs-12" align="center">
-                <input align="center" type="submit" class="btn btn-primary" value="Send">
+                <input align="center" type="button" class="btn btn-primary" value="Send" onclick="send()">
             </div>
         </div>
     </form>

@@ -33,24 +33,6 @@ public class FileService extends FIleDaoImplementation implements FileDao{
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getFileUrl(File file) {
-        return super.getFileUrl(file);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Long getFileSize(File file) {
-        return super.getFileSize(file);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getFileName(File file) {
-        return super.getFileName(file);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public File getFileById(Long id) {
         return super.getFileById(id);
     }

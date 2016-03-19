@@ -33,26 +33,14 @@ public class PhotoService extends PhotoDaoImplementation implements PhotoDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getPhotoUrl(Photo photo) {
-        return super.getPhotoUrl(photo);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public boolean getIsMain(Photo photo) {
-        return super.getIsMain(photo);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Photo getPhotoByID(Long id) {
         return super.getPhotoByID(id);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<Photo> getPhotosByAlbumId(Long id) {
-        return super.getPhotosByAlbumId(id);
+    public List<Photo> getPhotosByAlbumId(Long id, Integer start, Integer limit) {
+        return super.getPhotosByAlbumId(id,start, limit);
     }
 
     @Override

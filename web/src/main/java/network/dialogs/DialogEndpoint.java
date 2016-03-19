@@ -9,13 +9,17 @@ import network.entity.Dialog;
 import network.entity.Message;
 import network.entity.User;
 import network.entity.UserDialog;
+import network.service.events.MessageEvent;
+import network.service.events.NewMessageEvent;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
+import javax.enterprise.event.Observes;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
@@ -23,17 +27,18 @@ import javax.websocket.server.ServerEndpoint;
  * Created by roman on 10/4/15.
  */
 @ServerEndpoint(value = "/dialog", encoders = {DialogMessageEncoder.class}, decoders = {DialogMessageDecoder.class})
+@Stateful
 public class DialogEndpoint {
     private final Logger log = Logger.getLogger(getClass().getName());
     private static Map<User,Session> peers = Collections.synchronizedMap(new HashMap<User, Session>());
 
-    @Inject
+    @EJB
     DialogDao dialogService;
-    @Inject
+    @EJB
     UserDao userService;
-    @Inject
+    @EJB
     UserDialogDao userDialogService;
-    @Inject
+    @EJB
     MessageDao messageService;
 
     public void setDialogService(DialogDao dialogService) {
@@ -67,7 +72,7 @@ public class DialogEndpoint {
                 messageService.create(new Message(userService.getUserByLogin(chatMessage.getSender()), d, chatMessage.getMessageText(), chatMessage.getReceivedDate(),false));
                 d.setLastMessageDate(chatMessage.getReceivedDate());
                 d = dialogService.update(d);
-                List<UserDialog> userDialogs = userDialogService.getUsersByDialog(d);
+              /*  List<UserDialog> userDialogs = userDialogService.getUsersByDialog(d);
                 List<Session> sessions = new ArrayList<>();
                 for (UserDialog ud:userDialogs){
                     if (peers.get(ud.getUser())!=null){
@@ -78,10 +83,34 @@ public class DialogEndpoint {
                     if (s.isOpen()) {
                         s.getBasicRemote().sendObject(chatMessage);
                     }
+                }*/
+            }
+        } catch (Exception e) {
+            log.log(Level.WARNING, "onMessage failed", e);
+        }
+    }
+
+    public void newMessageEvent(@Observes @NewMessageEvent MessageEvent messageEvent){
+        try {
+            Message message = messageEvent.getMessage();
+            MessageDto messageDto = new MessageDto(message);
+            Dialog d = message.getDialog();
+            List<UserDialog> userDialogs = userDialogService.getUsersByDialog(d);
+            List<Session> sessions = new ArrayList<>();
+            for (UserDialog ud : userDialogs) {
+                if (peers.get(ud.getUser()) != null) {
+                    sessions.add(peers.get(ud.getUser()));
                 }
             }
-        } catch (IOException | EncodeException e) {
-            log.log(Level.WARNING, "onMessage failed", e);
+            for (Session s : sessions) {
+                if (s.isOpen()) {
+                    s.getBasicRemote().sendObject(messageDto);
+                }
+            }
+        } catch (EncodeException e) {
+
+        } catch (IOException e) {
+
         }
     }
 

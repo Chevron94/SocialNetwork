@@ -18,34 +18,6 @@ public class PhotoDaoImplementation extends GenericDaoImplementation<Photo,Long>
         super(Photo.class);
     }
 
-    public String getPhotoUrl(Photo photo) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idPhoto = photo.getId();
-            return em.find(Photo.class, idPhoto).getPhotoUrl();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public boolean getIsMain(Photo photo) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idPhoto = photo.getId();
-            return em.find(Photo.class, idPhoto).isMain();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
     public Photo getPhotoByID(Long id) {
         String jpa = "SELECT p FROM Photo p WHERE p.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
@@ -54,10 +26,10 @@ public class PhotoDaoImplementation extends GenericDaoImplementation<Photo,Long>
         return messages.get(0);
     }
 
-    public List<Photo> getPhotosByAlbumId(Long id) {
+    public List<Photo> getPhotosByAlbumId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT p FROM Photo p WHERE p.album.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters, start, limit);
     }
 }

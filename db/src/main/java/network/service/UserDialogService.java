@@ -11,7 +11,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +40,8 @@ public class UserDialogService extends UserDialogDaoImplementation implements Us
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<UserDialog> getDialogsByUser(User user) {
-        return super.getDialogsByUser(user);
+    public List<UserDialog> getDialogsByUser(User user, Integer start, Integer limit) {
+        return super.getDialogsByUser(user, start, limit);
     }
 
     @Override

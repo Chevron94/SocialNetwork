@@ -10,6 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,36 +31,6 @@ public class UserService extends UserDaoImplementation implements UserDao {
 
     @PersistenceContext(unitName = "PERSISTENCE_WEB")
     protected EntityManager em;
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getLogin(User user) {
-        return super.getLogin(user);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getPassword(User user) {
-        return super.getPassword(user);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Date getBirthday(User user) {
-        return super.getBirthday(user);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getEmail(User user) {
-        return super.getEmail(user);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getPhotoUrl(User user) {
-        return super.getPhotoUrl(user);
-    }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -87,20 +58,26 @@ public class UserService extends UserDaoImplementation implements UserDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<User> getUsersByCityId(Long id) {
-        return super.getUsersByCityId(id);
+    public List<User> getUsersByCityId(Long id, Integer start, Integer limit) {
+        return super.getUsersByCityId(id,start,limit);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<User> getUsersByGenderId(Long id) {
-        return super.getUsersByGenderId(id);
+    public List<User> getUsersByGenderId(Long id, Integer start, Integer limit) {
+        return super.getUsersByGenderId(id, start, limit);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<User> getUsersByCustomFilter(Long idContinent, Long idCountry, Long idCity, boolean isMale, boolean isFemale, int ageFrom, int ageTo, Long idLanguage) {
-        return super.getUsersByCustomFilter(idContinent, idCountry, idCity, isMale, isFemale, ageFrom, ageTo, idLanguage);
+    public List<User> getUsersByCustomFilter(Long idUser, HashMap<String, Object> params, Integer start, Integer limit) {
+        return super.getUsersByCustomFilter(idUser, params, start, limit);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public User Login(String token) {
+        return super.Login(token);
     }
 
     @Override
@@ -153,8 +130,8 @@ public class UserService extends UserDaoImplementation implements UserDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<User> getUsersByCountryId(Long id) {
-        return super.getUsersByCountryId(id);
+    public List<User> getUsersByCountryId(Long id, Integer start, Integer limit) {
+        return super.getUsersByCountryId(id, start, limit);
     }
 
     @Override

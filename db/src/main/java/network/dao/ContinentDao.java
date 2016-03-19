@@ -10,6 +10,5 @@ import javax.ejb.Remote;
  */
 @Local
 public interface ContinentDao extends GenericDao<Continent,Long> {
-    public String getName(Continent continent);
     public Continent getContinentById(Long id);
 }

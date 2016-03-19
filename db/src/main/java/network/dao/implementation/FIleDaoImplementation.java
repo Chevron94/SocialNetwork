@@ -18,47 +18,6 @@ public class FIleDaoImplementation extends GenericDaoImplementation<File,Long> i
         super(File.class);
     }
 
-    public String getFileUrl(File file) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idFile = file.getId();
-            return em.find(File.class, idFile).getFileUrl();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public Long getFileSize(File file) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idFile = file.getId();
-            return em.find(File.class, idFile).getFileSize();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
-    public String getFileName(File file) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idFile = file.getId();
-            return em.find(File.class, idFile).getFileName();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
 
     public File getFileById(Long id) {
         String jpa = "SELECT f FROM File f WHERE f.id = :id";

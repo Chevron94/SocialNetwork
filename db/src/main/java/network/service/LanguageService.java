@@ -32,18 +32,6 @@ public class LanguageService extends LanguageDaoImplementation implements Langua
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getName(Language language) {
-        return super.getName(language);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getPictureUrl(Language language) {
-        return super.getPictureUrl(language);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Language getLanguageById(Long id) {
         return super.getLanguageById(id);
     }

@@ -18,20 +18,6 @@ public class CityDaoImplementation extends GenericDaoImplementation<City,Long> i
         super(City.class);
     }
 
-    public String getName(City city) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idCity = city.getId();
-            return em.find(City.class, idCity).getName();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
     public City getCityById(Long id) {
         String jpa = "SELECT c FROM City c WHERE c.id = :id";
         HashMap<String, Object> parameters = new HashMap<String, Object>();

@@ -1,5 +1,8 @@
 package network.dto;
 
+import network.entity.Message;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -14,6 +17,16 @@ public class MessageDto {
     private String received;
 
     public MessageDto() {
+    }
+
+    public MessageDto(Message message){
+        id = message.getId().toString();
+        messageText = message.getText();
+        sender = message.getUser().getLogin();
+        receiverDialog = message.getDialog().getId().toString();
+        receivedDate = message.getDateTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        received = (simpleDateFormat.format(receivedDate));
     }
 
     public String getReceived() {

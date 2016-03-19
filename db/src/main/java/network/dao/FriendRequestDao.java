@@ -12,14 +12,12 @@ import java.util.List;
  */
 @Local
 public interface FriendRequestDao extends GenericDao<FriendRequest,Long> {
-    public boolean getConfirmation(FriendRequest friendRequest);
-
     public FriendRequest getFriendRequestById(Long id);
     public FriendRequest getFriendRequestBySenderAndReceiverId(Long sender, Long receiver);
 
-    public List<FriendRequest> getFriendRequestsBySenderId(Long id);
-    public List<FriendRequest> getFriendRequestsByReceiverId(Long id);
+    public List<FriendRequest> getFriendRequestsBySenderId(Long id, Integer start, Integer limit);
+    public List<FriendRequest> getFriendRequestsByReceiverId(Long id, Integer start, Integer limit);
 
-    public List<FriendRequest> getFriendsByUserId(Long id);
+    public List<FriendRequest> getFriendsByUserId(Long id, Integer start, Integer limit);
 
 }

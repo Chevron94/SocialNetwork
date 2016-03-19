@@ -18,20 +18,6 @@ public class CountryDaoImplementation extends GenericDaoImplementation<Country,L
         super(Country.class);
     }
 
-    public String getName(Country country) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idCountry = country.getId();
-            return em.find(Country.class,idCountry).getName();
-        }finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
     public String getFlagUrl(Country country) {
         EntityManagerFactory emf = null;
         EntityManager em = null;

@@ -11,7 +11,6 @@ import java.util.List;
  */
 @Local
 public interface AlbumDao extends GenericDao<Album,Long> {
-    public String getName(Album album);
     public Album getAlbumById(Long id);
-    public List<Album> getAlbumsByUserId(Long id);
+    public List<Album> getAlbumsByUserId(Long id, Integer start, Integer limit);
 }

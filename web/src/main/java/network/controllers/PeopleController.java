@@ -4,20 +4,17 @@ import network.dao.*;
 import network.dto.SearchDto;
 import network.entity.FriendRequest;
 import network.entity.User;
-import network.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -76,35 +73,31 @@ public class PeopleController {
             idUser = user.getId();
             request.getSession().setAttribute("idUser",user.getId());
         }
-        List<FriendRequest> friendRequestsList = friendRequestService.getFriendsByUserId(idRequestUser);
-        List<User> friends = new ArrayList<>();
-        for(FriendRequest fr:friendRequestsList)
-        {
-            User sender = fr.getSender();
-            if(sender.getId() != idRequestUser)
-                friends.add(sender);
-            else friends.add(fr.getReceiver());
-        }
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("idContinent", 0L);
+        params.put("idCountry", 0L);
+        params.put("idCity", 0L);
+        params.put("male",true);
+        params.put("female", true);
+        params.put("ageFrom", 0);
+        params.put("ageTo", 100);
+        params.put("idLanguage", 0L);
+        params.put("list","friends");
+
+        List<User> friends = userService.getUsersByCustomFilter(idRequestUser,params, 0, 20);
         model.addAttribute("friends",friends);
         model.addAttribute("continents",continentService.readAll());
         if (idRequestUser == idUser) {
 
-            List<FriendRequest> receivedFriendRequestsList = friendRequestService.getFriendRequestsByReceiverId(idRequestUser);
-            List<FriendRequest> sentFriendRequestsList = friendRequestService.getFriendRequestsBySenderId(idRequestUser);
-            List<User> sentRequests = new ArrayList<>();
-            List<User> receivedRequests = new ArrayList<>();
-
-            for (FriendRequest fr : receivedFriendRequestsList) {
-                receivedRequests.add(fr.getSender());
-            }
-
-            for (FriendRequest fr : sentFriendRequestsList) {
-                sentRequests.add(fr.getReceiver());
-            }
+            params.put("list","received");
+            List<User> receivedRequests = userService.getUsersByCustomFilter(idRequestUser,params,0,20);
+            params.put("list","sent");
+            List<User> sentRequests = userService.getUsersByCustomFilter(idRequestUser,params, 0, 20);
             model.addAttribute("receivedFriendsRequests",receivedRequests);
             model.addAttribute("sentFriendsRequests",sentRequests);
+            model.addAttribute("idRequestUser", idRequestUser);
         }
-        return "people";
+        return "friends";
     }
 
     @RequestMapping(value = "/user{id}/friends", method = RequestMethod.POST)
@@ -136,27 +129,18 @@ public class PeopleController {
             female = true;
         }
 
-        List<User> users = userService.getUsersByCustomFilter(idContinent, idCountry, idCity, male,female,ageFrom,ageTo,idLanguage);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("idContinent", idContinent);
+        params.put("idCountry", idCountry);
+        params.put("idCity", idCity);
+        params.put("male",male);
+        params.put("female", female);
+        params.put("ageFrom", ageFrom);
+        params.put("ageTo",ageTo);
+        params.put("idLanguage", idLanguage);
+        params.put("list","friends");
 
-        List<FriendRequest> friendRequestsList = friendRequestService.getFriendsByUserId(idRequestUser);
-        List<User> friends = new ArrayList<>();
-        for(FriendRequest fr:friendRequestsList)
-        {
-            User sender = fr.getSender();
-            if(sender.getId() != idRequestUser)
-            {
-                if(users.contains(sender))
-                {
-                    friends.add(sender);
-                    users.remove(sender);
-                }
-            }
-            else if(users.contains(fr.getReceiver()))
-            {
-                friends.add(fr.getReceiver());
-                users.remove(fr.getReceiver());
-            }
-        }
+        List<User> friends = userService.getUsersByCustomFilter(idRequestUser,params, 0, 20);
 
         model.addAttribute("friends",friends);
         model.addAttribute("continents", continentService.readAll());
@@ -169,34 +153,15 @@ public class PeopleController {
         model.addAttribute("searchDto", searchDto);
         if (idRequestUser == idUser) {
 
-            List<FriendRequest> receivedFriendRequestsList = friendRequestService.getFriendRequestsByReceiverId(idRequestUser);
-            List<FriendRequest> sentFriendRequestsList = friendRequestService.getFriendRequestsBySenderId(idRequestUser);
-            List<User> sentRequests = new ArrayList<>();
-            List<User> receivedRequests = new ArrayList<>();
-
-            for (FriendRequest fr : receivedFriendRequestsList) {
-                if(users.contains(fr.getSender()))
-                {
-                    receivedRequests.add(fr.getSender());
-                    users.remove(fr.getSender());
-                }
-            }
-
-            for (FriendRequest fr : sentFriendRequestsList) {
-                if(users.contains(fr.getReceiver()))
-                {
-                    sentRequests.add(fr.getReceiver());
-                    users.remove(fr.getReceiver());
-                }
-            }
-
-            User curUser = userService.getUserById(idRequestUser);
-            if (users.contains(curUser)) users.remove(curUser);
+            params.put("list","received");
+            List<User> receivedRequests = userService.getUsersByCustomFilter(idRequestUser,params,0,20);
+            params.put("list","sent");
+            List<User> sentRequests = userService.getUsersByCustomFilter(idRequestUser,params, 0, 20);
             model.addAttribute("receivedFriendsRequests",receivedRequests);
             model.addAttribute("sentFriendsRequests",sentRequests);
-            model.addAttribute("users", users);
+            model.addAttribute("idRequestUser", idRequestUser);
         }
-        return "people";
+        return "friends";
     }
 
 
@@ -259,5 +224,32 @@ public class PeopleController {
             friendRequestService.delete(friendRequest.getId());
             return true;
         }return null;
+    }
+
+    @RequestMapping(value = "/people/more", method = RequestMethod.GET)
+    public @ResponseBody List<User> loadMoreFriends(
+            @RequestParam(value = "idUser") Long idUser,
+            @RequestParam(value = "idContinent") Long idContinent,
+            @RequestParam(value = "idCountry") Long idCountry,
+            @RequestParam(value = "idCity") Long idCity,
+            @RequestParam(value = "male") Boolean male,
+            @RequestParam(value = "female") Boolean female,
+            @RequestParam(value = "ageFrom") Integer ageFrom,
+            @RequestParam(value = "ageTo") Integer ageTo,
+            @RequestParam(value = "idLanguage") Long idLanguage,
+            @RequestParam(value = "list") String list,
+            @RequestParam(value = "start") Integer start
+            ){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("idContinent", idContinent);
+        params.put("idCountry", idCountry);
+        params.put("idCity", idCity);
+        params.put("male",male);
+        params.put("female", female);
+        params.put("ageFrom", ageFrom);
+        params.put("ageTo",ageTo);
+        params.put("idLanguage", idLanguage);
+        params.put("list",list);
+        return userService.getUsersByCustomFilter(idUser,params,start,20);
     }
 }

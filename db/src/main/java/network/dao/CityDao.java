@@ -11,7 +11,6 @@ import java.util.List;
  */
 @Local
 public interface CityDao extends GenericDao<City,Long> {
-    public String getName(City city);
     public City getCityById(Long id);
     public List<City> getCitiesByCountryId(Long id);
     public List<City> getCitiesByCountryIdAndPartOfCityName(Long id, String name);

@@ -17,20 +17,6 @@ public class AlbumDaoImplementation extends GenericDaoImplementation<Album,Long>
     {
         super(Album.class);
     }
-    public String getName(Album album)
-    {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idAlbum = album.getId();
-            return em.find(Album.class, idAlbum).getName();
-        } finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
     public Album getAlbumById(Long id)
     {
         String jpa = "SELECT a FROM Album a WHERE a.id = :id";
@@ -39,12 +25,12 @@ public class AlbumDaoImplementation extends GenericDaoImplementation<Album,Long>
         List<Album> albums = this.executeQuery(jpa, parameters);
         return albums.get(0);
     }
-    public List<Album> getAlbumsByUserId(Long id)
+    public List<Album> getAlbumsByUserId(Long id, Integer start, Integer limit)
     {
         String jpa = "SELECT a FROM Album a WHERE a.user.id = :id";
         HashMap<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
-        return this.executeQuery(jpa, parameters);
+        return this.executeQuery(jpa, parameters,start, limit);
     }
 
 }

@@ -18,22 +18,6 @@ public class ContinentDaoImplementation extends GenericDaoImplementation<Contine
         super(Continent.class);
     }
 
-    public String getName(Continent continent) {
-        EntityManagerFactory emf = null;
-        EntityManager em = null;
-        try
-        {
-            emf = Persistence.createEntityManagerFactory("PERSISTENCE");
-            em = emf.createEntityManager();
-            Long idContinent = continent.getId();
-            return em.find(Continent.class, idContinent).getName();
-        }
-        finally {
-            if (em != null ) em.close();
-            if (emf != null) emf.close();
-        }
-    }
-
     public Continent getContinentById(Long id) {
         String jpa = "SELECT c FROM Continent c WHERE c.id = :id";
         HashMap<String,Object> parameters = new HashMap<String, Object>();

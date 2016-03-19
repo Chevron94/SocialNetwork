@@ -32,12 +32,6 @@ public class ContinentService extends ContinentDaoImplementation implements Cont
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getName(Continent continent) {
-        return super.getName(continent);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Continent getContinentById(Long id) {
         return super.getContinentById(id);
     }

@@ -3,10 +3,14 @@ package network.service;
 import network.dao.MessageDao;
 import network.dao.implementation.MessageDaoImplementation;
 import network.entity.Message;
+import network.service.events.MessageEvent;
+import network.service.events.NewMessageEvent;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
@@ -18,6 +22,10 @@ import java.util.Map;
  */
 @Stateless
 public class MessageService extends MessageDaoImplementation implements MessageDao {
+
+    @Inject
+    @NewMessageEvent
+    Event<MessageEvent> messageEvent;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -34,45 +42,30 @@ public class MessageService extends MessageDaoImplementation implements MessageD
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public String getText(Message message) {
-        return super.getText(message);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Date getDateTime(Message message) {
-        return super.getDateTime(message);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public boolean getIsRead(Message message) {
-        return super.getIsRead(message);
-    }
-
-    @Override
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Message getMessageById(Long id) {
         return super.getMessageById(id);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<Message> getMessagesByUserId(Long id) {
-        return super.getMessagesByUserId(id);
+    public List<Message> getMessagesByUserId(Long id, Integer start, Integer limit) {
+        return super.getMessagesByUserId(id, start, limit);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<Message> getMessagesByDialogId(Long id) {
-        return super.getMessagesByDialogId(id);
+    public List<Message> getMessagesByDialogId(Long id, Integer start, Integer limit) {
+        return super.getMessagesByDialogId(id, start, limit);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
     public Message create(Message message) {
-        return super.create(message);
+        message = super.create(message);
+        MessageEvent event = new MessageEvent(message);
+        messageEvent.fire(event);
+        return message;
     }
 
     @Override

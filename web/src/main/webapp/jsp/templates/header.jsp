@@ -15,9 +15,13 @@
                 if (idUser != null)
                 {
             %>
+            <script type="text/javascript">
+                var idUser = <%=idUser%>;
+            </script>
             <ul class="nav navbar-nav">
                 <li><a href="/user<%=idUser.toString()%>">My profile</a></li>
                 <li><a href="/user<%=idUser.toString()%>/friends">Friends</a></li>
+                <li><a href="/users">Users</a></li>
                 <li><a href="/dialogs">Dialogs</a></li>
                 <li><a href="/user<%=idUser.toString()%>/albums">Albums</a></li>
                 <li><a href="/user<%=idUser.toString()%>/settings">Settings</a></li>

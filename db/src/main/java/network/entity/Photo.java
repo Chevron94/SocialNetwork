@@ -1,6 +1,8 @@
 package network.entity;
 
 import javax.persistence.*;
+import javax.xml.crypto.Data;
+import java.util.Date;
 
 /**
  * Created by roman on 22.09.15.
@@ -16,8 +18,11 @@ public class Photo {
     @Column(name = "PHOTO_URL")
     private String photoUrl;
 
-    @Column(name = "IS_MAIN")
-    private boolean isMain;
+    @Column(name = "UPLOADED")
+    private Date uploaded;
+
+    @Column(name = "DEFENITION", nullable = true)
+    private String defenition;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_ALBUM", nullable = false)
@@ -26,9 +31,9 @@ public class Photo {
     public Photo() {
     }
 
-    public Photo(String photoUrl, boolean isMain, Album album) {
+    public Photo(String photoUrl, Date uploaded, Album album) {
         this.photoUrl = photoUrl;
-        this.isMain = isMain;
+        this.uploaded = uploaded;
         this.album = album;
     }
 
@@ -46,14 +51,6 @@ public class Photo {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
-    }
-
-    public boolean isMain() {
-        return isMain;
-    }
-
-    public void setIsMain(boolean isMain) {
-        this.isMain = isMain;
     }
 
     public Album getAlbum() {
@@ -75,6 +72,22 @@ public class Photo {
 
     }
 
+    public Date getUploaded() {
+        return uploaded;
+    }
+
+    public void setUploaded(Date uploaded) {
+        this.uploaded = uploaded;
+    }
+
+    public String getDefenition() {
+        return defenition;
+    }
+
+    public void setDefenition(String defenition) {
+        this.defenition = defenition;
+    }
+
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
@@ -85,7 +98,6 @@ public class Photo {
         return "Photo{" +
                 "id=" + id +
                 ", photoUrl='" + photoUrl + '\'' +
-                ", isMain=" + isMain +
                 ", album=" + album +
                 '}';
     }

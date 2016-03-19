@@ -10,7 +10,5 @@ import javax.ejb.Remote;
  */
 @Local
 public interface LanguageLevelDao extends GenericDao<LanguageLevel,Long> {
-    public String getName(LanguageLevel languageLevel);
-
     public LanguageLevel getLanguageLevelById(Long id);
 }
