@@ -75,8 +75,8 @@ public class PhotoService extends PhotoDaoImplementation implements PhotoDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void delete(List<Photo> t) {
-        super.delete(t);
+    public void deleteSeveral(List<Photo> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

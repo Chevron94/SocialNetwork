@@ -4,6 +4,7 @@ import network.dao.*;
 import network.dto.SearchDto;
 import network.entity.FriendRequest;
 import network.entity.User;
+import org.springframework.security.authentication.dao.SystemWideSaltSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -61,108 +62,41 @@ public class PeopleController {
         this.continentService = continentService;
     }
 
-    @RequestMapping(value = "/user{id}/friends", method = RequestMethod.GET)
-    public String getPeople(Model model, HttpServletRequest request, @PathVariable String id)
-    {
-        Long idRequestUser = Long.parseLong(id);
+    public Long getUserId(HttpServletRequest request){
         Long idUser = (Long)request.getSession().getAttribute("idUser");
-        if (idUser == null)
-        {
+        if(idUser==null) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             User user = userService.getUserByLogin(auth.getName());
+            request.getSession().setAttribute("idUser", user.getId());
             idUser = user.getId();
-            request.getSession().setAttribute("idUser",user.getId());
         }
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("idContinent", 0L);
-        params.put("idCountry", 0L);
-        params.put("idCity", 0L);
-        params.put("male",true);
-        params.put("female", true);
-        params.put("ageFrom", 0);
-        params.put("ageTo", 100);
-        params.put("idLanguage", 0L);
-        params.put("list","friends");
+        return idUser;
+    }
 
-        List<User> friends = userService.getUsersByCustomFilter(idRequestUser,params, 0, 20);
-        model.addAttribute("friends",friends);
+    @RequestMapping(value = "/friends", method = RequestMethod.GET)
+    public String friends(Model model, HttpServletRequest request){
+        Long idRequestUser = getUserId(request);
         model.addAttribute("continents",continentService.readAll());
-        if (idRequestUser == idUser) {
-
-            params.put("list","received");
-            List<User> receivedRequests = userService.getUsersByCustomFilter(idRequestUser,params,0,20);
-            params.put("list","sent");
-            List<User> sentRequests = userService.getUsersByCustomFilter(idRequestUser,params, 0, 20);
-            model.addAttribute("receivedFriendsRequests",receivedRequests);
-            model.addAttribute("sentFriendsRequests",sentRequests);
-            model.addAttribute("idRequestUser", idRequestUser);
-        }
+        model.addAttribute("idRequestUser", idRequestUser);
         return "friends";
     }
 
-    @RequestMapping(value = "/user{id}/friends", method = RequestMethod.POST)
-    public String searchPeople(@ModelAttribute("searchDto") @Valid SearchDto searchDto,
-                               Model model, HttpServletRequest request, @PathVariable String id)
-    {
-        Long idRequestUser = Long.parseLong(id);
-        Long idUser = (Long)request.getSession().getAttribute("idUser");
-        if (idUser == null)
-        {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            User user = userService.getUserByLogin(auth.getName());
-            idUser = user.getId();
-            request.getSession().setAttribute("idUser",user.getId());
-        }
-
-        Long idContinent = Long.parseLong(searchDto.getContinent());
-        Long idCountry = Long.parseLong(searchDto.getCountry());
-        Long idCity = Long.parseLong(searchDto.getCity());
-        boolean male = searchDto.getGender().contains("m");
-        boolean female = searchDto.getGender().contains("f");
-        Long idLanguage = Long.parseLong(searchDto.getLanguage());
-        int ageFrom = Integer.parseInt(searchDto.getAgeFrom());
-        int ageTo = Integer.parseInt(searchDto.getAgeTo());
-
-        if (male == female)
-        {
-            male = true;
-            female = true;
-        }
-
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("idContinent", idContinent);
-        params.put("idCountry", idCountry);
-        params.put("idCity", idCity);
-        params.put("male",male);
-        params.put("female", female);
-        params.put("ageFrom", ageFrom);
-        params.put("ageTo",ageTo);
-        params.put("idLanguage", idLanguage);
-        params.put("list","friends");
-
-        List<User> friends = userService.getUsersByCustomFilter(idRequestUser,params, 0, 20);
-
-        model.addAttribute("friends",friends);
-        model.addAttribute("continents", continentService.readAll());
-            if (idContinent>0) {
-                model.addAttribute("countries", countryService.getCountryByContinentId(idContinent));
-                if (idCountry>0 && idCity>0)
-                    model.addAttribute("city", cityService.getCityById(idCity));
-            }
-
-        model.addAttribute("searchDto", searchDto);
-        if (idRequestUser == idUser) {
-
-            params.put("list","received");
-            List<User> receivedRequests = userService.getUsersByCustomFilter(idRequestUser,params,0,20);
-            params.put("list","sent");
-            List<User> sentRequests = userService.getUsersByCustomFilter(idRequestUser,params, 0, 20);
-            model.addAttribute("receivedFriendsRequests",receivedRequests);
-            model.addAttribute("sentFriendsRequests",sentRequests);
-            model.addAttribute("idRequestUser", idRequestUser);
-        }
+    @RequestMapping(value = "/user{id}/friends", method = RequestMethod.GET)
+    public String usersFriends(Model model, HttpServletRequest request, @PathVariable String id){
+        Long idUser = getUserId(request);
+        model.addAttribute("continents",continentService.readAll());
+        model.addAttribute("idRequestUser", Long.valueOf(id));
         return "friends";
     }
+
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public String users(Model model, HttpServletRequest request){
+        Long idRequestUser = getUserId(request);
+        model.addAttribute("continents",continentService.readAll());
+        model.addAttribute("idRequestUser", idRequestUser);
+        return "users";
+    }
+
 
 
     /**            КОНТРОЛЛЕРЫ ЗАПРОСОВ                  **/
@@ -228,7 +162,9 @@ public class PeopleController {
 
     @RequestMapping(value = "/people/more", method = RequestMethod.GET)
     public @ResponseBody List<User> loadMoreFriends(
-            @RequestParam(value = "idUser") Long idUser,
+            HttpServletRequest request,
+            @RequestParam(value = "idUser") Long idRequestUser,
+            @RequestParam(value = "login") String login,
             @RequestParam(value = "idContinent") Long idContinent,
             @RequestParam(value = "idCountry") Long idCountry,
             @RequestParam(value = "idCity") Long idCity,
@@ -241,6 +177,7 @@ public class PeopleController {
             @RequestParam(value = "start") Integer start
             ){
         HashMap<String, Object> params = new HashMap<>();
+        params.put("login", login);
         params.put("idContinent", idContinent);
         params.put("idCountry", idCountry);
         params.put("idCity", idCity);
@@ -250,6 +187,9 @@ public class PeopleController {
         params.put("ageTo",ageTo);
         params.put("idLanguage", idLanguage);
         params.put("list",list);
-        return userService.getUsersByCustomFilter(idUser,params,start,20);
+        Long idUser = (Long)request.getSession().getAttribute("idUser");
+        if((list.equals("sent") || list.equals("received")) && idRequestUser != idUser)
+            return null;
+        return userService.getUsersByCustomFilter(idRequestUser,params,start,20);
     }
 }

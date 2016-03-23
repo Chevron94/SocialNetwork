@@ -72,8 +72,8 @@ public class ContinentService extends ContinentDaoImplementation implements Cont
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<Continent> t) {
-        super.delete(t);
+    public void deleteSeveral(List<Continent> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

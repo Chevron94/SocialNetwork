@@ -73,8 +73,8 @@ public class GenderService extends GenderDaoImplementation implements GenderDao 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<Gender> t) {
-        super.delete(t);
+    public void deleteSeveral(List<Gender> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

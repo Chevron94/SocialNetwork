@@ -104,9 +104,6 @@ public class RegistrationController {
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String getRegistration(Model model) {
-
-        //     CountryService countryService = new CountryService();
-        List<Country> tmp = countryService.readAll();
         model.addAttribute("countries",countryService.readAll());
         model.addAttribute("genders",genderService.readAll());
         return "registration";

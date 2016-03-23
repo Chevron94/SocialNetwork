@@ -72,8 +72,8 @@ public class LanguageLevelService extends LanguageLevelDaoImplementation impleme
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<LanguageLevel> t) {
-        super.delete(t);
+    public void deleteSeveral(List<LanguageLevel> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

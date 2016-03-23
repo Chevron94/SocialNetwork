@@ -97,8 +97,8 @@ public class MessageService extends MessageDaoImplementation implements MessageD
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<Message> t) {
-        super.delete(t);
+    public void deleteSeveral(List<Message> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

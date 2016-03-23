@@ -111,7 +111,7 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
                 jpa+="WHERE (f.receiver.id = :idUser AND u.id = f.sender.id) AND f.confirmed = false ";
             }else if(list.equals("sent")){
                 jpa+="WHERE (f.sender.id = :idUser AND u.id = f.receiver.id) AND f.confirmed = false ";
-            }else jpa+="WHERE NOT(f.sender.id = :idUser OR f.receiver.id = :idUser) AND f.confirmed = false ";
+            }else jpa+="WHERE u.id NOT IN (SELECT DISTINCT u1.id FROM User u1, FriendRequest f1 WHERE (f1.sender.id = :idUser OR f1.receiver.id = :idUser) AND (f1.sender.id = u1.id OR f1.receiver.id = u1.id)) AND u.id <> :idUser ";
         }
 
 
@@ -135,10 +135,15 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
             ageFrom = tmp;
         }
         Date date = new Date();
-        jpa += "AND EXTRACT(year FROM age(:date, u.birthday)) >= :ageFrom AND EXTRACT(year FROM age(:date, u.birthday)) <= :ageTo";
+        jpa += "AND EXTRACT(year FROM age(:date, u.birthday)) >= :ageFrom AND EXTRACT(year FROM age(:date, u.birthday)) <= :ageTo ";
         parameters.put("date",date);
         parameters.put("ageFrom", ageFrom);
         parameters.put("ageTo",ageTo);
+        String login = ((String)params.get("login")).trim();
+        if (login.length()>0){
+            jpa+= "AND u.login LIKE :login ";
+            parameters.put("login", login+"%");
+        }
         Long idCity = (Long)params.get("idCity");
         if (idCity != null && idCity > 0) {
             jpa += "AND u.city.id = :idCity ";

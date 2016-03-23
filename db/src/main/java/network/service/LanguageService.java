@@ -72,8 +72,8 @@ public class LanguageService extends LanguageDaoImplementation implements Langua
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<Language> t) {
-        super.delete(t);
+    public void deleteSeveral(List<Language> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

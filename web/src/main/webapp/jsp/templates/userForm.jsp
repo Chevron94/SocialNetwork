@@ -25,7 +25,7 @@
         SearchDto searchDto = (SearchDto) request.getAttribute("searchDto");
     %>
 </head>
-<body>
+<body onload="initPage()">
 <br>
 <%@include file="header.jsp"%>
 <%@include file="message.jsp"%>
@@ -36,6 +36,16 @@
             <h4>Search</h4>
 
             <form method="post" id="search" name="search">
+
+                <div class="row" style="margin-bottom: 3%">
+                    <div class="col-xs-3">
+                        <label class="control-label" for="login">Login</label>
+                    </div>
+                    <div class="col-xs-9">
+                        <input type="text" name="login" class="form-control" id="login"/>
+                    </div>
+                </div>
+
                 <div class="row" style="margin-bottom: 3%">
                     <div class="col-xs-3">
                         <label class="control-label" for="continent-select">Continent</label>
@@ -203,7 +213,7 @@
                 </div>
                 <div class="row" style="margin-bottom: 3%">
                     <div class="col-xs-12" align="center">
-                        <input align="center" type="submit" class="btn btn-primary" value="Search">
+                        <input align="center" type="button" class="btn btn-primary" value="Search" onclick="initPage()">
                     </div>
                 </div>
 

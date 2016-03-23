@@ -88,8 +88,8 @@ public class LanguageUserService extends LanguageUserDaoImplementation implement
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<LanguageUser> t) {
-        super.delete(t);
+    public void deleteSeveral(List<LanguageUser> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

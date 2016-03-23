@@ -8,7 +8,7 @@ var loadMoreUrl = window.location.protocol+'//'+window.location.hostname+':'+win
 
 function updateFriends(sender)
 {
-    $('#add_'+sender).disabled = true;
+    $('#add_'+sender).hide();
     var html = '<div class="row" style="margin: auto">'+
         '<div class="col-xs-9">' +
         '<div class="row" style="margin: auto">' +
@@ -24,7 +24,7 @@ function updateFriends(sender)
 
 function updateRequests(receiver)
 {
-    $('#add_'+receiver).disabled = true;
+    $('#add_'+receiver).hide();
     var html = '<div class="row" style="margin: auto">'+
         '<div class="col-xs-9">' +
         '<div class="row" style="margin: auto">' +
@@ -115,6 +115,7 @@ function loadMore(start,sender,list){
             idUser: sender,
             start: start,
             list: list,
+            login: $('#login').val(),
             idContinent: $('#continent').val(),
             idCountry: $('#country').val(),
             idCity: $('#city').val(),
@@ -137,6 +138,14 @@ function loadMore(start,sender,list){
                                             '<img src="'+data[i].photoURL+'" class="img img-responsive" alt="Responsive image">'+
                                         '</div>'+
                                         '<div class="col-xs-9">'+
+                                            '<div class="row table-bordered table-fixed">'+
+                                                '<div class="col-xs-3">'+
+                                                    '<label class="control-label">Login</label>'+
+                                                '</div>'+
+                                                '<div class="col-xs-9">'+
+                                                    '<label class="control-label">'+data[i].login+'</label>'+
+                                                '</div>'+
+                                            '</div>'+
                                             '<div class="row table-bordered table-fixed">'+
                                                 '<div class="col-xs-3">'+
                                                     '<label class="control-label">Name</label>'+
@@ -189,13 +198,26 @@ function loadMore(start,sender,list){
                                                 '</a>'+
                                             '</div>'+
                                         '</div>'+
-                                        '<div class="row table-bordered table-fixed btn-xs" align="center">'+
-                                            '<button id="add_'+data[i].id+'" disabled type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
-                                            '</button>\n'+
-                                            '<button id="send_'+data[i].id+'" type="button" class="btn btn-info btn-xs" onclick="newMessage('+idUser+', '+data[i].id+','+data[i].login+');return false">Send Message'+
-                                            '</button>\n'+
-                                            '<button id="delete_'+data[i].id+'" type="button" class="Add btn btn-danger btn-xs" onclick="deleteRequest('+idUser+', '+data[i].id+'); return false">Delete'+
-                                            '</button>'+
+                                        '<div class="row table-bordered table-fixed btn-xs" align="center">';
+                                        if (list == 'friends' || list == 'sent'){
+                                            html+= '<button id="add_'+data[i].id+'" style="display: none" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
+                                                '</button>\n';
+                                        }else{
+                                            html+='<button id="add_'+data[i].id+'" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
+                                                '</button>\n';
+                                        }
+
+                                        html+= '<button id="send_'+data[i].id+'" type="button" class="btn btn-info btn-xs" onclick="newMessage('+idUser+', '+data[i].id+','+data[i].login+');return false">Send Message'+
+                                            '</button>\n';
+
+                                        if ((list == 'friends' || list == 'received' || list == 'sent') && idUser==idRequestUser) {
+                                            html+= '<button id="delete_' + data[i].id + '" type="button" class="Add btn btn-danger btn-xs" onclick="deleteRequest(' + idUser + ', ' + data[i].id + '); return false">Delete' +
+                                            '</button>';
+                                        }else{
+                                            html+= '<button id="delete_' + data[i].id + '" style="display: none" type="button" class="Add btn btn-danger btn-xs" onclick="deleteRequest(' + idUser + ', ' + data[i].id + '); return false">Delete' +
+                                                '</button>';
+                                        }
+                                        html+=
                                         '</div>'+
                                     '</div>'+
                                 '</div>'+
@@ -205,14 +227,58 @@ function loadMore(start,sender,list){
                 '</div>'+'<br>';
             }
             if (list == 'friends') {
+                friendsStart+=len;
                 $('#friends').append(html);
+                if (len<20){
+                    $('#loadMoreFriends').hide();
+                }else{
+                    $('#loadMoreFriends').show();
+                }
             }else if(list == 'sent'){
+                sentRequestsStart+=len;
                 $('#sentRequests').append(html);
+                if (len<20){
+                    $('#loadMoreSent').hide();
+                }else{
+                    $('#loadMoreSent').show();
+                }
             }else if(list == 'received'){
+                receivedRequestsStart+=len;
                 $('#friendRequests').append(html);
-            }else $('#otherUsers').append(html);
+                if (len<20){
+                    $('#loadMoreReceived').hide();
+                }else{
+                    $('#loadMoreReceived').show();
+                }
+            }else{
+                otherStart+=len;
+                $('#otherUsers').append(html);
+                if (len<20){
+                    $('#loadMoreOther').hide();
+                }else{
+                    $('#loadMoreOther').show();
+                }
+            }
         }
 
     );
+}
+function initPage(){
+    var path = window.location.pathname;
+    if(path == '/users'){
+        $('#otherUsers').html('');
+        otherStart = 0;
+        loadMore(otherStart,idUser,'other');
+    }else{
+        $('#friends').html('');
+        friendsStart = 0;
+        loadMore(friendsStart,idRequestUser,'friends');
+        $('#friendRequests').html('');
+        $('#sentRequests').html('');
+        receivedRequestsStart = 0;
+        sentRequestsStart = 0;
+        loadMore(receivedRequestsStart,idUser,'received');
+        loadMore(sentRequestsStart,idUser,'sent');
+    }
 }
 

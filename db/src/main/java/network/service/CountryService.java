@@ -91,8 +91,8 @@ public class CountryService extends CountryDaoImplementation implements CountryD
     @Override
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void delete(List<Country> t) {
-        super.delete(t);
+    public void deleteSeveral(List<Country> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

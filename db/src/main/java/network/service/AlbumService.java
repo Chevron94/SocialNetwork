@@ -69,8 +69,8 @@ public class AlbumService extends AlbumDaoImplementation implements AlbumDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void delete(List<Album> t) {
-        super.delete(t);
+    public void deleteSeveral(List<Album> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

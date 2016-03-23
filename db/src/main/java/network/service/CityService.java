@@ -85,8 +85,8 @@ public class CityService extends CityDaoImplementation implements CityDao {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<City> t) {
-        super.delete(t);
+    public void deleteSeveral(List<City> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

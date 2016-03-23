@@ -76,8 +76,8 @@ public class DialogService extends DialogDaoImplementation implements DialogDao{
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<Dialog> t) {
-        super.delete(t);
+    public void deleteSeveral(List<Dialog> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

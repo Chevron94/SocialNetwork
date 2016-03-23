@@ -112,8 +112,8 @@ public class UserService extends UserDaoImplementation implements UserDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void delete(List<User> t) {
-        super.delete(t);
+    public void deleteSeveral(List<User> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

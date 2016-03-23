@@ -80,8 +80,8 @@ public class UserDialogService extends UserDialogDaoImplementation implements Us
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<UserDialog> t) {
-        super.delete(t);
+    public void deleteSeveral(List<UserDialog> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

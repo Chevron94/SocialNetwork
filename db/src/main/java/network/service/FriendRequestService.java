@@ -96,8 +96,8 @@ public class FriendRequestService extends FriendRequestDaoImplementation impleme
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<FriendRequest> t) {
-        super.delete(t);
+    public void deleteSeveral(List<FriendRequest> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

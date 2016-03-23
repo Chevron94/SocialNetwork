@@ -79,8 +79,8 @@ public class FileService extends FIleDaoImplementation implements FileDao{
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
-    public void delete(List<File> t) {
-        super.delete(t);
+    public void deleteSeveral(List<File> t) {
+        super.deleteSeveral(t);
     }
 
     @Override

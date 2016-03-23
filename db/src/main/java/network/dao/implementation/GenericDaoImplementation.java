@@ -73,7 +73,7 @@ public class GenericDaoImplementation<T,PK> extends AbstractDaoImplementation<T,
         if (em != null && em.isOpen()) em.close();
     }
 
-    public void delete(List<T> t) {
+    public void deleteSeveral(List<T> t) {
         em  = getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaDelete<T> cq = cb.createCriteriaDelete(instance);
