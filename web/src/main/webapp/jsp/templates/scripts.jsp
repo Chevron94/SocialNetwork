@@ -13,9 +13,11 @@
 <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/resources/js/md5.js"></script>
 <script type="text/javascript" src="/resources/js/select2.js"></script>
+<script type="text/javascript" src="/resources/js/message.js"></script>
 <script type="text/javascript" src="/resources/js/people.js"></script>
 <script type="text/javascript" src="/resources/js/dropdown.js"></script>
 
+<link href="/resources/css/message-window.css" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/jquery-ui.css">
 <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/resources/css/text.css" rel="stylesheet">

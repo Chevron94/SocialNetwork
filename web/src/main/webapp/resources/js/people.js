@@ -203,11 +203,16 @@ function loadMore(start,sender,list){
                                             html+= '<button id="add_'+data[i].id+'" style="display: none" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
                                                 '</button>\n';
                                         }else{
-                                            html+='<button id="add_'+data[i].id+'" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
-                                                '</button>\n';
+                                            if (list =='received'){
+                                                html+='<button id="add_'+data[i].id+'" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
+                                                    '</button>\n';
+                                            }else{
+                                                html+='<button id="add_'+data[i].id+'" type="button" class="Add btn btn-success btn-xs" onclick="sendRequest('+idUser+','+data[i].id+'); return false">Add'+
+                                                    '</button>\n';
+                                            }
                                         }
 
-                                        html+= '<button id="send_'+data[i].id+'" type="button" class="btn btn-info btn-xs" onclick="newMessage('+idUser+', '+data[i].id+','+data[i].login+');return false">Send Message'+
+                                        html+= '<button id="send_'+data[i].id+'" type="button" class="btn btn-info btn-xs" onclick="newMessage('+idUser+', '+data[i].id+",'"+data[i].login+"'"+'); return false">Send Message'+
                                             '</button>\n';
 
                                         if ((list == 'friends' || list == 'received' || list == 'sent') && idUser==idRequestUser) {
@@ -281,4 +286,3 @@ function initPage(){
         loadMore(sentRequestsStart,idUser,'sent');
     }
 }
-

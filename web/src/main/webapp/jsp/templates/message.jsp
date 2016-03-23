@@ -5,8 +5,6 @@
   Time: 15:14
   To change this template use File | Settings | File Templates.
 --%>
-<link href="/resources/css/message-window.css" rel="stylesheet">
-<script src="/resources/js/message.js"></script>
 <div id="messageWindow"><!-- Сaмo oкнo -->
     <span id="closeWindow">X</span> <!-- Кнoпкa зaкрыть -->
     <br>
