@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,18 @@ public class DialogService extends DialogDaoImplementation implements DialogDao{
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Dialog getDialogByTwoUser(Long idUser1, Long idUser2) {
         return super.getDialogByTwoUser(idUser1, idUser2);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public List<Dialog> getDialogsByUserId(Long id, Integer start, Integer count) {
+        return super.getDialogsByUserId(id,start,count);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public List<Dialog> getDialogsWithUnreadMessagesByUserId(Long id) {
+        return super.getDialogsWithUnreadMessagesByUserId(id);
     }
 
     @Override

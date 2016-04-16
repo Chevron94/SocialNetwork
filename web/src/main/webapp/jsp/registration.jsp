@@ -22,18 +22,12 @@
       $('#city').val('0');
     }
     function updateGender() {
-        $('#gender').val($('#gender_select').select().val());
+      if(document.getElementById("gender_select_1").checked){
+        $('#gender').val($('#gender_select_1').val());
+      }else $('#gender').val($('#gender_select_2').val());
     }
     function updateCity() {
         $('#city').val($('#city_select').select().val());
-    }
-  </script>
-  <script type="text/javascript">
-    function hashPassword(form)
-    {
-      var i = form.elements.length;
-      $('#password').val(md5($('#open_password').val()));
-      $('#open_password').val('');
     }
   </script>
   <title>Registration</title>
@@ -70,15 +64,13 @@
 <%
 }
 %>
-<form method="POST" id="registration" name="registration" enctype="multipart/form-data" onsubmit="return hashPassword(this)">
-  <div class="container" align="center">
-    <div class="form-group">
+<form method="POST" id="registration" class="form-horizontal" name="registration" enctype="multipart/form-data">
+
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="login">Login</label>
-        </div>
-        <div class="col-xs-6" align="left">
-          <input type="text" id="login" class="form-control" name="login" required
+        <label class="control-label col-sm-2" for="login">Login<sup>*</sup></label>
+        <div class="col-xs-6">
+          <input type="text" id="login" class="form-control" name="login" pattern="^\w+$" required
             <%
               if(user!=null)
               {
@@ -88,26 +80,32 @@
               }
             %>
           >
+          <label class="control-label" for="login" style="font-size: smaller">Can contains only A-Z,a-z,0-9,_</label>
         </div>
       </div>
     </div>
-    <div class="control-group">
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="open_password">Password</label>
-        </div>
+        <label class="control-label col-xs-2" for="password">Password<sup>*</sup></label>
         <div class="col-xs-6" align="left">
-          <input type="password" id="open_password" class="form-control" name="open_password" required>
-          <input type="hidden" id="password" name="password">
+          <input type="password" class="form-control" id="password" name="password" pattern="[A-Za-z0-9_-]{6,64}" required onchange="checkPasswords()">
+          <label class="control-label" for="login" style="font-size: smaller">Password must have length 6-64 and can contains A-Z,a-z,0-9,_,-</label>
         </div>
       </div>
     </div>
-    <br>
-    <div class="form-group">
+
+  <div class="form-group form-group-sm">
+    <div class="row" style="margin-left:20%">
+      <label class="control-label col-xs-2" for="retype">Retype password<sup>*</sup></label>
+      <div class="col-xs-6" align="left">
+        <input type="password" class="form-control" id="retype" name="retype" pattern="[A-Za-z0-9_-]{6,64}" required onchange="checkPasswords()">
+      </div>
+    </div>
+  </div>
+
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="email">E-mail</label>
-        </div>
+        <label class="control-label col-xs-2" for="email">E-mail<sup>*</sup></label>
         <div class="col-xs-6" align="left">
           <input type="email" id="email" class="form-control" name="email" required
             <%
@@ -122,13 +120,11 @@
         </div>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="name">Name</label>
-        </div>
+        <label class="control-label col-xs-2" for="name">Name<sup>*</sup></label>
         <div class="col-xs-6" align="left">
-          <input type="text" id="name" class="form-control" name="name"required
+          <input type="text" id="name" class="form-control" pattern="^\w+([\s-]\w+)*$" name="name"required
             <%
               if(user!=null)
               {
@@ -138,46 +134,32 @@
               }
             %>
           >
+          <label class="control-label" for="name" style="font-size: smaller">Can contains only A-Z,a-z,0-9,_,- and space</label>
         </div>
       </div>
     </div>
-
-    <div class="form-group">
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="filePhoto">Photo</label>
-        </div>
+        <label class="control-label col-xs-2" for="filePhoto">Photo</label>
         <div class="col-xs-6" align="left">
-          <input type="file" id="filePhoto" name="filePhoto" placeholder="http://site.com/photo.jpg">
+          <div class="input-group">
+            <span class="input-group-btn">
+               <span class="btn btn-default btn-file btn-sm">
+            Browse&hellip;<input type="file" id="filePhoto" name="filePhoto" placeholder="http://site.com/photo.jpg" accept="image/*">
+              </span>
+            </span>
+            <input type="text" id="filename" class="form-control" readonly>
+          </div>
+
         </div>
       </div>
     </div>
-
-    <div class="form-group">
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="gender_select">Gender</label>
-        </div>
+        <label class="control-label col-xs-2" for="gender_select_1">Gender<sup>*</sup></label>
         <div class="col-xs-6" align="left">
-          <select name="gender_select" class="form-control" id="gender_select" onchange="updateGender()">
-            <option value="0" selected>Select gender</option>
-            <% for (int i=0;i<genders.size(); i++)
-            {
-            %>
-              <option value="<%=genders.get(i).getId()%>"
-                      <%
-                        if(user!=null && user.getGender().equals(genders.get(i).getId().toString()))
-                        {
-                      %>
-                      selected
-                      <%
-                        }
-                      %>
-              ><%=genders.get(i).getName()%></option>
-            <%
-            }
-            %>
-          </select>
+          <label class="radio-inline"><input type="radio" name="gender_select" id="gender_select_1" value="<%=genders.get(0).getId()%>" <%=(user==null || user.getGender().equals(genders.get(0).getId().toString()))?"checked":""%> onchange="updateGender()" ><%=genders.get(0).getName()%></label>
+          <label class="radio-inline"><input type="radio" name="gender_select" id="gender_select_2" value="<%=genders.get(1).getId()%>" <%=(user!=null && user.getGender().equals(genders.get(1).getId().toString()))?"checked":""%>  onchange="updateGender()"><%=genders.get(1).getName()%></label>
         </div>
       </div>
     </div>
@@ -187,17 +169,14 @@
           dateFormat: 'yy-mm-dd',
           changeMonth: true,
           changeYear: true,
-          maxDate: new Date(),
-          yearRange: '-99:+0'});
+          yearRange: '-99:-3'});
       });
     </script>
-    <div class="form-group">
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="birthday">Birthday</label>
-        </div>
+        <label class="control-label col-xs-2" for="birthday">Birthday<sup>*</sup></label>
         <div class="col-xs-6" align="left">
-          <input type="text" id="birthday" class="form-control" name="birthday" required readonly
+          <input type="date" id="birthday" pattern="(19|20)\d\d-((0[1-9]|1[012])-(0[1-9]|[12]\d)|(0[13-9]|1[012])-30|(0[13578]|1[02])-31)" placeholder="YYYY-MM-DD" class="form-control" name="birthday" required
             <%
               if(user!=null)
               {
@@ -207,14 +186,13 @@
               }
             %>
           >
+          <label class="control-label" for="birthday" style="font-size: smaller">Format: YYYY-MM-DD. Example: 1990-12-31</label>
         </div>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="country_select">Country</label>
-        </div>
+        <label class="control-label col-xs-2" for="country_select">Country<sup>*</sup></label>
         <div class="col-xs-6" align="left">
           <select name="country_select" class="icon-menu form-control" id="country_select" onchange="updateSelectOptions()">
             <option value="0" selected>Select country</option>
@@ -240,11 +218,9 @@
         </div>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="city_select">City</label>
-        </div>
+        <label class="control-label col-xs-2" for="city_select">City<sup>*</sup></label>
         <div class="col-xs-6" align="left">
           <select name="city_select" id="city_select"  class="js-example-data-ajax form-control" onchange="updateCity()">
             <% if (city != null){
@@ -259,13 +235,11 @@
         </div>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <div class="col-xs-2" align="left">
-          <label class="control-label" for="description">About me</label>
-        </div>
+        <label class="control-label col-xs-2" for="description">About me</label>
         <div class="col-xs-6" align="left">
-          <textarea class="form-control" id="description"  name="description" rows="3" required
+          <textarea class="form-control" id="description"  name="description" rows="3"
             <%
               if(user!=null)
               {
@@ -278,12 +252,13 @@
         </div>
       </div>
     </div>
-    <div class="row" style="margin-left:20%">
-      <div class="col-xs-4" align="center">
-        <input class="btn btn-primary" type="submit" value="Submit">
+    <div class="form-group form-group-sm">
+      <div class="row" style="margin-left:20%">
+        <div class="col-xs-offset-2 col-xs-6">
+          <input type="submit" class="btn btn-primary" value="Submit">
+        </div>
       </div>
     </div>
-  </div>
   <input type="hidden" name="city" id="city"
     <%
               if(user!=null)
@@ -311,7 +286,7 @@
               else
               {
     %>
-         value="0"
+         value="<%=genders.get(0).getId()%>"
     <%
               }
     %>
@@ -384,6 +359,39 @@
     <%
               }
     %>).trigger('change');
+
+    function checkPasswords()
+    {
+      var passl = document.getElementById("password");
+      var pass2 = document.getElementById("retype");
+      if(passl.value!=pass2.value)
+        passl.setCustomValidity("Passwords are not equals!");
+      else
+        passl.setCustomValidity("");
+    }
+
+    $(document).on('change', '.btn-file :file', function() {
+      var input = $(this),
+              numFiles = input.get(0).files ? input.get(0).files.length : 1,
+              label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+      input.trigger('fileselect', [numFiles, label]);
+    });
+
+    $(document).ready( function() {
+      $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+
+        var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+        if( input.length ) {
+          input.val(log);
+        } else {
+          if( log ) alert(log);
+        }
+
+      });
+    });
+
   </script>
 </form>
 </body>

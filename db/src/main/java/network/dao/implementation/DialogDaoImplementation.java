@@ -42,4 +42,24 @@ public class DialogDaoImplementation extends GenericDaoImplementation<Dialog,Lon
             return null;
         }
     }
+
+    @Override
+    public List<Dialog> getDialogsByUserId(Long id, Integer start, Integer count) {
+        String jpa = "SELECT DISTINCT ud.dialog FROM UserDialog ud " +
+                "WHERE ud.user.id = :id " +
+                "ORDER BY ud.dialog.lastMessageDate DESC";
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("id",id);
+        return this.executeQuery(jpa,parameters,start,count);
+    }
+
+    @Override
+    public List<Dialog> getDialogsWithUnreadMessagesByUserId(Long id) {
+        String jpa = "SELECT DISTINCT ud.dialog FROM UserDialog ud " +
+                "WHERE ud.user.id = :id " +
+                "AND EXISTS (SELECT m FROM Message m WHERE m.read = false AND m.user.id <> :id AND m.dialog.id = ud.dialog.id)";
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("id",id);
+        return this.executeQuery(jpa,parameters);
+    }
 }

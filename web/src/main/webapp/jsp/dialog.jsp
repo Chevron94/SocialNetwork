@@ -15,13 +15,11 @@
 <html>
 <head>
   <title id="title">Dialogs</title>
-  <script type="text/javascript" src="/resources/js/dialog.js"></script>
+  <script type="text/javascript">
+    var dialogStart = 0;
+  </script>
 
   <%@include file="templates/scripts.jsp"%>
-    <%
-    List<Dialog> dialogs = (List<Dialog>)request.getAttribute("dialogs");
-    List<Message> messages =  (List<Message>)request.getAttribute("messages");
-  %>
 
 </head>
 <body onload="pageLoad()">
@@ -29,60 +27,30 @@
 <%@include file="templates/header.jsp"%>
 <!-- /container -->
 <input type="hidden" class="input-block-level" id="nickname" value="<%=user.getLogin()%>">
-<input type="hidden" id="idUser" value="<%=idUser%>">
-<input type="hidden" id="dialogId" value="<%=dialogs!=null && dialogs.size()>0 ? dialogs.get(0).getId() : 0%>">
-<div class="row table-fixed table-bordered">
-  <div class="col-xs-3">
-    <div class="row">
-      <h4 align="center">Dialogs</h4>
+<input type="hidden" id="dialogId" value="0">
+<div class="row table-fixed table-bordered" style="margin: 1%">
+  <div class="col-xs-3" style="height: 525px; overflow-y: scroll">
+    <div id="dialogs" style="margin-top: 1%;">
+
     </div>
-    <%
-      if(dialogs != null)
-      {
-        for(Dialog d:dialogs)
-        {
-    %>
-    <div class="row" style="margin: auto">
-      <button id="<%=d.getId()%>" class="btn btn-danger btn-large btn-block"
-              onclick="return chatClick(<%=d.getId()%>)" value="<%=d.getName()%>"><%=d.getName()%></button>
-    </div>
-    <br>
-    <%
-        }
-      }
-    %>
+    <button id="loadMoreDialogsButton" class="btn btn-info btn-block" style="display: none" onclick="loadMoreDialogs()">Load more dialogs</button>
     <input type="hidden" name="current" id="current" value="">
   </div>
-  <div class="col-xs-9 table-bordered">
+  <div class="col-xs-9" style="margin-top: 1%">
+    <div class="panel panel-primary">
+      <div class="panel-body" id="tableDiv">
+        <button class="btn btn-info btn-block" style="display: none" id="loadMoreMessages">Load previous messages</button>
+        <ul class="chat" id="response">
 
-      <h4 id="dialogName" align="center"><%=dialogs!=null && dialogs.size()>0 ? dialogs.get(0).getName() : "SELECT A DIALOG"%></h4>
-      <div id="tableDiv" class="table-responsive" style="height: 300px; overflow-y: scroll">
-        <table id="response" class="table table-bordered table-fixed" style="font-size: 100%">
-          <%if(messages!= null && messages.size()>0){
-            for(Message message:messages){
-              %>
-              <tr><td class="sender col-xs-2"> <%=message.getUser().getLogin()%>
-                      </td><td class="sender col-xs-8">  <%=message.getText()%>
-                      </td><td class="sender col-xs-2"><%
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-                out.print(simpleDateFormat.format(message.getDateTime()));%>
-              </td></tr><%
-            }
-          }else{%>
-          <tr>
-            <td class="col-xs-2"></td>
-            <td class="col-xs-8"></td>
-            <td class="col-xs-3"></td>
-          </tr>
-          <%}%>
-        </table>
+        </ul>
       </div>
-      <div class="row">
-        <div class="col-xs-8">
-          <textarea class="form-control" id="message" rows="3"></textarea>
+    </div>
+      <div class="row" style="height: 70px">
+        <div class="col-xs-10">
+          <textarea class="form-control" style="resize: none" id="message" rows="2"></textarea>
         </div>
-        <div class="col-xs-4">
-          <input type="button" onclick="return buttonAction();" class="btn btn-large btn-block btn-primary"
+        <div class="col-xs-2">
+          <input type="button" onclick="return buttonAction();" class="btn btn-large btn-block btn-block-full btn-primary"
                  value="Send message" />
         </div>
       </div>
@@ -95,6 +63,8 @@ if (e.ctrlKey && e.keyCode == 13) {
     sendMessage(null,null,null);
 }
 });
+if($('#dialogId').val() != '0')
+  $('#dialog' + $('#dialogId').val()).addClass("active");
 </script>
 
 </body>

@@ -3,9 +3,9 @@ package network.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by roman on 22.09.15.
@@ -24,21 +24,24 @@ public class Dialog {
     @Column(name="LAST_MESSAGE_DATETIME", nullable = true)
     private Date lastMessageDate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dialog")
-    @JsonIgnore
-    private transient Set<Message> messages = new HashSet<Message>();
+    @Column(name = "IS_PRIVATE")
+    private Boolean isPrivate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dialog")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dialog", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private transient Set<UserDialog> userDialogs = new HashSet<UserDialog>();
+    private transient List<Message> messages = new ArrayList<Message>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dialog", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private transient List<UserDialog> userDialogs = new ArrayList<UserDialog>();
 
 
 
     public Dialog() {
     }
 
-    public Dialog(String name) {
-        this.name = name;
+    public Dialog(String name, Boolean isPrivate) {
+        this.name = name; this.isPrivate = isPrivate;
     }
 
     public Long getId() {
@@ -65,20 +68,28 @@ public class Dialog {
         this.lastMessageDate = lastMessageDate;
     }
 
-    public Set<Message> getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(Set<Message> messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 
-    public Set<UserDialog> getUserDialogs() {
+    public List<UserDialog> getUserDialogs() {
         return userDialogs;
     }
 
-    public void setUserDialogs(Set<UserDialog> userDialogs) {
+    public void setUserDialogs(List<UserDialog> userDialogs) {
         this.userDialogs = userDialogs;
+    }
+
+    public Boolean getPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(Boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 
     @Override

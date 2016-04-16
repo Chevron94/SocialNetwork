@@ -17,13 +17,13 @@
     <c:if test="${not empty msg}">
         <div class="msg">${msg}</div>
     </c:if>
-    <div class="form-group">
+    <div class="form-group form-group-sm">
         <label for="j_username" class="col-xs-2 control-label">Login</label>
         <div class="col-xs-10">
-            <input type="text" class="form-control" name='j_username' id="j_username" placeholder="login">
+            <input type="text" class="form-control" name='j_username' id="j_username" placeholder="Login">
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group form-group-sm">
         <label for="j_password" class="col-xs-2 control-label">Password</label>
         <div class="col-xs-10">
             <input type="password" class="form-control" name='j_password' id="j_password" placeholder="Password">
@@ -31,7 +31,7 @@
     </div>
     <div class="form-group">
         <div class="col-xs-offset-2 col-xs-10">
-            <button type="submit" class="btn btn-default">Sign in</button>
+            <button type="submit" class="btn btn-primary">Sign in</button>
         </div>
     </div>
 </form>

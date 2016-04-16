@@ -5,6 +5,7 @@ import network.dto.UserDto;
 import network.entity.*;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import network.services.MD5Service;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -169,7 +170,7 @@ public class RegistrationController {
         User newUser = new User();
         newUser.setName(user.getName());
         newUser.setLogin(user.getLogin());
-        newUser.setPassword(user.getPassword());
+        newUser.setPassword(MD5Service.md5(user.getPassword()));
         newUser.setEmail(user.getEmail());
         newUser.setBirthday(Date.valueOf(user.getBirthday()));
         newUser.setConfirmed(true);
@@ -180,8 +181,8 @@ public class RegistrationController {
         newUser.setGender(genderService.getGenderById(genderId));
         newUser.setDescription(user.getDescription());
         newUser = userService.create(newUser);
-
-
+        Album album = new Album("Main", newUser, new java.util.Date());
+        album = albumService.create(album);
         if (!file.isEmpty()) {
             Map options = ObjectUtils.asMap(
                     "cloud_name", "chevron",
@@ -191,8 +192,6 @@ public class RegistrationController {
             Cloudinary cloudinary = new Cloudinary(options);
             try {
                 uploadResult = cloudinary.uploader().upload(stream2file(file.getInputStream()), options);
-                Album album = new Album("Main", newUser);
-                album = albumService.create(album);
                 Photo photo = new Photo((String) uploadResult.get("secure_url"),new java.util.Date(), album);
                 photoService.create(photo);
                 newUser.setPhotoURL((String) uploadResult.get("secure_url"));
@@ -200,6 +199,9 @@ public class RegistrationController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else{
+            newUser.setPhotoURL("/resources/images/system/no-photo.png");
+            userService.update(newUser);
         }
         request.getSession().setAttribute("msg", "Registration successful. Please use your login and password");
         return "redirect:/login";

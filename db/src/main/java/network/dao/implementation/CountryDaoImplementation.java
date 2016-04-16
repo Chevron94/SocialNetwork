@@ -6,6 +6,8 @@ import network.entity.Country;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +47,12 @@ public class CountryDaoImplementation extends GenericDaoImplementation<Country,L
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id", id);
         return this.executeQuery(jpa, parameters);
+    }
+
+    @Override
+    public List<Country> getCountriesWithUsers() {
+        String jpa = "Select DISTINCT c from Country c, User u WHERE c.id = u.country.id order by c.name";
+        return this.executeQuery(jpa);
     }
 
     @Override

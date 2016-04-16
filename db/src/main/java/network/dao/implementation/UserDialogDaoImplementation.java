@@ -36,4 +36,17 @@ public class UserDialogDaoImplementation extends GenericDaoImplementation<UserDi
         return this.executeQuery(jpa, parameters, start, limit);
     }
 
+    @Override
+    public UserDialog getUserDialogByPrivateDialogIdAndOtherUserId(Long idDialog, Long idUser) {
+        String jpa = "SELECT ud FROM UserDialog ud " +
+                "WHERE ud.dialog.id = :idDialog AND ud.user.id <> :idUser";
+        HashMap<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("idDialog",idDialog);
+        parameters.put("idUser",idUser);
+        try {
+            return this.executeQuery(jpa,parameters).get(0);
+        }catch (Exception e){
+            return null;
+        }
+    }
 }

@@ -27,7 +27,7 @@
                     <label for="messageText" class="control-label">Message:</label>
                 </div>
                 <div class="col-xs-9" align="right">
-                    <textarea id="messageText" required class="form-control" rows="3"></textarea>
+                    <textarea id="messageText" style="resize: none" required class="form-control" rows="3"></textarea>
                 </div>
             </div>
         </div>

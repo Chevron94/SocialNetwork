@@ -1,5 +1,7 @@
 <%@ page import="network.entity.User" %>
 <%@ page import="java.util.List" %>
+<%@ page import="network.entity.FriendRequest" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%--
   Created by IntelliJ IDEA.
   User: roman
@@ -14,8 +16,9 @@
   <%@include file="templates/scripts.jsp"%>
   <link href="/resources/css/text.css" rel="stylesheet">
   <% User user = (User)request.getAttribute("user"); %>
+  <% SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");%>
   <% List<User> friends = (List<User>)request.getAttribute("friends"); %>
-
+  <% FriendRequest friendRequest = (FriendRequest)request.getAttribute("friendRequest");%>
   <style>
     .word {
       word-break: break-all;
@@ -28,9 +31,48 @@
   <div class="row scale-text" style="margin: auto">
     <div class="col-xs-12">
       <div class="row" style="margin-left: 20%">
-        <div class="col-xs-2">
+        <div class="col-xs-3">
           <div class="row table-bordered table-fixed">
-            <img src="<%=user.getPhotoURL()%>" class="img img-responsive" alt="Responsive image">
+          <%if (user.getAlbums().get(0).getPhotos() != null && user.getAlbums().get(0).getPhotos().size()>0){
+          %>
+            <input type="image" src="<%=user.getPhotoURL()%>" class="img img-responsive" alt="Responsive image" style="width: 100%"  data-toggle="modal" data-target="#photoViewer" onclick="showPhoto(<%=user.getAlbums().get(0).getPhotos().get(0).getId()%>,'<%=user.getPhotoURL()%>',<%=user.getId()%>,<%=user.getAlbums().get(0).getId()%>,'<%=simpleDateFormat.format(user.getAlbums().get(0).getPhotos().get(0).getUploaded())%>',0)">
+            <%
+          }else{
+            %>
+            <img src="<%=user.getPhotoURL()%>" class="img img-responsive" style="width: 100%" alt="Responsive image">
+            <%
+          }%>
+          </div>
+          <div id="buttons">
+            <%if(idUser == user.getId()){
+            %>
+            <div class="row" id="newPhotoButton">
+              <input type="button" class="btn btn-success btn-block" value="Upload new photo" onclick="newAlbum()">
+            </div>
+            <%
+              }%>
+          <%if (user.getId()!=idUser){
+          %>
+          <%@include file="templates/message.jsp"%>
+            <div class="row" id="friendButton">
+            <%if (friendRequest == null || (friendRequest.getSender().getId()==user.getId()&&friendRequest.isConfirmed()==false)){
+            %>
+              <input type="button" class="btn btn-success btn-block" value="Add to friends" onclick="sendRequest(<%=idUser%>,<%=user.getId()%>)">
+            <%
+            }%>
+            </div>
+            <div class="row" id="messageButton">
+              <input type="button" class="btn btn-info btn-block" value="Send message" onclick="newMessage(<%=idUser%>,<%=user.getId()%>,'<%=user.getLogin()%>')">
+            </div>
+            <div class="row" id="deleteButton">
+              <%if (friendRequest != null && (friendRequest.isConfirmed() || friendRequest.getSender().getId() == idUser)){
+              %>
+              <input type="button" class="btn btn-danger btn-block" value="Delete" onclick="deleteRequest(<%=idUser%>,<%=user.getId()%>)">
+              <%
+                }%>
+            </div>
+          <%
+          }%>
           </div>
           <div class="row" style="background: lightgrey; margin-top: 1%">
             <a href="<%=pageContext.getRequest().getScheme()+"://"
@@ -76,59 +118,64 @@
               }
             }
           %>
+          <div class="row" style="background: lightgrey; margin-top: 1%">
+            <a href="<%=pageContext.getRequest().getScheme()+"://"
+                            + pageContext.getRequest().getServerName()+"/user"+user.getId()+"/albums"%>">
+              <b>Albums <%="("+"0"+")"%></b>
+            </a>
+          </div>
         </div>
         <div class="col-xs-6" >
-
           <div class="row table-bordered table-fixed" style="margin-left: 10%">
-            <div class="col-xs-3">
-              <b>Name</b>
+            <div class="col-xs-4">
+              Name
             </div>
-            <div class="col-xs-9">
-              <%=user.getName()%>
+            <div class="col-xs-8">
+              <b><%=user.getName()%></b>
             </div>
           </div>
 
           <div class="row table-bordered table-fixed" style="margin-left: 10%">
-            <div class="col-xs-3">
-              <b>Birthday</b>
+            <div class="col-xs-4">
+              Birthday
             </div>
-            <div class="col-xs-9">
-              <%=user.getBirthday().toString().split(" ")[0]%>
-            </div>
-          </div>
-
-          <div class="row table-bordered table-fixed" style="margin-left: 10%">
-            <div class="col-xs-3">
-              <b>From</b>
-            </div>
-            <div class="col-xs-9">
-              <img style="height: 20px" src="<%=user.getCountry().getFlagURL()%>"> <%=user.getCity().getName()+" ("+ user.getCountry().getName()+")"%>
+            <div class="col-xs-8">
+              <b><%=user.getBirthday().toString().split(" ")[0]%></b>
             </div>
           </div>
 
           <div class="row table-bordered table-fixed" style="margin-left: 10%">
-            <div class="col-xs-3">
-              <b>Gender</b>
+            <div class="col-xs-4">
+              From
             </div>
-            <div class="col-xs-9">
-              <%=user.getGender().getName()%>
-            </div>
-          </div>
-          <div class="row table-bordered table-fixed" style="margin-left: 10%">
-            <div class="col-xs-3">
-              <b>Languages</b>
-            </div>
-            <div class="col-xs-9">
-              <%=user.getCountry().getName()%>
+            <div class="col-xs-8">
+              <img style="height: 20px" src="<%=user.getCountry().getFlagURL()%>"> <b><%=user.getCity().getName()+" ("+ user.getCountry().getName()+")"%></b>
             </div>
           </div>
 
           <div class="row table-bordered table-fixed" style="margin-left: 10%">
-            <div class="col-xs-3">
-              <b>About me</b>
+            <div class="col-xs-4">
+              Gender
             </div>
-            <div class="col-xs-9">
-                <%=user.getDescription()%>
+            <div class="col-xs-8">
+              <b><%=user.getGender().getName()%></b>
+            </div>
+          </div>
+          <div class="row table-bordered table-fixed" style="margin-left: 10%">
+            <div class="col-xs-4">
+              Languages
+            </div>
+            <div class="col-xs-8">
+              <b><%=user.getCountry().getName()%></b>
+            </div>
+          </div>
+
+          <div class="row table-bordered table-fixed" style="margin-left: 10%">
+            <div class="col-xs-4">
+              About me
+            </div>
+            <div class="col-xs-8">
+                <b><%=user.getDescription()%></b>
             </div>
           </div>
 
@@ -136,5 +183,31 @@
       </div>
     </div>
   </div>
+
+<%@include file="templates/photoView.jsp"%>
+<div id="albumWindow"><!-- Сaмo oкнo -->
+  <span id="closeWindow">X</span> <!-- Кнoпкa зaкрыть -->
+  <br>
+  <form method="post" action="/profile" id="albumForm" enctype="multipart/form-data">
+
+    <div class="control-group">
+      <div class="row">
+        <div class="col-xs-3" align="left">
+          <label for="photoInput" class="control-label">Photo</label>
+        </div>
+        <div class="col-xs-9" align="right">
+          <input type="file" id="photoInput" name="photoInput" value="">
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-xs-12" align="center">
+        <input align="center" type="submit" class="btn btn-primary" value="Upload">
+      </div>
+    </div>
+  </form>
+</div>
+<div id="overlay"></div>
 </body>
 </html>

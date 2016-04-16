@@ -128,21 +128,25 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
 
         Integer ageFrom = (Integer)params.get("ageFrom");
         Integer ageTo = (Integer)params.get("ageTo");
-        if (ageFrom > ageTo)
-        {
-            int tmp = ageTo;
-            ageTo = ageFrom;
-            ageFrom = tmp;
+        if (ageFrom != null && ageTo != null){
+            if (ageFrom > ageTo)
+            {
+                int tmp = ageTo;
+                ageTo = ageFrom;
+                ageFrom = tmp;
+            }
+            Date date = new Date();
+            jpa += "AND EXTRACT(year FROM age(:date, u.birthday)) >= :ageFrom AND EXTRACT(year FROM age(:date, u.birthday)) <= :ageTo ";
+            parameters.put("date",date);
+            parameters.put("ageFrom", ageFrom);
+            parameters.put("ageTo",ageTo);
         }
-        Date date = new Date();
-        jpa += "AND EXTRACT(year FROM age(:date, u.birthday)) >= :ageFrom AND EXTRACT(year FROM age(:date, u.birthday)) <= :ageTo ";
-        parameters.put("date",date);
-        parameters.put("ageFrom", ageFrom);
-        parameters.put("ageTo",ageTo);
-        String login = ((String)params.get("login")).trim();
-        if (login.length()>0){
-            jpa+= "AND u.login LIKE :login ";
-            parameters.put("login", login+"%");
+        if (params.get("login") != null){
+            String login = ((String)params.get("login")).trim();
+            if (login.length()>0){
+                jpa+= "AND u.login LIKE :login ";
+                parameters.put("login", login+"%");
+            }
         }
         Long idCity = (Long)params.get("idCity");
         if (idCity != null && idCity > 0) {

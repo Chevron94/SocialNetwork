@@ -38,6 +38,18 @@ public class FriendRequestDaoImplementation extends GenericDaoImplementation<Fri
         return dialogs.get(0);
     }
 
+    @Override
+    public FriendRequest getFriendRequestByTwoUsersId(Long idUser1, Long idUser2) {
+        String jpa = "SELECT f FROM FriendRequest f WHERE (f.receiver.id = :idUser1 AND f.sender.id = :idUser2) OR (f.sender.id = :idUser1 AND f.receiver.id = :idUser2)";
+        HashMap<String,Object> parameters = new HashMap<String, Object>();
+        parameters.put("idUser1",idUser1);
+        parameters.put("idUser2",idUser2);
+        List<FriendRequest> dialogs = this.executeQuery(jpa, parameters);
+        if (dialogs.size() == 0)
+            return null;
+        return dialogs.get(0);
+    }
+
     public List<FriendRequest> getFriendRequestsBySenderId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT f FROM FriendRequest f WHERE f.sender.id = :id AND f.confirmed='FALSE'";
         HashMap<String,Object> parameters = new HashMap<String, Object>();

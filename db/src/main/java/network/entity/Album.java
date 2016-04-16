@@ -3,8 +3,7 @@ package network.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by roman on 22.09.15.
@@ -20,22 +19,26 @@ public class Album {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "CREATION_DATE")
+    private Date creationDate;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_USER", nullable = false)
     private User user;
 
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "album")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "album", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private transient Set<Photo> photos = new HashSet<Photo>();
+    private transient List<Photo> photos = new ArrayList<Photo>();
 
     public Album() {
     }
 
-    public Album(String name, User user) {
+    public Album(String name, User user, Date creationDate) {
         this.name = name;
         this.user = user;
+        this.creationDate = creationDate;
     }
 
     public Long getId() {
@@ -62,12 +65,20 @@ public class Album {
         this.user = user;
     }
 
-    public Set<Photo> getPhotos() {
+    public List<Photo> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(Set<Photo> photos) {
+    public void setPhotos(List<Photo> photos) {
         this.photos = photos;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override

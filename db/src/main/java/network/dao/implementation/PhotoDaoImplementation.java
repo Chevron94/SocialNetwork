@@ -27,7 +27,7 @@ public class PhotoDaoImplementation extends GenericDaoImplementation<Photo,Long>
     }
 
     public List<Photo> getPhotosByAlbumId(Long id, Integer start, Integer limit) {
-        String jpa = "SELECT p FROM Photo p WHERE p.album.id = :id";
+        String jpa = "SELECT p FROM Photo p WHERE p.album.id = :id order by p.uploaded desc";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
         return this.executeQuery(jpa, parameters, start, limit);

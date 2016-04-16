@@ -33,14 +33,15 @@ public class DialogMessageDecoder implements Decoder.Text<MessageDto> {
             message.setMessageText(obj.getString("messageText"));
             message.setMessageText(StringUtils.replaceEach(obj.getString("messageText"), new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"}));
             message.setReceiverDialog(obj.getString("dialog"));
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+            message.setSender(obj.getString("sender"));
+            message.setSenderId(obj.getString("senderId"));
+            Date date = new Date();
+            message.setReceivedDate((date));
+            message.setReceived(simpleDateFormat.format(date));
         }catch (NullPointerException e){
             message.setId((obj.getString("id")));
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-        message.setSender(obj.getString("sender"));
-        Date date = new Date();
-        message.setReceivedDate((date));
-        message.setReceived(simpleDateFormat.format(date));
         return message;
     }
 

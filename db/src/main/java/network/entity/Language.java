@@ -3,7 +3,9 @@ package network.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -27,7 +29,7 @@ public class Language {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "language")
     @JsonIgnore
-    private transient Set<LanguageUser> languageUsers = new HashSet<LanguageUser>();
+    private transient List<LanguageUser> languageUsers = new ArrayList<LanguageUser>();
 
 
 
@@ -63,11 +65,11 @@ public class Language {
         this.pictureURL = pictureURL;
     }
 
-    public Set<LanguageUser> getLanguageUsers() {
+    public List<LanguageUser> getLanguageUsers() {
         return languageUsers;
     }
 
-    public void setLanguageUsers(Set<LanguageUser> languageUsers) {
+    public void setLanguageUsers(List<LanguageUser> languageUsers) {
         this.languageUsers = languageUsers;
     }
 

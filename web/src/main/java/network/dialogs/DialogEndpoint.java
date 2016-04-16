@@ -11,6 +11,8 @@ import network.entity.User;
 import network.entity.UserDialog;
 import network.service.events.MessageEvent;
 import network.service.events.NewMessageEvent;
+import network.service.events.ReadEvent;
+import network.service.events.ReadMessageEvent;
 
 import java.io.IOException;
 import java.util.*;
@@ -66,12 +68,16 @@ public class DialogEndpoint {
     public void onMessage(final Session session, final MessageDto chatMessage) {
         try {
             if (chatMessage.getId() != null && !chatMessage.getId().equals("")) {
-                peers.put(userService.getUserByLogin(chatMessage.getSender()),session);
+                peers.put(userService.getUserById(Long.valueOf(chatMessage.getId())),session);
             } else {
-                Dialog d = dialogService.getDialogById(Long.valueOf(chatMessage.getReceiverDialog()));
-                messageService.create(new Message(userService.getUserByLogin(chatMessage.getSender()), d, chatMessage.getMessageText(), chatMessage.getReceivedDate(),false));
-                d.setLastMessageDate(chatMessage.getReceivedDate());
-                d = dialogService.update(d);
+                if (chatMessage.getMessageText() != null && chatMessage.getMessageText().length()>0) {
+                    Dialog d = dialogService.getDialogById(Long.valueOf(chatMessage.getReceiverDialog()));
+                    messageService.create(new Message(userService.getUserById(Long.valueOf(chatMessage.getSenderId())), d, chatMessage.getMessageText(), chatMessage.getReceivedDate(), false));
+                    d.setLastMessageDate(chatMessage.getReceivedDate());
+                    d = dialogService.update(d);
+                }else{
+                    messageService.readMessages(Long.valueOf(chatMessage.getSenderId()), Long.valueOf(chatMessage.getReceiverDialog()));
+                }
               /*  List<UserDialog> userDialogs = userDialogService.getUsersByDialog(d);
                 List<Session> sessions = new ArrayList<>();
                 for (UserDialog ud:userDialogs){
@@ -95,6 +101,32 @@ public class DialogEndpoint {
             Message message = messageEvent.getMessage();
             MessageDto messageDto = new MessageDto(message);
             Dialog d = message.getDialog();
+            List<UserDialog> userDialogs = userDialogService.getUsersByDialog(d);
+            List<Session> sessions = new ArrayList<>();
+            for (UserDialog ud : userDialogs) {
+                if (peers.get(ud.getUser()) != null) {
+                    sessions.add(peers.get(ud.getUser()));
+                }
+            }
+            for (Session s : sessions) {
+                if (s.isOpen()) {
+                    s.getBasicRemote().sendObject(messageDto);
+                }
+            }
+        } catch (EncodeException e) {
+
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void readEvent(@Observes @ReadMessageEvent ReadEvent readEvent){
+        try {
+            MessageDto messageDto = new MessageDto();
+            messageDto.setSenderId(readEvent.getIdUser().toString());
+            messageDto.setReceiverDialog(readEvent.getIdDialog().toString());
+            messageDto.setMessageText("");
+            Dialog d = dialogService.getDialogById(readEvent.getIdDialog());
             List<UserDialog> userDialogs = userDialogService.getUsersByDialog(d);
             List<Session> sessions = new ArrayList<>();
             for (UserDialog ud : userDialogs) {

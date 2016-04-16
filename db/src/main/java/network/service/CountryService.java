@@ -56,6 +56,12 @@ public class CountryService extends CountryDaoImplementation implements CountryD
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public List<Country> getCountriesWithUsers() {
+        return super.getCountriesWithUsers();
+    }
+
+    @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
     public Country create(Country country) {

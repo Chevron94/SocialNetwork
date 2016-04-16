@@ -48,4 +48,5 @@ public abstract class AbstractDaoImplementation<T, PK> {
         closeEntityManager();
         return result;
     }
+
 }

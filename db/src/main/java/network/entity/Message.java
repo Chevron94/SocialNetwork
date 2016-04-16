@@ -3,9 +3,7 @@ package network.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by roman on 14.09.15.
@@ -33,13 +31,13 @@ public class Message {
     private Date dateTime;
 
     @Column(name = "IS_READ")
-    private boolean isRead;
+    private boolean read;
 
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "message")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "message", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private transient Set<File> files = new HashSet<File>();
+    private transient List<File> files = new ArrayList<File>();
 
 
 
@@ -51,7 +49,7 @@ public class Message {
         this.dialog = to;
         this.text = text;
         this.dateTime = dateTime;
-        this.isRead = isRead;
+        this.read = isRead;
     }
 
     public Long getId() {
@@ -94,19 +92,19 @@ public class Message {
         this.dateTime = dateTime;
     }
 
-    public boolean isRead() {
-        return isRead;
+    public boolean getRead() {
+        return read;
     }
 
-    public void setIsRead(boolean isRead) {
-        this.isRead = isRead;
+    public void setRead(boolean isRead) {
+        this.read = isRead;
     }
 
-    public Set<File> getFiles() {
+    public List<File> getFiles() {
         return files;
     }
 
-    public void setFiles(Set<File> files) {
+    public void setFiles(List<File> files) {
         this.files = files;
     }
 
@@ -134,7 +132,7 @@ public class Message {
                 ", dialog=" + dialog +
                 ", text='" + text + '\'' +
                 ", dateTime=" + dateTime +
-                ", isRead=" + isRead +
+                ", read=" + read +
                 '}';
     }
 }

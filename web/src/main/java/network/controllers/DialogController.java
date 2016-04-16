@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -67,12 +68,19 @@ public class DialogController {
         {
             user = userService.getUserById(idUser);
         }
+        idUser = user.getId();
         model.addAttribute("user", user);
-        List<UserDialog> userDialogs = userDialogService.getDialogsByUser(user,0,20);
-        List<Dialog> dialogs = new ArrayList<>();
-        for(UserDialog ud: userDialogs)
-        {
-            dialogs.add(ud.getDialog());
+        List<Dialog> dialogs = dialogService.getDialogsByUserId(idUser,0,10);
+        for(Dialog dialog:dialogs){
+            if(dialog.getPrivate()){
+                List<UserDialog> userDialogs = new ArrayList<>();
+                userDialogs.add(userDialogService.getUserDialogByPrivateDialogIdAndOtherUserId(dialog.getId(),idUser));
+                dialog.setUserDialogs(userDialogs);
+                String[] names = dialog.getName().split("/");
+                if (names[0].trim().equals(user.getLogin())){
+                    dialog.setName(names[1].trim());
+                }else dialog.setName(names[0].trim());
+            }
         }
         model.addAttribute("dialogs",dialogs);
         if (dialogs.size()>0){
@@ -84,10 +92,10 @@ public class DialogController {
 
     @RequestMapping(value = "/dialog/getMessages", method = RequestMethod.GET)
     public @ResponseBody
-    List<MessageDto> getMessages(@RequestParam(value="idDialog") Long idDialog, HttpServletRequest request)
+    List<MessageDto> getMessages(@RequestParam(value="idDialog") Long idDialog, @RequestParam(value = "startMessage") Integer startMessage, HttpServletRequest request)
     {
         Long userId = (Long)(request.getSession().getAttribute("idUser"));
-        List<UserDialog> userDialogs = userDialogService.getDialogsByUser(userService.getUserById(userId), 0, 20);
+        List<UserDialog> userDialogs = userDialogService.getDialogsByUser(userService.getUserById(userId), 0, Integer.MAX_VALUE);
         Dialog dialog = dialogService.getDialogById(idDialog);
         boolean ok = false;
         for(UserDialog d:userDialogs)
@@ -99,20 +107,53 @@ public class DialogController {
             }
         }
         if (ok) {
-            List<Message> messages = messageService.getMessagesByDialogId(Long.valueOf(idDialog), 0, 20);
+            List<Message> messages = messageService.getMessagesByDialogId(Long.valueOf(idDialog), startMessage, 20);
             List<MessageDto> messagesDto = new ArrayList<>();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
             for (Message message : messages) {
-                MessageDto m = new MessageDto();
-                m.setSender(userService.getUserById(message.getUser().getId()).getLogin());
-                m.setMessageText(message.getText());
-                m.setReceivedDate(message.getDateTime());
-                m.setReceived(simpleDateFormat.format(message.getDateTime()));
+                MessageDto m = new MessageDto(message);
                 messagesDto.add(m);
             }
             return messagesDto;
         }
         else return null;
+    }
+
+    @RequestMapping(value = "/dialogs/loadMore", method = RequestMethod.GET)
+    public @ResponseBody List<Dialog> getDialogs(@RequestParam(value = "start") Integer start, HttpServletRequest request){
+        Long idUser = (Long)(request.getSession().getAttribute("idUser"));
+        List<Dialog> result = dialogService.getDialogsByUserId(idUser,start,10);
+        for(Dialog dialog:result){
+            if(dialog.getPrivate()){
+                List<UserDialog> userDialogs = new ArrayList<>();
+                userDialogs.add(userDialogService.getUserDialogByPrivateDialogIdAndOtherUserId(dialog.getId(),idUser));
+                dialog.setUserDialogs(userDialogs);
+                User user = userService.getUserById(idUser);
+                String[] names = dialog.getName().split("/");
+                if (names[0].trim().equals(user.getLogin())){
+                    dialog.setName(names[1].trim());
+                }else dialog.setName(names[0].trim());
+            }
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/dialogs/{id}", method = RequestMethod.GET)
+    public @ResponseBody Dialog getDialog(@PathVariable("id") Long idDialog, HttpServletRequest request){
+        Long idUser = (Long)(request.getSession().getAttribute("idUser"));
+        Dialog dialog = dialogService.getDialogById(idDialog);
+        if(dialogService.getDialogsByUserId(idUser,0,Integer.MAX_VALUE).contains(dialog)){
+            if(dialog.getPrivate()){
+                List<UserDialog> userDialogs = new ArrayList<>();
+                userDialogs.add(userDialogService.getUserDialogByPrivateDialogIdAndOtherUserId(dialog.getId(),idUser));
+                dialog.setUserDialogs(userDialogs);
+                User user = userService.getUserById(idUser);
+                String[] names = dialog.getName().split("/");
+                if (names[0].trim().equals(user.getLogin())){
+                    dialog.setName(names[1].trim());
+                }else dialog.setName(names[0].trim());
+            }
+        }
+        return dialog;
     }
 
     @RequestMapping(value = "/message", method = RequestMethod.POST)
@@ -123,7 +164,7 @@ public class DialogController {
             User receiver = userService.getUserById(idReceiver);
             Dialog dialog = dialogService.getDialogByTwoUser(idSender,idReceiver);
             if(dialog==null){
-                dialog = new Dialog(sender.getLogin()+" / "+receiver.getLogin());
+                dialog = new Dialog(sender.getLogin()+" / "+receiver.getLogin(), true);
                 dialog = dialogService.create(dialog);
                 UserDialog senderUserDialog = new UserDialog(dialog,sender);
                 UserDialog receiverUserDialog = new UserDialog(dialog,receiver);
@@ -136,5 +177,16 @@ public class DialogController {
             dialogService.update(dialog);
             return true;
         }else return false;
+    }
+
+    @RequestMapping(value = "/unreadMessages", method = RequestMethod.GET)
+    public @ResponseBody
+    List<HashMap.Entry<Long,Long>> getDialogsWithCntUnreadMessages(@RequestParam(value = "idUser") Long idUser){
+        List<HashMap.Entry<Long,Long>> result = new ArrayList<>();
+        List<Dialog> dialogs = dialogService.getDialogsWithUnreadMessagesByUserId(idUser);
+        for(Dialog dialog:dialogs){
+            result.add(new HashMap.SimpleEntry<Long, Long>(dialog.getId(),messageService.getCountUnreadMessagesByUserIdAndDialogId(idUser,dialog.getId())));
+        }
+        return result;
     }
 }

@@ -4,6 +4,7 @@ import network.dao.CityDao;
 import network.dao.CountryDao;
 import network.dao.GenderDao;
 import network.dao.UserDao;
+import network.entity.Country;
 import network.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -57,19 +59,13 @@ public class MainController{
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String root(Model model, HttpServletRequest request, HttpServletResponse response) {
-        Long idUser = (Long)request.getSession().getAttribute("idUser");
-        if (idUser == null)
-        {
-
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            User loginUser = userService.getUserByLogin(auth.getName());
-            if (loginUser == null){
-                return "redirect:/login";
-            }
-            idUser = loginUser.getId();
-            request.getSession().setAttribute("idUser",idUser);
+        Long idUser = (Long) request.getSession().getAttribute("idUser");
+        if(idUser!=null){
+            return "redirect:/profile";
         }
-        return "redirect:/user"+idUser;
+        List<Country> countries = countryService.getCountriesWithUsers();
+        model.addAttribute("countries",countries);
+        return "main";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -100,17 +96,6 @@ public class MainController{
             request.getSession().removeAttribute("msg");
         }
         model.setViewName("login");
-        return model;
-    }
-
-    @RequestMapping(value = "/admin**", method = RequestMethod.GET)
-    public ModelAndView adminPage() {
-
-        ModelAndView model = new ModelAndView();
-        model.addObject("title", "Spring Security Hello World");
-        model.addObject("message", "This is protected page!");
-        model.setViewName("admin");
-
         return model;
     }
 

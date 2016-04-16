@@ -1,5 +1,6 @@
 package network.dto;
 
+import network.entity.Dialog;
 import network.entity.Message;
 
 import java.text.SimpleDateFormat;
@@ -12,9 +13,12 @@ public class MessageDto {
     private String id;
     private String messageText;
     private String sender;
+    private String senderId;
     private String receiverDialog;
     private Date receivedDate;
     private String received;
+    private Boolean read;
+    private String avatar;
 
     public MessageDto() {
     }
@@ -23,10 +27,29 @@ public class MessageDto {
         id = message.getId().toString();
         messageText = message.getText();
         sender = message.getUser().getLogin();
+        senderId = message.getUser().getId().toString();
         receiverDialog = message.getDialog().getId().toString();
         receivedDate = message.getDateTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         received = (simpleDateFormat.format(receivedDate));
+        read = message.getRead();
+        avatar = message.getUser().getPhotoURL();
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
     }
 
     public String getReceived() {
@@ -77,14 +100,24 @@ public class MessageDto {
         this.receiverDialog = receiverDialog;
     }
 
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
+
     @Override
     public String toString() {
         return "MessageDto{" +
                 "id='" + id + '\'' +
                 ", messageText='" + messageText + '\'' +
                 ", sender='" + sender + '\'' +
+                ", senderId='" + senderId + '\'' +
                 ", receiverDialog='" + receiverDialog + '\'' +
-                ", receivedDate='" + receivedDate + '\'' +
+                ", receivedDate=" + receivedDate +
+                ", received='" + received + '\'' +
                 '}';
     }
 }

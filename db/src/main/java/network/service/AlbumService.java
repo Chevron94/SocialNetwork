@@ -45,6 +45,18 @@ public class AlbumService extends AlbumDaoImplementation implements AlbumDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public Long getCountPhotosInAlbum(Long id) {
+        return super.getCountPhotosInAlbum(id);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public Album getAlbumByUserIdAndName(Long id, String name) {
+        return super.getAlbumByUserIdAndName(id, name);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     protected List<Album> executeQuery(String jpql, Map<String, Object> parameters) {
         return super.executeQuery(jpql, parameters);
     }

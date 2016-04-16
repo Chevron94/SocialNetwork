@@ -2,6 +2,7 @@ package network.controllers;
 
 import network.dao.*;
 import network.dto.SearchDto;
+import network.entity.Album;
 import network.entity.FriendRequest;
 import network.entity.User;
 import org.springframework.security.authentication.dao.SystemWideSaltSource;
@@ -36,6 +37,10 @@ public class PeopleController {
     CountryDao countryService;
     @EJB
     ContinentDao continentService;
+    @EJB
+    PhotoDao photoService;
+    @EJB
+    AlbumDao albumService;
 
 
     public void setUserService(UserDao userService) {
@@ -111,11 +116,9 @@ public class PeopleController {
             User sender = userService.getUserById(idSender);
             User receiver = userService.getUserById(idReceiver);
             FriendRequest friendRequest = new FriendRequest(sender, receiver, false);
-            FriendRequest repeat = friendRequestService.getFriendRequestBySenderAndReceiverId(idReceiver, idSender);
+            FriendRequest repeat = friendRequestService.getFriendRequestByTwoUsersId(idReceiver, idSender);
             if (repeat == null) {
-                if (friendRequestService.getFriendRequestBySenderAndReceiverId(idSender, idReceiver) == null) {
-                    friendRequestService.create(friendRequest);
-                }
+                friendRequestService.create(friendRequest);
                 return false;
             }else {
                 repeat.setConfirmed(true);
@@ -190,6 +193,14 @@ public class PeopleController {
         Long idUser = (Long)request.getSession().getAttribute("idUser");
         if((list.equals("sent") || list.equals("received")) && idRequestUser != idUser)
             return null;
-        return userService.getUsersByCustomFilter(idRequestUser,params,start,20);
+        List<User> result = userService.getUsersByCustomFilter(idRequestUser,params,start,20);
+        for(User user:result){
+            Album album = albumService.getAlbumByUserIdAndName(user.getId(),"Main");
+            album.setPhotos(photoService.getPhotosByAlbumId(album.getId(),0,1));
+            List<Album> albums = new ArrayList<>();
+            albums.add(album);
+            user.setAlbums(albums);
+        }
+        return result;
     }
 }

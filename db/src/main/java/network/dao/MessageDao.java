@@ -16,4 +16,6 @@ public interface MessageDao extends GenericDao<Message, Long> {
 
     public List<Message> getMessagesByUserId(Long id, Integer start, Integer limit);
     public List<Message> getMessagesByDialogId(Long id, Integer start, Integer limit);
+    public void readMessages(Long idUser, Long idDialog);
+    public Long getCountUnreadMessagesByUserIdAndDialogId(Long idUser, Long idDialog);
 }

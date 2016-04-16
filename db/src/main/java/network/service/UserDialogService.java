@@ -45,6 +45,12 @@ public class UserDialogService extends UserDialogDaoImplementation implements Us
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public UserDialog getUserDialogByPrivateDialogIdAndOtherUserId(Long idDialog, Long idUser) {
+        return super.getUserDialogByPrivateDialogIdAndOtherUserId(idDialog, idUser);
+    }
+
+    @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
     public UserDialog create(UserDialog userDialog) {

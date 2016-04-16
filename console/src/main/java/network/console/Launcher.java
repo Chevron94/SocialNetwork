@@ -242,7 +242,6 @@ public class Launcher {
             }
         }
         */
-        Dialog d = dialogDao.getDialogByTwoUser(1l,2l);
         System.exit(0);
     }
 }

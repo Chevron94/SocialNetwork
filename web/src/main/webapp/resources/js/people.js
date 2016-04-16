@@ -9,15 +9,8 @@ var loadMoreUrl = window.location.protocol+'//'+window.location.hostname+':'+win
 function updateFriends(sender)
 {
     $('#add_'+sender).hide();
-    var html = '<div class="row" style="margin: auto">'+
-        '<div class="col-xs-9">' +
-        '<div class="row" style="margin: auto">' +
-        '<div class="col-xs-12">' +
-        ' <div id="'+sender+'" class="row table-fixed">';
-    var x = document.getElementById(sender);
-    html += x.innerHTML;
-    html +='</div></div></div></div></div>';
-    $('#'+sender).html('');
+    var html =  document.getElementById(sender);
+    $('#'+sender).remove();
     $('#friends').append(html);
     $('#friendsNotFound').html('');
 }
@@ -25,22 +18,15 @@ function updateFriends(sender)
 function updateRequests(receiver)
 {
     $('#add_'+receiver).hide();
-    var html = '<div class="row" style="margin: auto">'+
-        '<div class="col-xs-9">' +
-        '<div class="row" style="margin: auto">' +
-        '<div class="col-xs-12">' +
-        ' <div id="'+receiver+'" class="row table-fixed">';
-    var x = document.getElementById(receiver);
-    html += x.innerHTML;
-    html +='</div></div></div></div></div>';
-    $('#'+receiver).html('');
+    var html = document.getElementById(receiver);
+    $('#'+receiver).remove();
     $('#sentRequests').append(html);
     $('#sentRequestsNotFound').html('');
 
 }
 
 function deleteFriend(receiver){
-    $('#'+receiver).html('');
+    $('#'+receiver).remove();
 }
 
 function acceptRequest(sender,receiver)
@@ -63,10 +49,17 @@ function sendRequest(sender,receiver)
             idSender: sender,
             idReceiver: receiver,
             ajax : 'true'},function(data){
-            if (data==="true"){
-                updateFriends(receiver)
-            }else {
-                updateRequests(receiver)
+            var path = window.location.pathname;
+            if(path == '/users' || path=='/friends') {
+                if (data === "true") {
+                    updateFriends(receiver)
+                } else {
+                    updateRequests(receiver)
+                }
+            }else{
+                $('#friendButton').html('');
+                var html ='<input type="button" class="btn btn-danger btn-block" value="Delete" onclick="deleteRequest('+sender+','+receiver+')">';
+                $('#deleteButton').html(html);
             }
         }
 
@@ -80,7 +73,14 @@ function deleteRequest(sender,receiver){
             idSender: sender,
             idReceiver: receiver,
             ajax : 'true'},function(data){
-                deleteFriend(receiver);
+                var path = window.location.pathname;
+                if(path == '/users' || path=='/friends') {
+                    deleteFriend(receiver);
+                }else{
+                    $('#deleteButton').html('');
+                    var html = '<input type="button" class="btn btn-success btn-block" value="Add to friends" onclick="sendRequest('+sender+','+receiver+')">';
+                    $('#friendButton').html(html);
+                }
             }
 
     );
@@ -108,6 +108,8 @@ Date.prototype.customFormat = function(formatString){
 
 
 function loadMore(start,sender,list){
+    $('#loadMoreSent').hide();
+    $('#searchButton').prop('disabled', true);
     var male =( $('#gender').val().indexOf('m')>0);
     var female = ( $('#gender').val().indexOf('f')>0);
     $.getJSON(loadMoreUrl,
@@ -127,44 +129,51 @@ function loadMore(start,sender,list){
             ajax : 'true'},function(data){
             var html='';
             var len = data.length;
+            if (len == 0){
+                html+='<h5 align="center">Not Found</h5>';
+            }
             for (var i = 0; i< len; i++) {
                 var date = new Date(data[i].birthday);
-                html+='<div class="row scale-text" style="margin: auto">'+
+                html+='<div id="'+data[i].id+'" class="row table-bordered scale-text" style="margin: auto; margin-right:1%;">'+
                         '<div class="col-xs-11">'+
                             '<div class="row" style="margin: auto">'+
                                 '<div class="col-xs-12">'+
-                                    '<div id="'+data[i].id+'" class="row">'+
-                                        '<div class="col-xs-3">'+
-                                            '<img src="'+data[i].photoURL+'" class="img img-responsive" alt="Responsive image">'+
-                                        '</div>'+
+                                    '<div class="row">'+
+                                        '<div class="col-xs-3">';
+                if(data[i].albums[0].photos.length>0){
+                    html += '<input type="image" src="'+data[i].photoURL+'" class="img img-responsive" alt="Responsive image"  data-toggle="modal" data-target="#photoViewer" onclick="showPhoto('+data[i].albums[0].photos[0].id+",'"+data[i].albums[0].photos[0].photoUrl+"',"+data[i].id+","+data[i].albums[0].id+",'"+(new Date(data[i].albums[0].photos[0].uploaded)).customFormat("#YYYY#-#MM#-#DD#")+"',"+0+')">';
+                }else{
+                    html+= '<img src="'+data[i].photoURL+'" class="img img-responsive" alt="Responsive image">';
+                }
+                html+=                 '</div>'+
                                         '<div class="col-xs-9">'+
-                                            '<div class="row table-bordered table-fixed">'+
+                                            '<div class="row  table-fixed">'+
                                                 '<div class="col-xs-3">'+
-                                                    '<label class="control-label">Login</label>'+
+                                                    'Login'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
                                                     '<label class="control-label">'+data[i].login+'</label>'+
                                                 '</div>'+
                                             '</div>'+
-                                            '<div class="row table-bordered table-fixed">'+
+                                            '<div class="row  table-fixed">'+
                                                 '<div class="col-xs-3">'+
-                                                    '<label class="control-label">Name</label>'+
+                                                    'Name'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
                                                     '<label class="control-label">'+data[i].name+'</label>'+
                                                 '</div>'+
                                             '</div>'+
-                                            '<div class="row table-bordered table-fixed">'+
+                                            '<div class="row table-fixed">'+
                                                 '<div class="col-xs-3">'+
-                                                    '<label class="control-label">Birthday</label>'+
+                                                    'Birthday'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
                                                     '<label class="control-label">'+date.customFormat("#YYYY#-#MM#-#DD#") +'</label>'+
                                                 '</div>'+
                                             '</div>'+
-                                            '<div class="row table-bordered table-fixed">'+
+                                            '<div class="row table-fixed">'+
                                                 '<div class="col-xs-3">'+
-                                                    '<label class="control-label">From</label>'+
+                                                    'From'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
                                                     '<label class="control-label">'+
@@ -172,33 +181,33 @@ function loadMore(start,sender,list){
                                                     '</label>'+
                                                 '</div>'+
                                             '</div>'+
-                                            '<div class="row table-bordered table-fixed">'+
+                                            '<div class="row table-fixed">'+
                                                 '<div class="col-xs-3">'+
-                                                    '<label class="control-label">Gender</label>'+
+                                                    'Gender'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
                                                     '<label class="control-label">'+data[i].gender.name+'</label>'+
                                                 '</div>'+
                                             '</div>'+
-                                            '<div class="row table-bordered table-fixed">'+
+                                            '<div class="row table-fixed">'+
                                                 '<div class="col-xs-3">'+
-                                                    '<label class="control-label">Languages</label>'+
+                                                    'Languages'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
                                                     '<label class="control-label">'+data[i].country.name+'</label>'+
                                                 '</div>'+
                                             '</div>'+
-                                            '<div class="row table-bordered table-fixed">'+
+                                            '<div class="row table-fixed">'+
                                                 '<div class="col-xs-3">'+
-                                                    '<label class="control-label">Profile</label>'+
+                                                    'Profile'+
                                                 '</div>'+
-                                            '<div class="col-xs-9">'+
-                                                '<a href="/user'+data[i].id+'">'+
+                                                '<div class="col-xs-9">'+
+                                                    '<a href="/user'+data[i].id+'">'+
                                                     window.location.protocol+'//'+window.location.hostname+'/user'+data[i].id+
-                                                '</a>'+
+                                                    '</a>'+
+                                                '</div>'+
                                             '</div>'+
-                                        '</div>'+
-                                        '<div class="row table-bordered table-fixed btn-xs" align="center">';
+                                            '<div class="row table-fixed btn-xs">';
                                         if (list == 'friends' || list == 'sent'){
                                             html+= '<button id="add_'+data[i].id+'" style="display: none" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
                                                 '</button>\n';
@@ -264,6 +273,7 @@ function loadMore(start,sender,list){
                     $('#loadMoreOther').show();
                 }
             }
+            $('#searchButton').prop('disabled', false);
         }
 
     );

@@ -3,8 +3,8 @@ package network.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by roman on 13.09.15.
@@ -24,7 +24,7 @@ public class Continent {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "continent")
     @JsonIgnore
-    private transient Set<Country> countries = new HashSet<Country>();
+    private transient List<Country> countries = new ArrayList<>();
 
 
 
@@ -51,11 +51,11 @@ public class Continent {
         this.name = name;
     }
 
-    public Set<Country> getCountries() {
+    public List<Country> getCountries() {
         return countries;
     }
 
-    public void setCountries(Set<Country> countries) {
+    public void setCountries(List<Country> countries) {
         this.countries = countries;
     }
 

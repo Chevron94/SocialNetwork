@@ -5,6 +5,8 @@ import network.dao.implementation.MessageDaoImplementation;
 import network.entity.Message;
 import network.service.events.MessageEvent;
 import network.service.events.NewMessageEvent;
+import network.service.events.ReadEvent;
+import network.service.events.ReadMessageEvent;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -26,6 +28,10 @@ public class MessageService extends MessageDaoImplementation implements MessageD
     @Inject
     @NewMessageEvent
     Event<MessageEvent> messageEvent;
+
+    @Inject
+    @ReadMessageEvent
+    Event<ReadEvent> readEvent;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -60,12 +66,25 @@ public class MessageService extends MessageDaoImplementation implements MessageD
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void readMessages(Long idUser, Long idDialog) {
+        super.readMessages(idUser, idDialog);
+        readEvent.fire(new ReadEvent(idUser,idDialog));
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
     public Message create(Message message) {
         message = super.create(message);
         MessageEvent event = new MessageEvent(message);
         messageEvent.fire(event);
         return message;
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public Long getCountUnreadMessagesByUserIdAndDialogId(Long idUser, Long idDialog) {
+        return super.getCountUnreadMessagesByUserIdAndDialogId(idUser, idDialog);
     }
 
     @Override

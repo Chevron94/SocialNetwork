@@ -4,6 +4,7 @@ import network.entity.Album;
 
 import javax.ejb.Local;
 import javax.ejb.Remote;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 /**
@@ -12,5 +13,7 @@ import java.util.List;
 @Local
 public interface AlbumDao extends GenericDao<Album,Long> {
     public Album getAlbumById(Long id);
+    public Album getAlbumByUserIdAndName(Long id, String name);
+    public Long getCountPhotosInAlbum(Long id);
     public List<Album> getAlbumsByUserId(Long id, Integer start, Integer limit);
 }

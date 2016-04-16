@@ -27,7 +27,8 @@
        <mvc:resources mapping="/resources/**" location="/resources/"/>
        <mvc:annotation-driven />
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="10000000" />
+        <property name="maxUploadSize" value="-1" />
+        <property name="maxInMemorySize" value="1048576" />
     </bean>
 
     <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor">
@@ -113,11 +114,10 @@
         <property name="userService" ref="userDao"/>
     </bean>
 
-    <!--bean id="dialogEndpoint" class="network.dialogs.DialogEndpoint">
+    <bean id="albumController" class="network.controllers.AlbumController">
         <property name="userService" ref="userDao"/>
-        <property name="dialogService" ref="dialogDao"/>
-        <property name="messageService" ref="messageDao"/>
-        <property name="userDialogService" ref="userDialogDao"/>
-    </bean-->
+        <property name="albumService" ref="albumDao"/>
+        <property name="photoService" ref="photoDao"/>
+    </bean>
 
 </beans>

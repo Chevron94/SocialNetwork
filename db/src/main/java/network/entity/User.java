@@ -3,9 +3,7 @@ package network.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by roman on 13.09.15.
@@ -46,7 +44,7 @@ public class User {
     @Column(name = "IS_LOCKED")
     private Boolean isLocked;
 
-    @Column(name = "DESCRIPTION", columnDefinition = "TEXT")
+    @Column(name = "DESCRIPTION", columnDefinition = "TEXT", nullable = true)
     private String description;
 
     @Column(name = "TOKEN", nullable = true)
@@ -66,29 +64,29 @@ public class User {
 
     
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sender")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sender", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private transient Set<FriendRequest> senders = new HashSet<FriendRequest>();
+    private transient List<FriendRequest> senders = new ArrayList<FriendRequest>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiver")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiver", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private transient Set<FriendRequest> receivers = new HashSet<FriendRequest>();
+    private transient List<FriendRequest> receivers = new ArrayList<FriendRequest>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private transient Set<LanguageUser> languageUsers = new HashSet<LanguageUser>();
+    private transient List<LanguageUser> languageUsers = new ArrayList<LanguageUser>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private transient Set<Message> messages = new HashSet<Message>();
+    private transient List<Message> messages = new ArrayList<Message>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private transient Set<UserDialog> userDialogs = new HashSet<UserDialog>();
+    private transient List<UserDialog> userDialogs = new ArrayList<UserDialog>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private transient Set<Album> albums = new HashSet<Album>();
+    private transient List<Album> albums = new ArrayList<Album>();
 
 
 
@@ -139,11 +137,11 @@ public class User {
         this.role = role;
     }
 
-    public Set<LanguageUser> getLanguageUsers() {
+    public List<LanguageUser> getLanguageUsers() {
         return languageUsers;
     }
 
-    public void setLanguageUsers(Set<LanguageUser> languageUsers) {
+    public void setLanguageUsers(List<LanguageUser> languageUsers) {
         this.languageUsers = languageUsers;
     }
 
@@ -155,19 +153,19 @@ public class User {
         this.photoURL = photoURL;
     }
 
-    public Set<FriendRequest> getSenders() {
+    public List<FriendRequest> getSenders() {
         return senders;
     }
 
-    public void setSenders(Set<FriendRequest> senders) {
+    public void setSenders(List<FriendRequest> senders) {
         this.senders = senders;
     }
 
-    public Set<FriendRequest> getReceivers() {
+    public List<FriendRequest> getReceivers() {
         return receivers;
     }
 
-    public void setReceivers(Set<FriendRequest> receivers) {
+    public void setReceivers(List<FriendRequest> receivers) {
         this.receivers = receivers;
     }
 
@@ -227,27 +225,27 @@ public class User {
         this.email = email;
     }
 
-    public Set<Message> getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(Set<Message> messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 
-    public Set<UserDialog> getUserDialogs() {
+    public List<UserDialog> getUserDialogs() {
         return userDialogs;
     }
 
-    public void setUserDialogs(Set<UserDialog> userDialogs) {
+    public void setUserDialogs(List<UserDialog> userDialogs) {
         this.userDialogs = userDialogs;
     }
 
-    public Set<Album> getAlbums() {
+    public List<Album> getAlbums() {
         return albums;
     }
 
-    public void setAlbums(Set<Album> albums) {
+    public void setAlbums(List<Album> albums) {
         this.albums = albums;
     }
 

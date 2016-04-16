@@ -14,7 +14,7 @@ import java.util.List;
 public interface FriendRequestDao extends GenericDao<FriendRequest,Long> {
     public FriendRequest getFriendRequestById(Long id);
     public FriendRequest getFriendRequestBySenderAndReceiverId(Long sender, Long receiver);
-
+    public FriendRequest getFriendRequestByTwoUsersId(Long idUser1, Long idUser2);
     public List<FriendRequest> getFriendRequestsBySenderId(Long id, Integer start, Integer limit);
     public List<FriendRequest> getFriendRequestsByReceiverId(Long id, Integer start, Integer limit);
 

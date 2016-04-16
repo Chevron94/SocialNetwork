@@ -44,6 +44,12 @@ public class FriendRequestService extends FriendRequestDaoImplementation impleme
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public FriendRequest getFriendRequestByTwoUsersId(Long idUser1, Long idUser2) {
+        return super.getFriendRequestByTwoUsersId(idUser1, idUser2);
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<FriendRequest> getFriendRequestsBySenderId(Long id, Integer start, Integer limit) {
         return super.getFriendRequestsBySenderId(id, start, limit);
     }
