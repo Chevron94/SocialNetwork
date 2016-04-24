@@ -41,7 +41,7 @@
         </div>
         <%
         }%>
-        <h3>It's time to start making new friends! <a href="/registration">Join now!</a> Already have account? <a href="/login">Login!</a> </h3>
+        <h3>It's time to start making new friends! <a href="/registration">Join now!</a> Already with us? <a href="/login">Login!</a> </h3>
     </div>
 </body>
 </html>

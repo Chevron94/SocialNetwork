@@ -57,3 +57,20 @@
     overflow-y: scroll;
     height: 400px;
 }
+
+.btn-block-full
+{
+    height: 100%;
+}
+
+.img_wrap {
+    height: 55px;
+    background-position: center,center;
+    background-size: cover;
+}
+
+.img_wrap_big {
+    height: 150px;
+    background-position: center,center;
+    background-size: cover;
+}

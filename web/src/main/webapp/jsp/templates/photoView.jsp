@@ -56,8 +56,8 @@
                 <label id="photoNum"></label>
             </div>
             <div class="modal-body">
-                <div class="row table-bordered" align="center">
-                    <input type="image" id="photo" src="" class="img-responsive" onclick="getNext()">
+                <div class="row table-bordered" align="center" >
+                    <input type="image" id="photo" src="" style="height: 500px" class="img-responsive" onclick="getNext()">
                 </div>
                 <div class="row" style="margin: 1%">
                     <div class="col-xs-2" align="left">

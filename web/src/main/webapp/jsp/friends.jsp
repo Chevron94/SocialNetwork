@@ -7,35 +7,37 @@
     var receivedRequestsStart = 0;
     var sentRequestsStart = 0;
     var idRequestUser = <%=idRequestUser%>;
+    document.title = "Friends";
+
 </script>
 <div class="col-xs-8">
     <ul class="nav nav-tabs nav-justified" id="tabMenu">
         <li class="active"><a data-toggle="tab" href="#friendsTab">Friends</a></li>
-        <%if(idUser==idRequestUser){%>
+        <%if(idUser.equals(idRequestUser)){%>
         <li><a data-toggle="tab" href="#friendsRequestsTab">Received requests</a></li>
         <li><a data-toggle="tab" href="#sentRequestsTab">Sent requests</a></li>
         <%}%>
     </ul>
-    <div class="tab-content" style="margin-top: 1%">
-        <div id="friendsTab" class="tab-pane fade in active" style="max-height: 500px; overflow-y: scroll">
-            <div id="friends">
+    <div class="tab-content" style="border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd;">
+        <div id="friendsTab" class="tab-pane fade in active" style="max-height: 75vh; overflow-y: auto">
+            <div id="friends" style="margin: 1%">
 
             </div>
             <div align="center">
                 <button id="loadMoreFriends" class="btn btn-info" style="display: none" onclick="loadMore(friendsStart,<%=idRequestUser%>,'friends')">Load more</button>
             </div>
         </div>
-        <%if(idUser==idRequestUser){%>
-        <div id="friendsRequestsTab" class="tab-pane fade" style="max-height: 500px; overflow-y: scroll">
-            <div id="friendRequests">
+        <%if(idUser.equals(idRequestUser)){%>
+        <div id="friendsRequestsTab" class="tab-pane fade" style="max-height: 75vh; overflow-y: auto">
+            <div id="friendRequests" style="margin: 1%">
 
             </div>
             <div align="center">
                 <button id="loadMoreReceived" class="btn btn-info" style="display: none" onclick="loadMore(receivedRequestsStart,<%=idRequestUser%>,'received')">Load more</button>
             </div>
         </div>
-        <div id="sentRequestsTab" class="tab-pane fade" style="max-height: 500px; overflow-y: scroll">
-            <div id="sentRequests">
+        <div id="sentRequestsTab" class="tab-pane fade" style="max-height: 75vh; overflow-y: auto">
+            <div id="sentRequests" style="margin: 1%">
 
             </div>
             <div align="center">

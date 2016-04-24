@@ -2,6 +2,8 @@ package network.console;
 
 import network.dao.ContinentDao;
 import network.dao.DialogDao;
+import network.dao.LanguageDao;
+import network.dao.LanguageLevelDao;
 import network.dao.implementation.*;
 import network.entity.*;
 import org.json.JSONArray;
@@ -26,6 +28,8 @@ public class Launcher {
     private static CountryDaoImplementation countryDao = new CountryDaoImplementation();
     private static CityDaoImplementation cityDao = new CityDaoImplementation();
     private static DialogDao dialogDao = new DialogDaoImplementation();
+    private static LanguageDao languageDao = new LanguageDaoImplementation();
+    private static LanguageLevelDao languageLevelDao = new LanguageLevelDaoImplementation();
 
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 /*
@@ -241,7 +245,38 @@ public class Launcher {
                 ex.printStackTrace();
             }
         }
-        */
+*/
+        BufferedReader br = null;
+        try {
+            String sCurrentLine;
+            br = new BufferedReader(new FileReader("C:\\Users\\Роман\\Desktop\\languages.txt"));
+            while ((sCurrentLine = br.readLine()) != null) {
+                String[] langs = sCurrentLine.split("\t");
+                Language language = new Language(langs[1],langs[0]);
+                languageDao.create(language);
+                System.out.println(langs[0]+"\t"+langs[1]);
+            }
+
+        }
+        catch (Exception e)
+        {
+
+        }
+        finally {
+            try {
+                if (br != null) br.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        languageLevelDao.create(new LanguageLevel("Beginner"));
+        languageLevelDao.create(new LanguageLevel("Elementary"));
+        languageLevelDao.create(new LanguageLevel("Pre-Intermediate"));
+        languageLevelDao.create(new LanguageLevel("Intermediate"));
+        languageLevelDao.create(new LanguageLevel("Upper-Intermediate"));
+        languageLevelDao.create(new LanguageLevel("Advanced"));
+        languageLevelDao.create(new LanguageLevel("Proficiency"));
+        languageLevelDao.create(new LanguageLevel("Native Speaker"));
         System.exit(0);
     }
 }

@@ -1,9 +1,5 @@
-<%@ page import="network.entity.User" %>
 <%@ page import="java.util.List" %>
-<%@ page import="network.entity.Country" %>
-<%@ page import="network.entity.City" %>
-<%@ page import="network.dto.SearchDto" %>
-<%@ page import="network.entity.Continent" %>
+<%@ page import="network.entity.*" %>
 <%--
   Created by IntelliJ IDEA.
   User: roman
@@ -14,15 +10,12 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>People</title>
+    <title></title>
     <%@include file="scripts.jsp" %>
 
     <%
         List<Continent> continents = (List<Continent>) request.getAttribute("continents");
-        List<Country> countries = (List<Country>) request.getAttribute("countries");
-        City city = (City) request.getAttribute("city");
-
-        SearchDto searchDto = (SearchDto) request.getAttribute("searchDto");
+        List<Language> languages = (List<Language>) request.getAttribute("languages");
     %>
 </head>
 <body onload="initPage()">
@@ -52,19 +45,11 @@
                                         onchange="updateContinentSelectOptions()">
                                     <option value="0" selected>Select continent</option>
                                     <%
-                                        for (int i = 0; i < continents.size(); i++) {
-                                            if (searchDto != null && continents.get(i).getId().toString().equals(searchDto.getContinent())) {
+                                        for (Continent continent : continents) {
                                     %>
-                                    <option selected
-                                            value="<%=continents.get(i).getId()%>"><%=continents.get(i).getName()%>
+                                    <option value="<%=continent.getId()%>"><%=continent.getName()%>
                                     </option>
                                     <%
-                                    } else {
-                                    %>
-                                    <option value="<%=continents.get(i).getId()%>"><%=continents.get(i).getName()%>
-                                    </option>
-                                    <%
-                                            }
                                         }
                                     %>
                                 </select>
@@ -80,22 +65,6 @@
                                 <select name="country-select" class="form-control" id="country-select"
                                         onchange="updateCountrySelectOptions()">
                                     <option value="0" selected>Select country</option>
-                                    <% if (countries != null)
-                                        for (int i = 0; i < countries.size(); i++) {
-                                            if (searchDto != null && countries.get(i).getId().toString().equals(searchDto.getCountry())) {
-                                    %>
-                                    <option selected="selected"
-                                            value="<%=countries.get(i).getId()%>"><%=countries.get(i).getName()%>
-                                    </option>
-                                    <%
-                                    } else {
-                                    %>
-                                    <option value="<%=countries.get(i).getId()%>"><%=countries.get(i).getName()%>
-                                    </option>
-                                    <%
-                                                }
-                                            }
-                                    %>
                                 </select>
                             </div>
                         </div>
@@ -106,17 +75,6 @@
                             <div class="col-xs-9">
                                 <select name="city-select" class="js-data-example-ajax form-control" id="city-select"
                                         onchange="updateValues('city-select','city')">
-                                    <% if (city != null) {
-                                    %>
-                                    <option selected="selected" value="<%=city.getId()%>"><%=city.getName()%>
-                                    </option>
-                                    <%
-                                    } else {
-                                    %>
-                                    <option value="0" selected>Select city</option>
-                                    <%
-                                        }
-                                    %>
                                 </select>
                             </div>
                         </div>
@@ -126,28 +84,10 @@
                             <label class="control-label col-xs-3">Gender</label>
                             <div class="col-xs-9">
                                 <label class="check-box checkbox-inline">
-                                    <%
-                                        if (searchDto != null && searchDto.getGender() != null && searchDto.getGender().contains("m")) {
-                                    %>
-                                    <input type="checkbox" id="genderMale"  checked value="" onclick="checkMale(this)">
-                                    <%
-                                    } else {
-                                    %>
-                                    <input type="checkbox" id="genderMale"  value="" onclick="checkMale(this)">
-                                    <%}%>
-                                    Male
+                                    <input type="checkbox" id="genderMale"  value="" onclick="checkMale(this)">Male
                                 </label>
                                 <label class="check-box checkbox-inline">
-                                    <%
-                                        if (searchDto != null && searchDto.getGender() != null && searchDto.getGender().contains("f")) {
-                                    %>
-                                    <input type="checkbox" id="genderFemale" checked onchange="checkFemale(this)">
-                                    <%
-                                    } else {
-                                    %>
-                                    <input type="checkbox" id="genderFemale" value="" onchange="checkFemale(this)">
-                                    <%}%>
-                                    Female
+                                    <input type="checkbox" id="genderFemale" value="" onchange="checkFemale(this)">Female
                                 </label>
                             </div>
                         </div>
@@ -187,13 +127,8 @@
                                             range: true,
                                             min: 1,
                                             max: 100,
-                                            <%
-                                        if(searchDto==null){
-                                    %>
-                                            values: [1, 100],
-                                            <%}else{%>
-                                            values: [<%=searchDto.getAgeFrom()%>, <%=searchDto.getAgeTo()%>],
-                                            <%}%>
+                                           values: [1, 100],
+
                                             slide: function (event, ui) {
                                                 $("#range").val(ui.values[0] + " - " + ui.values[1]);
                                                 $("#ageFrom").val(ui.values[0]);
@@ -211,9 +146,15 @@
                         <div class="row" style="margin-bottom: 3%">
                             <label class=" control-label col-xs-3 " for="languages-select">Language</label>
                             <div class="col-xs-9">
-                                <select name="languages-select" id="languages-select" class="form-control"
+                                <select name="languages-select" multiple="multiple" id="languages-select" class="form-control"
                                         onchange="updateValues('languages-select','language')">
-                                    <option value="0" selected>Select languages</option>
+                                    <%
+                                        for(Language language: languages){
+                                    %>
+                                    <option  value="<%=language.getId()%>"><%=language.getName()%></option>
+                                    <%
+                                        }
+                                    %>
                                 </select>
                             </div>
                         </div>
@@ -226,19 +167,13 @@
                         </div>
                     </div>
 
-                <input type="hidden" name="continent" id="continent"
-                       value="<%= searchDto != null ? searchDto.getContinent() : "0"%>">
-                <input type="hidden" name="country" id="country"
-                       value="<%= searchDto != null  ? searchDto.getCountry() : "0"%>">
-                <input type="hidden" name="city" id="city" value="<%= searchDto != null ? searchDto.getCity() : "0"%>">
-                <input type="hidden" name="gender" id="gender"
-                       value="<%= searchDto != null ? searchDto.getGender() : ""%>">
-                <input type="hidden" name="ageFrom" id="ageFrom"
-                       value="<%= searchDto != null ? searchDto.getAgeFrom() : "0"%>">
-                <input type="hidden" name="ageTo" id="ageTo"
-                       value="<%= searchDto != null ? searchDto.getAgeTo() : "100"%>">
-                <input type="hidden" name="Language" id="language"
-                       value="<%= searchDto != null ? searchDto.getLanguage() : "0"%>">
+                <input type="hidden" name="continent" id="continent" value="0">
+                <input type="hidden" name="country" id="country" value="0">
+                <input type="hidden" name="city" id="city" value="0">
+                <input type="hidden" name="gender" id="gender" value="">
+                <input type="hidden" name="ageFrom" id="ageFrom" value="0">
+                <input type="hidden" name="ageTo" id="ageTo" value="100">
+                <input type="hidden" name="Language" id="language" value="0">
 
 
                 <script>
@@ -282,17 +217,7 @@
                         escapeMarkup: function (m) {
                             return m;
                         }
-                    }).val(<%
-              if(city!=null)
-              { out.print(city.getId());
-              }
-              else
-              {
-    %>
-                            '0'
-                            <%
-                                      }
-                            %>);
+                    });
                 </script>
             </form>
         </div>

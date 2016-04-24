@@ -67,6 +67,12 @@ public class FriendRequestService extends FriendRequestDaoImplementation impleme
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public Long getNumberOfReceivedUnacceptedFriendRequests(Long idReceiver) {
+        return super.getNumberOfReceivedUnacceptedFriendRequests(idReceiver);
+    }
+
+    @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
     public FriendRequest create(FriendRequest friendRequest) {

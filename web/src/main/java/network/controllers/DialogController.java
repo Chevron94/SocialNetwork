@@ -38,22 +38,6 @@ public class DialogController {
     @EJB
     MessageDao messageService;
 
-    public void setUserService(UserDao userService) {
-        this.userService = userService;
-    }
-
-    public void setUserDialogService(UserDialogDao userDialogService) {
-        this.userDialogService = userDialogService;
-    }
-
-    public void setDialogService(DialogDao dialogService) {
-        this.dialogService = dialogService;
-    }
-
-    public void setMessageService(MessageDao messageService) {
-        this.messageService = messageService;
-    }
-
     @RequestMapping(value = "/dialogs", method = RequestMethod.GET)
     public String getDialog(HttpServletRequest request, Model model)
     {

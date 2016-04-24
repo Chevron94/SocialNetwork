@@ -169,6 +169,7 @@ function deletePhoto(id){
                     current -=1;
                 }else current = max-1;
                 $('#photoViewer').modal('hide');
+                curPhoto--;
             }
 
         }

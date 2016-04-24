@@ -39,30 +39,6 @@ public class AlbumController {
     @EJB
     AlbumDao albumService;
 
-    public UserDao getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserDao userService) {
-        this.userService = userService;
-    }
-
-    public PhotoDao getPhotoService() {
-        return photoService;
-    }
-
-    public void setPhotoService(PhotoDao photoService) {
-        this.photoService = photoService;
-    }
-
-    public AlbumDao getAlbumService() {
-        return albumService;
-    }
-
-    public void setAlbumService(AlbumDao albumService) {
-        this.albumService = albumService;
-    }
-
     public Long getUserId(HttpServletRequest request){
         Long idUser = (Long)request.getSession().getAttribute("idUser");
         if(idUser==null) {

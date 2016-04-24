@@ -30,6 +30,9 @@ public class NetworkUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         network.entity.User user = userService.getUserByLogin(s);
+        if (user != null && user.getConfirmed() == false){
+            throw new UsernameNotFoundException("Inactive user");
+        }
         User loadedUser =  new User(user.getLogin(),
                 user.getPassword(),
                 user.getConfirmed(),

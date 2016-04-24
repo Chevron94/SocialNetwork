@@ -27,43 +27,60 @@
 <a href="/user<%=requestUser.getId()%>"><h2 style="margin: 1%"><%=requestUser.getLogin()%>
 </h2></a>
 <div class="row" style="margin: 1%">
-    <%if (idUser == requestUser.getId()) {%>
-        <button class="btn btn-success" value="Create Album" onclick="newAlbum();return false;">Create Album</button>
+    <%if (idUser.equals(requestUser.getId())) {%>
+    <button class="btn btn-success" value="Create Album" data-toggle="modal" data-target="#albumWindow">Create Album
+    </button>
     <%}%>
 </div>
-    <div id="albums" class="row" style="max-height: 385px; margin: 1%; overflow-y: scroll">
-        <div class="col-xs-12" id="albumsField">
-
-        </div>
-
-    </div>
-<div class="row" style="margin: 1%;">
-    <button class="btn btn-info" id="loadMore" value="LoadMore" style="display: none" onclick="loadAlbums(<%=requestUser.getId()%>,albumStart,6);">LoadMore</button>
-</div>
-<%@include file="templates/photoView.jsp" %>
-<div id="albumWindow"><!-- Сaмo oкнo -->
-    <span id="closeWindow">X</span> <!-- Кнoпкa зaкрыть -->
-    <br>
-    <form method="post" id="messageForm">
-        <div class="control-group">
-            <div class="row">
-                <div class="col-xs-3" align="left">
-                    <label for="albumName" class="control-label">Album name</label>
-                </div>
-                <div class="col-xs-9" align="right">
-                    <input type="text" id="albumName" name="albumName" class="form-control" value="">
-                </div>
-            </div>
-        </div>
-        <br>
+<div id="albums" class="row" style="max-height: 68vh; margin: 1%; overflow-y: auto">
+    <div class="col-xs-12">
         <div class="row">
-            <div class="col-xs-12" align="center">
-                <input align="center" type="button" class="btn btn-primary" value="Create"
-                       onclick="createAlbum(<%=idUser%>)">
+            <div class="col-xs-12" id="albumsField">
             </div>
         </div>
-    </form>
+        <div class="row">
+            <button class="btn btn-info" id="loadMore" value="LoadMore" style="display: none"
+                    onclick="loadAlbums(<%=requestUser.getId()%>,albumStart,6);">LoadMore
+            </button>
+        </div>
+    </div>
+
 </div>
-<div id="overlay"></div>
+
+<%@include file="templates/photoView.jsp" %>
+
+<div class="modal fade" id="albumWindow" tabindex="-1" role="dialog" aria-labelledby="albumLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <label id="albumLabel"><h2>New album</h2></label>
+            </div>
+            <div class="modal-body">
+                <div class="form-group form-group-sm">
+                    <div class="row">
+                        <div class="col-xs-3" align="left">
+                            <label for="albumName" class="control-label">Album name</label>
+                        </div>
+                        <div class="col-xs-9" align="right">
+                            <input type="text" id="albumName" name="albumName" class="form-control" value="">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-offset-3 col-xs-9">
+                            <input type="button" data-dismiss="modal" class="btn btn-primary btn-sm" value="Create"
+                                   onclick="createAlbum(<%=idUser%>)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

@@ -6,6 +6,7 @@ import network.entity.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,10 +33,11 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
     }
 
     @Override
-    public User Login(String token) {
-        String jpa = "SELECT u FROM User u WHERE u.token = :token";
+    public User getUserByToken(String token, Boolean confirmed) {
+        String jpa = "SELECT u FROM User u WHERE u.token = :token AND u.confirmed = :confirmed";
         HashMap<String,Object> parameters = new HashMap<String,Object>();
         parameters.put("token", token);
+        parameters.put("confirmed", confirmed);
         List<User> users = this.executeQuery(jpa, parameters);
         if (users.size() != 1){
             return null;
@@ -101,7 +103,7 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
 
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("idUser",idUser);
-        String jpa = "SELECT DISTINCT u FROM User u";
+        String jpa = "SELECT DISTINCT u FROM User u, LanguageUser lu";
         String list = (String) params.get("list");
         if(list!= null) {
             jpa+= ", FriendRequest f ";
@@ -148,12 +150,18 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
                 parameters.put("login", login+"%");
             }
         }
+        if(params.get("idLanguage") != null){
+            List<Long> idLanguages = Arrays.asList((Long[])params.get("idLanguage"));
+            if (idLanguages.get(0) != 0){
+                jpa+= "AND lu.user.id = u.id AND lu.language.id in :idLanguages ";
+                parameters.put("idLanguages",idLanguages);
+            }
+        }
         Long idCity = (Long)params.get("idCity");
         if (idCity != null && idCity > 0) {
             jpa += "AND u.city.id = :idCity ";
             parameters.put("idCity", idCity);
-        }else
-        {
+        }else{
             Long idCountry =(Long)params.get("idCountry");
             if (idCountry != null && idCountry > 0)
             {

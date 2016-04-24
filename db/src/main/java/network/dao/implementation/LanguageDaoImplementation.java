@@ -25,4 +25,10 @@ public class LanguageDaoImplementation extends GenericDaoImplementation<Language
         List<Language> languages = this.executeQuery(jpa, parameters);
         return languages.get(0);
     }
+
+    @Override
+    public List<Language> readAll() {
+        String jpa = "SELECT l FROM Language l ORDER BY l.name";
+        return this.executeQuery(jpa);
+    }
 }

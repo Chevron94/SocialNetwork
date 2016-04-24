@@ -2,14 +2,14 @@ package network.controllers;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import network.dao.AlbumDao;
-import network.dao.FriendRequestDao;
-import network.dao.PhotoDao;
-import network.dao.UserDao;
+import network.dao.*;
+import network.dto.LanguageDto;
+import network.dto.UserDto;
 import network.entity.Album;
 import network.entity.FriendRequest;
 import network.entity.Photo;
 import network.entity.User;
+import network.services.MD5Service;
 import org.apache.commons.io.IOUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,12 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 /**
  * Created by roman on 10/4/15.
@@ -40,15 +41,18 @@ public class ProfileController {
     PhotoDao photoService;
     @EJB
     AlbumDao albumService;
-
-    public void setUserService(UserDao userService) {
-        this.userService = userService;
-    }
-
-    public void setFriendRequestService(FriendRequestDao friendRequestService) {
-        this.friendRequestService = friendRequestService;
-    }
-    
+    @EJB
+    LanguageUserDao languageUserService;
+    @EJB
+    LanguageLevelDao languageLevelService;
+    @EJB
+    LanguageDao languageService;
+    @EJB
+    GenderDao genderService;
+    @EJB
+    CountryDao countryService;
+    @EJB
+    CityDao cityService;
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public String getMainProfile(Model model, HttpServletRequest request) {
@@ -65,7 +69,7 @@ public class ProfileController {
         return "forward:/user"+idUser;
     }
 
-    @RequestMapping(value = "/profile", method = RequestMethod.POST)
+    @RequestMapping(value = "/profile/updatePhoto", method = RequestMethod.POST)
     public String updatePhoto(@RequestParam("photoInput") MultipartFile file, HttpServletRequest request){
         Long idUser = (Long)request.getSession().getAttribute("idUser");
         if (!file.isEmpty()) {
@@ -124,6 +128,7 @@ public class ProfileController {
             List<Album> albums = new ArrayList<>();
             albums.add(album);
             user.setAlbums(albums);
+            user.setLanguageUsers(languageUserService.getLanguagesByUser(user,0,Integer.MAX_VALUE));
             model.addAttribute("friends", users);
             model.addAttribute("user", user);
             Long idRequestUser=Long.valueOf(id);
@@ -131,8 +136,41 @@ public class ProfileController {
                 FriendRequest friendRequest = friendRequestService.getFriendRequestByTwoUsersId(idUser,idRequestUser);
                 model.addAttribute("friendRequest",friendRequest);
             }
+            model.addAttribute("languages", languageService.readAll());
+            model.addAttribute("languageLevels", languageLevelService.readAll());
+            model.addAttribute("countries", countryService.readAll());
+            model.addAttribute("genders", genderService.readAll());
             return "profile";
         }return "forward:/404";
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.POST)
+    public String updateProfile(Model model, @ModelAttribute("editForm") UserDto userDto,  HttpServletRequest request){
+        Long idUser = (Long)request.getSession().getAttribute("idUser");
+        User user = userService.getUserById(idUser);
+        if(userDto.getLogin().equals(user.getLogin()) || userService.getUserByLogin(userDto.getLogin()) == null){
+            if(userDto.getOldpassword() == null || userDto.getOldpassword().trim().length()==0 || MD5Service.md5(userDto.getOldpassword()).equals(user.getPassword())){
+                if (userDto.getOldpassword() != null && MD5Service.md5(userDto.getOldpassword()).equals(user.getPassword()) && userDto.getPassword().length()>0){
+                    user.setPassword(MD5Service.md5(userDto.getPassword()));
+                }
+                user.setLogin(userDto.getLogin());
+                user.setName(userDto.getName());
+                user.setBirthday(java.sql.Date.valueOf(userDto.getBirthday()));
+                if (userDto.getCity() != null){
+                    user.setCity(cityService.getCityById(userDto.getCity()));
+                }
+                user.setCountry(countryService.getCountryById(userDto.getCountry()));
+                user.setGender(genderService.getGenderById(userDto.getGender()));
+                user.setEmail(userDto.getEmail());
+                user.setDescription(userDto.getDescription());
+                user = userService.update(user);
+            }else {
+                model.addAttribute("error","Incorrect password");
+            }
+        }else {
+            model.addAttribute("error","Login already used");
+        }
+        return getUserProfile(model,request,user.getId().toString());
     }
 
     @RequestMapping(value="/profile/updateMainPhoto", method = RequestMethod.POST)
@@ -149,7 +187,7 @@ public class ProfileController {
             }
             user.setPhotoURL(photo.getPhotoUrl());
             if (!photo.getAlbum().equals(album)) {
-                Photo mainPhoto = new Photo(photo.getPhotoUrl(), photo.getUploaded(), album);
+                Photo mainPhoto = new Photo(photo.getPhotoUrl(), new Date(), album);
                 photoService.create(mainPhoto);
             }else {
                 photo.setUploaded(new Date());

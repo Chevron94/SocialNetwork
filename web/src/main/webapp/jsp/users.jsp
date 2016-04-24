@@ -1,11 +1,12 @@
 <%@include file="templates/userForm.jsp"%>
 <script type="text/javascript">
     var otherStart = 0;
+    document.title = "Other users";
 </script>
 <div class="col-xs-8">
-    <div class="tab-content">
-        <div id="otherUsersTab" style="max-height: 500px; overflow-y: scroll">
-            <div id="otherUsers">
+    <div class="tab-content table-bordered">
+        <div id="otherUsersTab" style="max-height: 80vh; overflow-y: auto">
+            <div id="otherUsers" style="margin: 1%">
 
             </div>
             <div align="center">

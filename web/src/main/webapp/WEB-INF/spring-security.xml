@@ -13,6 +13,9 @@
            <intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/registration/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+           <intercept-url pattern="/activate/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+           <intercept-url pattern="/reset/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+           <intercept-url pattern="/resetRequest/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
            <intercept-url pattern="/admin**" access="ROLE_ADMIN" />
            <intercept-url pattern="/**" access="ROLE_USER" />

@@ -30,7 +30,7 @@
 </div>
 
 <%
-    if (idUser == album.getUser().getId() && !album.getName().equals("Main")) {
+    if (idUser.equals(album.getUser().getId()) && !album.getName().equals("Main")) {
 %>
 <div class="row" style="margin: 1%" id="controlButtons">
         <button class="btn btn-success" id="uploadPhotosButton" value="Add photos" data-toggle="modal" href="#uploadWindow">Add photos</button>
@@ -44,14 +44,19 @@
 <%
     }
 %>
-<div class="row table-bordered" style="margin: 1%; max-height: 320px; overflow-y: auto">
-    <div class="col-xs-12" id="photos">
+<div class="row" style="margin: 1%; max-height: 60vh; overflow-y: auto">
+    <div class="col-xs-12">
+        <div class="row table-bordered">
+            <div class="col-xs-12" id="photos">
 
+            </div>
+        </div>
+        <div class="row">
+            <button class="btn btn-info" id="loadMore" value="LoadMore" style="display: none" onclick="loadPhotos(<%=album.getId()%>,curPhoto,12);">LoadMore</button>
+        </div>
     </div>
 </div>
-<div class="row" style="margin: 1%;">
-    <button class="btn btn-info" id="loadMore" value="LoadMore" style="display: none" onclick="loadPhotos(<%=album.getId()%>,curPhoto,12);">LoadMore</button>
-</div>
+
 
 <%@include file="templates/photoView.jsp"%>
 
@@ -64,7 +69,7 @@
             </div>
             <div class="modal-body">
                 <p>Do you want to delete this album?</p>
-                <p><button class="btn btn-danger" value="Delete" onclick="deleteAlbum(<%=album.getId()%>)">Delete</button></p>
+                <p><button class="btn btn-danger btn-sm" value="Delete" onclick="deleteAlbum(<%=album.getId()%>)">Delete</button></p>
             </div>
             <div class="modal-footer">
             </div>
@@ -90,8 +95,7 @@
                             <label class="control-label" for="albumName" style="font-size: smaller">Can contains only A-Z,a-z,0-9,_,- and space</label>
                         </div>
                     </div>
-                    <br>
-                    <div class="row">
+                    <div class="row" style="margin-top: 1%">
                         <div class="col-xs-offset-3 col-xs-9">
                             <input align="center" type="button" data-dismiss="modal" class="btn btn-primary btn-sm" value="Rename" onclick="renameAlbum(<%=album.getId()%>)">
                         </div>
@@ -129,11 +133,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-xs-offset-3 col-xs-9" align="left">
-                            <input align="center" type="submit" class="btn btn-primary" value="Upload">
+                        <div class="row" style="margin-top: 1%">
+                            <div class="col-xs-offset-3 col-xs-9" align="left">
+                                <input align="center" type="submit" class="btn btn-primary" value="Upload">
+                            </div>
                         </div>
                     </div>
                 </form>

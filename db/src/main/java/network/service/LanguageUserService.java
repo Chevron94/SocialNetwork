@@ -36,13 +36,13 @@ public class LanguageUserService extends LanguageUserDaoImplementation implement
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Collection getLanguagesByUser(User user, Integer start, Integer limit) {
+    public List<LanguageUser> getLanguagesByUser(User user, Integer start, Integer limit) {
         return super.getLanguagesByUser(user, start, limit);
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public Collection getUsersByLanguage(Language language, Integer start, Integer limit) {
+    public List<LanguageUser> getUsersByLanguage(Language language, Integer start, Integer limit) {
         return super.getUsersByLanguage(language, start,limit);
     }
 

@@ -109,7 +109,6 @@ Date.prototype.customFormat = function(formatString){
 
 function loadMore(start,sender,list){
     $('#loadMoreSent').hide();
-    $('#searchButton').prop('disabled', true);
     var male =( $('#gender').val().indexOf('m')>0);
     var female = ( $('#gender').val().indexOf('f')>0);
     $.getJSON(loadMoreUrl,
@@ -125,7 +124,7 @@ function loadMore(start,sender,list){
             female: female,
             ageFrom: $('#ageFrom').val(),
             ageTo: $('#ageTo').val(),
-            idLanguage: $('#language').val(),
+            idLanguage: [$('#language').val()],
             ajax : 'true'},function(data){
             var html='';
             var len = data.length;
@@ -134,25 +133,52 @@ function loadMore(start,sender,list){
             }
             for (var i = 0; i< len; i++) {
                 var date = new Date(data[i].birthday);
-                html+='<div id="'+data[i].id+'" class="row table-bordered scale-text" style="margin: auto; margin-right:1%;">'+
+                html+='<div id="'+data[i].id+'" class="row scale-text" style="margin: auto; margin-right:1%; border-bottom: 1px solid #ddd;">'+
                         '<div class="col-xs-11">'+
                             '<div class="row" style="margin: auto">'+
                                 '<div class="col-xs-12">'+
-                                    '<div class="row">'+
-                                        '<div class="col-xs-3">';
+                                    '<div class="row">' +
+                                        '<div class="col-xs-3"><div class="row" style="margin-top: 1%;"> ';
                 if(data[i].albums[0].photos.length>0){
-                    html += '<input type="image" src="'+data[i].photoURL+'" class="img img-responsive" alt="Responsive image"  data-toggle="modal" data-target="#photoViewer" onclick="showPhoto('+data[i].albums[0].photos[0].id+",'"+data[i].albums[0].photos[0].photoUrl+"',"+data[i].id+","+data[i].albums[0].id+",'"+(new Date(data[i].albums[0].photos[0].uploaded)).customFormat("#YYYY#-#MM#-#DD#")+"',"+0+')">';
+                    html += '<div class="col-xs-12 btn btn-link img_wrap_big" style="background-image: url('+data[i].photoURL+')" data-toggle="modal" data-target="#photoViewer" onclick="showPhoto('+data[i].albums[0].photos[0].id+",'"+data[i].albums[0].photos[0].photoUrl+"',"+data[i].id+","+data[i].albums[0].id+",'"+(new Date(data[i].albums[0].photos[0].uploaded)).customFormat("#YYYY#-#MM#-#DD#")+"',"+0+')"></div>';
                 }else{
-                    html+= '<img src="'+data[i].photoURL+'" class="img img-responsive" alt="Responsive image">';
+                    html+= '<div class="col-xs-12 img_wrap_big" style="background-image: url('+data[i].photoURL+')"></div>';
                 }
-                html+=                 '</div>'+
+                html+=                  '</div>' +
+                    '<div class="row" align="center" style="margin-top: 1%; margin-bottom: 1%;">';
+                if (list == 'friends' || list == 'sent'){
+                    html+= '<button id="add_'+data[i].id+'" style="display: none" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
+                        '</button>\n';
+                }else{
+                    if (list =='received'){
+                        html+='<button id="add_'+data[i].id+'" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
+                            '</button>\n';
+                    }else{
+                        html+='<button id="add_'+data[i].id+'" type="button" class="Add btn btn-success btn-xs" onclick="sendRequest('+idUser+','+data[i].id+'); return false">Add'+
+                            '</button>\n';
+                    }
+                }
+
+                html+= '<button id="send_'+data[i].id+'" type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#messageWindow" onclick="newMessage('+idUser+', '+data[i].id+",'"+data[i].login+"'"+'); return false">Message'+
+                    '</button>\n';
+
+                if ((list == 'friends' || list == 'received' || list == 'sent') && idUser==idRequestUser) {
+                    html+= '<button id="delete_' + data[i].id + '" type="button" class="Add btn btn-danger btn-xs" onclick="deleteRequest(' + idUser + ', ' + data[i].id + '); return false">Delete' +
+                        '</button>';
+                }else{
+                    html+= '<button id="delete_' + data[i].id + '" style="display: none" type="button" class="Add btn btn-danger btn-xs" onclick="deleteRequest(' + idUser + ', ' + data[i].id + '); return false">Delete' +
+                        '</button>';
+                }
+                html+=
+                    '</div>'+
+                                        '</div>'+
                                         '<div class="col-xs-9">'+
                                             '<div class="row  table-fixed">'+
                                                 '<div class="col-xs-3">'+
                                                     'Login'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
-                                                    '<label class="control-label">'+data[i].login+'</label>'+
+                                                    '<a href="/user'+data[i].id+'"><label class="control-label">'+data[i].login+'</label></a>'+
                                                 '</div>'+
                                             '</div>'+
                                             '<div class="row  table-fixed">'+
@@ -177,7 +203,7 @@ function loadMore(start,sender,list){
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
                                                     '<label class="control-label">'+
-                                                        '<img style="height: 20px" src="'+data[i].country.flagURL+'">'+data[i].city.name + ' (' + data[i].country.name +')'+
+                                                        '<img style="height: 18px" src="'+data[i].country.flagURL+'"> '+data[i].city.name + ' (' + data[i].country.name +')'+
                                                     '</label>'+
                                                 '</div>'+
                                             '</div>'+
@@ -189,50 +215,46 @@ function loadMore(start,sender,list){
                                                     '<label class="control-label">'+data[i].gender.name+'</label>'+
                                                 '</div>'+
                                             '</div>'+
-                                            '<div class="row table-fixed">'+
+                                            '<div class="row table-fixed" style="margin-bottom: 1%">'+
                                                 '<div class="col-xs-3">'+
                                                     'Languages'+
                                                 '</div>'+
-                                                '<div class="col-xs-9">'+
-                                                    '<label class="control-label">'+data[i].country.name+'</label>'+
-                                                '</div>'+
+                                                '<div class="col-xs-9">';
+                                                    for(var j = 0; j<data[i].languageUsers.length; j++){
+                                                        var lang = data[i].languageUsers[j];
+                                                        var style = '';
+                                                        switch (lang.languageLevel.id){
+                                                            case 1:
+                                                                style = 'background-color: PowderBlue; color: black;';
+                                                                break;
+                                                            case 2:
+                                                                style = 'background-color: LightBlue; color: black;';
+                                                                break;
+                                                            case 3:
+                                                                style = 'background-color: LightSkyBlue; color: black;';
+                                                                break;
+                                                            case 4:
+                                                                style = 'background-color: DeepSkyBlue; color: black;';
+                                                                break;
+                                                            case 5:
+                                                                style = 'background-color: DodgerBlue;';
+                                                                break;
+                                                            case 6:
+                                                                style = 'background-color: Blue;';
+                                                                break;
+                                                            case 7:
+                                                                style = 'background-color: MediumBlue;';
+                                                                break;
+                                                            case 8:
+                                                                style = 'background-color: #0000CD;';
+                                                                break;
+                                                            default:
+                                                                style ='';
+                                                        }
+                                                    html += '<li><span style="'+style+'" class="label">'+lang.language.name+" ("+lang.languageLevel.name+")"+'</span></li>';
+                                                    }
+                                                html+='</div>'+
                                             '</div>'+
-                                            '<div class="row table-fixed">'+
-                                                '<div class="col-xs-3">'+
-                                                    'Profile'+
-                                                '</div>'+
-                                                '<div class="col-xs-9">'+
-                                                    '<a href="/user'+data[i].id+'">'+
-                                                    window.location.protocol+'//'+window.location.hostname+'/user'+data[i].id+
-                                                    '</a>'+
-                                                '</div>'+
-                                            '</div>'+
-                                            '<div class="row table-fixed btn-xs">';
-                                        if (list == 'friends' || list == 'sent'){
-                                            html+= '<button id="add_'+data[i].id+'" style="display: none" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
-                                                '</button>\n';
-                                        }else{
-                                            if (list =='received'){
-                                                html+='<button id="add_'+data[i].id+'" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
-                                                    '</button>\n';
-                                            }else{
-                                                html+='<button id="add_'+data[i].id+'" type="button" class="Add btn btn-success btn-xs" onclick="sendRequest('+idUser+','+data[i].id+'); return false">Add'+
-                                                    '</button>\n';
-                                            }
-                                        }
-
-                                        html+= '<button id="send_'+data[i].id+'" type="button" class="btn btn-info btn-xs" onclick="newMessage('+idUser+', '+data[i].id+",'"+data[i].login+"'"+'); return false">Send Message'+
-                                            '</button>\n';
-
-                                        if ((list == 'friends' || list == 'received' || list == 'sent') && idUser==idRequestUser) {
-                                            html+= '<button id="delete_' + data[i].id + '" type="button" class="Add btn btn-danger btn-xs" onclick="deleteRequest(' + idUser + ', ' + data[i].id + '); return false">Delete' +
-                                            '</button>';
-                                        }else{
-                                            html+= '<button id="delete_' + data[i].id + '" style="display: none" type="button" class="Add btn btn-danger btn-xs" onclick="deleteRequest(' + idUser + ', ' + data[i].id + '); return false">Delete' +
-                                                '</button>';
-                                        }
-                                        html+=
-                                        '</div>'+
                                     '</div>'+
                                 '</div>'+
                             '</div>'+
@@ -273,12 +295,15 @@ function loadMore(start,sender,list){
                     $('#loadMoreOther').show();
                 }
             }
-            $('#searchButton').prop('disabled', false);
         }
 
     );
 }
 function initPage(){
+    $('#searchButton').prop('disabled', true);
+    setTimeout(function(){
+        $('#searchButton').prop('disabled', false);
+    }, 3000);
     var path = window.location.pathname;
     if(path == '/users'){
         $('#otherUsers').html('');

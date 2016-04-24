@@ -13,7 +13,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,21 +25,13 @@ public class AuthenticationController {
     @EJB
     UserDao userService;
 
-    public UserDao getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserDao userService) {
-        this.userService = userService;
-    }
-
     public boolean authenticate(HttpServletRequest request, HttpServletResponse response){
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("REMEMBER_ME")) {
                     String result = cookie.getValue();
-                    User user = userService.Login(result);
+                    User user = userService.getUserByToken(result, false);
                     if (user != null) {
                         Authentication auth = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword(), getGrantedAuthorities(getRoles(user.getRole())));
                         SecurityContextHolder.getContext().setAuthentication(auth);

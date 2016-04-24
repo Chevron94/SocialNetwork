@@ -1,8 +1,4 @@
 <%@ page import="network.entity.User" %>
-<%@ page import="java.util.List" %>
-<%@ page import="network.entity.Dialog" %>
-<%@ page import="network.entity.Message" %>
-<%@ page import="java.text.SimpleDateFormat" %>
 <%--
   Created by IntelliJ IDEA.
   User: roman

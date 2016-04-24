@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by roman on 14.09.15.
@@ -22,8 +20,8 @@ public class Language {
     @Column(name="NAME")
     private String name;
 
-    @Column(name = "PICTURE_URL")
-    private String pictureURL;
+    @Column(name = "CODE")
+    private String code;
 
 
 
@@ -36,9 +34,9 @@ public class Language {
     public Language() {
     }
 
-    public Language(String name, String pictureURL) {
+    public Language(String name, String code) {
         this.name = name;
-        this.pictureURL = pictureURL;
+        this.code = code;
     }
 
     public Long getId() {
@@ -57,12 +55,12 @@ public class Language {
         this.name = name;
     }
 
-    public String getPictureURL() {
-        return pictureURL;
+    public String getCode() {
+        return code;
     }
 
-    public void setPictureURL(String pictureURL) {
-        this.pictureURL = pictureURL;
+    public void setCode(String pictureURL) {
+        this.code = pictureURL;
     }
 
     public List<LanguageUser> getLanguageUsers() {
@@ -94,7 +92,7 @@ public class Language {
         return "Language{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", pictureURL='" + pictureURL + '\'' +
+                ", pictureURL='" + code + '\'' +
                 '}';
     }
 }

@@ -1,11 +1,9 @@
 package network.controllers;
 
 import network.dao.*;
-import network.dto.SearchDto;
 import network.entity.Album;
 import network.entity.FriendRequest;
 import network.entity.User;
-import org.springframework.security.authentication.dao.SystemWideSaltSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,31 +38,12 @@ public class PeopleController {
     PhotoDao photoService;
     @EJB
     AlbumDao albumService;
-
-
-    public void setUserService(UserDao userService) {
-        this.userService = userService;
-    }
-
-    public void setCityService(CityDao cityService) {
-        this.cityService = cityService;
-    }
-
-    public void setGenderService(GenderDao genderService) {
-        this.genderService = genderService;
-    }
-
-    public void setFriendRequestService(FriendRequestDao friendRequestService) {
-        this.friendRequestService = friendRequestService;
-    }
-
-    public void setCountryService(CountryDao countryService) {
-        this.countryService = countryService;
-    }
-
-    public void setContinentService(ContinentDao continentService) {
-        this.continentService = continentService;
-    }
+    @EJB
+    LanguageDao languageService;
+    @EJB
+    LanguageLevelDao languageLevelService;
+    @EJB
+    LanguageUserDao languageUserService;
 
     public Long getUserId(HttpServletRequest request){
         Long idUser = (Long)request.getSession().getAttribute("idUser");
@@ -82,6 +60,7 @@ public class PeopleController {
     public String friends(Model model, HttpServletRequest request){
         Long idRequestUser = getUserId(request);
         model.addAttribute("continents",continentService.readAll());
+        model.addAttribute("languages",languageService.readAll());
         model.addAttribute("idRequestUser", idRequestUser);
         return "friends";
     }
@@ -90,6 +69,7 @@ public class PeopleController {
     public String usersFriends(Model model, HttpServletRequest request, @PathVariable String id){
         Long idUser = getUserId(request);
         model.addAttribute("continents",continentService.readAll());
+        model.addAttribute("languages",languageService.readAll());
         model.addAttribute("idRequestUser", Long.valueOf(id));
         return "friends";
     }
@@ -98,6 +78,7 @@ public class PeopleController {
     public String users(Model model, HttpServletRequest request){
         Long idRequestUser = getUserId(request);
         model.addAttribute("continents",continentService.readAll());
+        model.addAttribute("languages",languageService.readAll());
         model.addAttribute("idRequestUser", idRequestUser);
         return "users";
     }
@@ -175,7 +156,7 @@ public class PeopleController {
             @RequestParam(value = "female") Boolean female,
             @RequestParam(value = "ageFrom") Integer ageFrom,
             @RequestParam(value = "ageTo") Integer ageTo,
-            @RequestParam(value = "idLanguage") Long idLanguage,
+            @RequestParam(value = "idLanguage[]") Long[] idLanguage,
             @RequestParam(value = "list") String list,
             @RequestParam(value = "start") Integer start
             ){
@@ -200,7 +181,16 @@ public class PeopleController {
             List<Album> albums = new ArrayList<>();
             albums.add(album);
             user.setAlbums(albums);
+            user.setLanguageUsers(languageUserService.getLanguagesByUser(user,0,Integer.MAX_VALUE));
         }
         return result;
+    }
+
+    @RequestMapping(value = "/people/requests", method = RequestMethod.GET)
+    public @ResponseBody Long getCountOfFriendRequests(HttpServletRequest request){
+        Long idUser = (Long)request.getSession().getAttribute("idUser");
+        if(idUser == null)
+            return null;
+        return friendRequestService.getNumberOfReceivedUnacceptedFriendRequests(idUser);
     }
 }

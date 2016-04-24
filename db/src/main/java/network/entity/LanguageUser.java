@@ -29,7 +29,7 @@ public class LanguageUser {
     public LanguageUser() {
     }
 
-    public LanguageUser(LanguageLevel languageLevel, User user, Language language) {
+    public LanguageUser(User user, Language language, LanguageLevel languageLevel) {
         this.languageLevel = languageLevel;
         this.user = user;
         this.language = language;

@@ -11,8 +11,7 @@
 <script src="/resources/js/jquery-1.11.3.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
 <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/resources/js/select2.js"></script>
-<script type="text/javascript" src="/resources/js/global.js"></script>
+<script type="text/javascript" src="/resources/js/select2.full.js"></script>
 <script type="text/javascript" src="/resources/js/dialog.js"></script>
 <script type="text/javascript" src="/resources/js/message.js"></script>
 <script type="text/javascript" src="/resources/js/people.js"></script>
@@ -21,9 +20,6 @@
 <script type="text/javascript" src="/resources/js/photo.js"></script>
 
 <link href="/resources/css/modal.css" rel="stylesheet">
-<link href="/resources/css/message-window.css" rel="stylesheet">
-<link href="/resources/css/photo-window.css" rel="stylesheet">
-<link href="/resources/css/album-window.css" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/jquery-ui.css">
 <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/resources/css/text.css" rel="stylesheet">

@@ -9,7 +9,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,8 +75,8 @@ public class UserService extends UserDaoImplementation implements UserDao {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public User Login(String token) {
-        return super.Login(token);
+    public User getUserByToken(String token, Boolean confirmed) {
+        return super.getUserByToken(token, confirmed);
     }
 
     @Override

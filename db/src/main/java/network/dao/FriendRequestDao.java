@@ -17,7 +17,7 @@ public interface FriendRequestDao extends GenericDao<FriendRequest,Long> {
     public FriendRequest getFriendRequestByTwoUsersId(Long idUser1, Long idUser2);
     public List<FriendRequest> getFriendRequestsBySenderId(Long id, Integer start, Integer limit);
     public List<FriendRequest> getFriendRequestsByReceiverId(Long id, Integer start, Integer limit);
-
+    public Long getNumberOfReceivedUnacceptedFriendRequests(Long idReceiver);
     public List<FriendRequest> getFriendsByUserId(Long id, Integer start, Integer limit);
 
 }

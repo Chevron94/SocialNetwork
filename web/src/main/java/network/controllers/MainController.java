@@ -41,22 +41,6 @@ public class MainController{
     @Autowired
     AuthenticationController authenticationController;
 
-    public void setUserService(UserDao userService) {
-        this.userService = userService;
-    }
-
-    public void setCityService(CityDao cityService) {
-        this.cityService = cityService;
-    }
-
-    public void setGenderService(GenderDao genderService) {
-        this.genderService = genderService;
-    }
-
-    public void setCountryService(CountryDao countryService) {
-        this.countryService = countryService;
-    }
-
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String root(Model model, HttpServletRequest request, HttpServletResponse response) {
         Long idUser = (Long) request.getSession().getAttribute("idUser");

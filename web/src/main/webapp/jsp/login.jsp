@@ -12,10 +12,10 @@
 <br>
 <form class="form-horizontal login-box" action="/j_spring_security_check" method='POST'>
     <c:if test="${not empty error}">
-        <div class="error">${error}</div>
+        <div id="error" class="error">${error}</div>
     </c:if>
     <c:if test="${not empty msg}">
-        <div class="msg">${msg}</div>
+        <div class="msg" id="message">${msg}</div>
     </c:if>
     <div class="form-group form-group-sm">
         <label for="j_username" class="col-xs-2 control-label">Login</label>
@@ -29,11 +29,45 @@
             <input type="password" class="form-control" name='j_password' id="j_password" placeholder="Password">
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group form-group-sm">
         <div class="col-xs-offset-2 col-xs-10">
             <button type="submit" class="btn btn-primary">Sign in</button>
+            <input type="button" class="btn btn-link" data-toggle="modal" data-target="#resetWindow" value="Reset password"/>
         </div>
     </div>
 </form>
+
+<div class="modal fade" id="resetWindow" tabindex="-1" role="dialog" aria-labelledby="resetLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <label id="resetLabel"><h2>Reset password</h2></label>
+            </div>
+            <div class="modal-body">
+                <form id="resetForm" action="/resetRequest" method="post">
+                    <div class="form-group form-group-sm">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <label class="control-label" for="emailInput">Your email<sup>*</sup></label>
+                            </div>
+                            <div class="col-xs-9">
+                                <input type="email" id="emailInput" class="form-control" name="emailInput" required>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 1%">
+                            <div class="col-xs-offset-3 col-xs-9">
+                                <input type="submit" class="btn btn-primary btn-sm" value="Reset">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

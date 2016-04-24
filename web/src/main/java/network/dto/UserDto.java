@@ -2,6 +2,7 @@ package network.dto;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * Created by roman on 10/1/15.
@@ -11,6 +12,7 @@ public class UserDto {
     private String login;
     @Size(min = 8, message = "Поле \"Password\" должно быть длиннее 8 символов")
     private String password;
+    private String Oldpassword;
     @Size(min = 1, message = "Поле \"Name\" не заполнено")
     private String name;
     @Size(min = 1, message = "Поле \"Photo\" не заполнено")
@@ -21,14 +23,35 @@ public class UserDto {
     private String birthday;
 
     @NotNull(message = "Поле \"Gender\" не заполнено")
-    private String gender;
+    private Long gender;
     @NotNull(message = "Поле \"City\" не заполнено")
-    private String city;
+    private Long city;
     @NotNull(message = "Поле \"Country\" не заполнено")
-    private String country;
+    private Long country;
+
+    List<Long> languages;
+    List<Long> languageLevels;
 
     @Size(min=50, message = "Поле \"About me\" должно содержать не менее 50 символов")
     private String description;
+
+    public List<Long> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(List<Long> languages) {
+        this.languages = languages;
+    }
+
+    public List<Long> getLanguageLevels() {
+        return languageLevels;
+    }
+
+    public void setLanguageLevels(List<Long> languageLevels) {
+        this.languageLevels = languageLevels;
+    }
+
+
 
     public UserDto() {
     }
@@ -81,27 +104,27 @@ public class UserDto {
         this.photo = photo;
     }
 
-    public String getGender() {
+    public Long getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Long gender) {
         this.gender = gender;
     }
 
-    public String getCity() {
+    public Long getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(Long city) {
         this.city = city;
     }
 
-    public String getCountry() {
+    public Long getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Long country) {
         this.country = country;
     }
 
@@ -111,5 +134,13 @@ public class UserDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getOldpassword() {
+        return Oldpassword;
+    }
+
+    public void setOldpassword(String oldpassword) {
+        Oldpassword = oldpassword;
     }
 }

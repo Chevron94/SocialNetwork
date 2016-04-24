@@ -10,13 +10,16 @@ var loadMoreDialogsUrl = window.location.protocol + '//' + window.location.hostn
 var loadOneDialogUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/dialogs/';
 var unreadMessagesUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/unreadMessages';
 var unreadMessages;
+var openDialog;
 var startMessage = 0;
 
 function chatClick(idDialog, firstClick) {
     var url = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/dialog/getMessages';
-    document.getElementById('dialog' + idDialog + "Unread").innerHTML = '';
-    $('#dialog' + idDialog).removeClass("btn-danger");
-    $('#dialog' + idDialog).addClass("btn-default");
+    if (document.getElementById('dialog'+idDialog)){
+        document.getElementById('dialog' + idDialog + "Unread").innerHTML = '';
+        $('#dialog' + idDialog).removeClass("btn-danger");
+        $('#dialog' + idDialog).addClass("btn-default");
+    }
     if (idDialog.toString() in unreadMessages) {
         delete unreadMessages[idDialog.toString()];
         window.sessionStorage.setItem('unreadMessages', JSON.stringify(unreadMessages));
@@ -48,8 +51,8 @@ function chatClick(idDialog, firstClick) {
                     messageLine += '<li class="left clearfix unread">';
                 }
                 messageLine +=
-                    '<span class="chat-img pull-left" style="height: 50px; width: 50px; overflow: hidden; position: relative;">' +
-                    '<a href="/user' + data[i].senderId + '" ><img src="' + data[i].avatar + '" alt="User Avatar" class="img img-responsive" style="position: absolute" /></a>' +
+                    '<span class="chat-img pull-left">' +
+                    '<div class="img_wrap btn btn-link" style="width: 55px; background-image: url('+data[i].avatar+')" onclick="window.location.href='+"'/user"+data[i].senderId+"';"+'"></div>' +
                     '</span>' +
                     '<div class="chat-body clearfix">' +
                     '<div class="header">' +
@@ -71,8 +74,12 @@ function chatClick(idDialog, firstClick) {
             if ($('#dialogId').val() != '0') {
                 $('#dialog' + $('#dialogId').val()).removeClass("active");
             }
-            $('#dialog' + idDialog).addClass("active");
+            if (document.getElementById('dialog'+idDialog)) {
+                $('#dialog' + idDialog).addClass("active");
+            }
             $('#dialogId').val(idDialog);
+            openDialog = idDialog;
+            window.sessionStorage.setItem("openDialog",JSON.stringify(openDialog));
             if(startMessage == 0){
                 var elem = document.getElementById('tableDiv');
                 elem.scrollTop = elem.scrollHeight;
@@ -97,13 +104,17 @@ function loadMoreDialogs() {
                 } else {
                     html += '<div id="dialog' + data[i].id + '" class="row btn btn-default btn-block" style="margin: 1%" onclick="return chatClick(' + data[i].id + ',true)">\n';
                 }
-                html += '<div class="col-xs-3">\n' +
-                    '<div class="row" style="height: 60px; overflow: hidden; position: relative;">\n';
+                var picUrl ='';
+
                 if (data[i].private) {
-                    html += '<img src="' + data[i].userDialogs[0].user.photoURL + '" alt="User Avatar" class="img img-responsive" style="position: absolute" />\n';
+                    picUrl = data[i].userDialogs[0].user.photoURL;
+                    //html += '<img src="' + data[i].userDialogs[0].user.photoURL + '" alt="User Avatar" class="img img-responsive" style="position: absolute" />\n';
                 } else {
-                    html += '<img src="/resources/images/system/group.jpg" alt="User Avatar" class="img img-responsive" style="position: absolute" />\n';
+                    picUrl = '/resources/images/system/group.jpg';
+                    //html += '<img src="/resources/images/system/group.jpg" alt="User Avatar" class="img img-responsive" style="position: absolute" />\n';
                 }
+                html += '<div class="col-xs-3">\n' +
+                    '<div class="row img_wrap" style="background-image:url('+picUrl+')">\n';
                 html +=
                     '</div>\n' +
                     '<div class="row">\n' +
@@ -136,8 +147,11 @@ function loadMoreDialogs() {
                 $('#loadMoreDialogsButton').show()
             }
             if (dialogStart == 0 && len > 0) {
-                $('#dialog' + data[0].id).trigger('click');
-
+                if (openDialog != null && openDialog > 0){
+                    chatClick(openDialog,true);
+                }else{
+                    $('#dialog' + data[0].id).trigger('click');
+                }
             }
             dialogStart += data.length;
         }
@@ -170,8 +184,8 @@ function onMessageReceived(evt) {
                     messageLine += '<li class="left clearfix read">';
                 else messageLine += '<li class="left clearfix unread">';
                 messageLine +=
-                    '<span class="chat-img pull-left" style="height: 50px; width: 50px; overflow: hidden; position: relative;">' +
-                    '<a href="/user' + msg.senderId + '" ><img src="' + msg.avatar + '" alt="User Avatar" class="img img-responsive" style="position: absolute" /></a>' +
+                    '<span class="chat-img pull-left">' +
+                    '<div class="img_wrap btn btn-link" style="width: 55px; background-image: url('+msg.avatar+')" onclick="window.location.href='+"'/user"+msg.senderId+"';"+'"></div>' +
                     '</span>' +
                     '<div class="chat-body clearfix">' +
                     '<div class="header">' +
@@ -333,6 +347,13 @@ function pageLoad() {
         $message = $('#message');
         $chatWindow = $('#response');
         $dialog = $('#dialogId');
+        if (window.sessionStorage.getItem("openDialog") == null){
+            openDialog = 0;
+            window.sessionStorage.setItem("openDialog", JSON.stringify(openDialog));
+        }else {
+            openDialog = JSON.parse(window.sessionStorage.getItem("openDialog"));
+        }
+
         $('.chat-wrapper h4').text('Chat # ' + $nickName.val());
         $message.focus();
     }

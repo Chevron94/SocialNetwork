@@ -16,7 +16,7 @@ public interface UserDao extends GenericDao<User,Long> {
     public User getUserByLogin(String login);
     public User getUserByEmail(String email);
     public User getUserById(Long id);
-    public User Login(String token);
+    public User getUserByToken(String token, Boolean confirmed);
     public List<User> getUsersByCityId(Long id, Integer start, Integer limit);
     public List<User> getUsersByCountryId(Long id, Integer start, Integer limit);
     public List<User> getUsersByGenderId(Long id, Integer start, Integer limit);

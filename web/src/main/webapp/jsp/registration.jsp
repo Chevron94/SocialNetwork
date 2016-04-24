@@ -17,17 +17,7 @@
 <head>
   <script type="text/javascript">
     function updateSelectOptions() {
-      $('#country').val($('#country_select').select().val());
-      $("#city_select").empty().append('<option value="0"></option>').val('0').trigger('change');
-      $('#city').val('0');
-    }
-    function updateGender() {
-      if(document.getElementById("gender_select_1").checked){
-        $('#gender').val($('#gender_select_1').val());
-      }else $('#gender').val($('#gender_select_2').val());
-    }
-    function updateCity() {
-        $('#city').val($('#city_select').select().val());
+      $("#city").empty().append('<option value="0"></option>').val('0').trigger('change');
     }
   </script>
   <title>Registration</title>
@@ -53,10 +43,10 @@
 %>
 <div class="alert alert-danger" id="div-error" role="alert">
   <%
-    for(int i = 0; i<errors.size();i++)
-    {
+    for (String error : errors) {
   %>
-    <p><%=errors.get(i)%></p>
+  <p><%=error%>
+  </p>
   <%
     }
   %>
@@ -124,7 +114,7 @@
       <div class="row" style="margin-left:20%">
         <label class="control-label col-xs-2" for="name">Name<sup>*</sup></label>
         <div class="col-xs-6" align="left">
-          <input type="text" id="name" class="form-control" pattern="^\w+([\s-]\w+)*$" name="name"required
+          <input type="text" id="name" class="form-control" pattern="^\w+([\s-]\w+)*$" name="name" required
             <%
               if(user!=null)
               {
@@ -158,8 +148,8 @@
       <div class="row" style="margin-left:20%">
         <label class="control-label col-xs-2" for="gender_select_1">Gender<sup>*</sup></label>
         <div class="col-xs-6" align="left">
-          <label class="radio-inline"><input type="radio" name="gender_select" id="gender_select_1" value="<%=genders.get(0).getId()%>" <%=(user==null || user.getGender().equals(genders.get(0).getId().toString()))?"checked":""%> onchange="updateGender()" ><%=genders.get(0).getName()%></label>
-          <label class="radio-inline"><input type="radio" name="gender_select" id="gender_select_2" value="<%=genders.get(1).getId()%>" <%=(user!=null && user.getGender().equals(genders.get(1).getId().toString()))?"checked":""%>  onchange="updateGender()"><%=genders.get(1).getName()%></label>
+          <label class="radio-inline"><input type="radio" name="gender_select" id="gender_select_1" value="<%=genders.get(0).getId()%>" <%=(user==null || user.getGender().equals(genders.get(0).getId()))?"checked":""%>><%=genders.get(0).getName()%></label>
+          <label class="radio-inline"><input type="radio" name="gender_select" id="gender_select_2" value="<%=genders.get(1).getId()%>" <%=(user!=null && user.getGender().equals(genders.get(1).getId()))?"checked":""%>><%=genders.get(1).getName()%></label>
         </div>
       </div>
     </div>
@@ -181,7 +171,7 @@
               if(user!=null)
               {
             %>
-                 value="<%=user.getBirthday().toString().split(" ")[0]%>"
+                 value="<%=user.getBirthday().split(" ")[0]%>"
             <%
               }
             %>
@@ -196,21 +186,20 @@
         <div class="col-xs-6" align="left">
           <select name="country_select" class="icon-menu form-control" id="country_select" onchange="updateSelectOptions()">
             <option value="0" selected>Select country</option>
-            <% for (int i=0;i<countryList.size(); i++)
-            {
+            <% for (Country aCountryList : countryList) {
             %>
-              <option style="background-image:url(<%=countryList.get(i).getFlagURL()%>); background-size: 20px 20px; background-position: left center;" value="<%=countryList.get(i).getId()%>"
-                      <%
-                        if(user!=null && user.getCountry().equals(countryList.get(i).getId().toString()))
-                        {
-                      %>
-                      selected
-                      <%
-                        }
-                      %>
-                      >
-                <%=countryList.get(i).getName()%>
-              </option>
+            <option style="background-image:url(<%=aCountryList.getFlagURL()%>); background-size: 18px 18px; background-position: left center;"
+                    value="<%=aCountryList.getId()%>"
+                    <%
+                      if (user != null && user.getCountry().equals(aCountryList.getId())) {
+                    %>
+                    selected
+                    <%
+                      }
+                    %>
+            >
+              <%=aCountryList.getName()%>
+            </option>
             <%
               }
             %>
@@ -222,7 +211,7 @@
       <div class="row" style="margin-left:20%">
         <label class="control-label col-xs-2" for="city_select">City<sup>*</sup></label>
         <div class="col-xs-6" align="left">
-          <select name="city_select" id="city_select"  class="js-example-data-ajax form-control" onchange="updateCity()">
+          <select name="city_select" id="city_select"  class="js-example-data-ajax form-control">
             <% if (city != null){
             %>
             <option value="<%=city.getId()%>" selected="selected"><%=city.getName()%></option>
@@ -239,16 +228,11 @@
       <div class="row" style="margin-left:20%">
         <label class="control-label col-xs-2" for="description">About me</label>
         <div class="col-xs-6" align="left">
-          <textarea class="form-control" id="description"  name="description" rows="3"
-            <%
-              if(user!=null)
-              {
-            %>
-                 value="<%=user.getDescription()%>"
-            <%
+          <textarea class="form-control" id="description"  name="description" rows="3"><%
+            if(user!=null){
+                user.getDescription();
               }
-            %>
-                  ></textarea>
+            %></textarea>
         </div>
       </div>
     </div>
@@ -259,54 +243,6 @@
         </div>
       </div>
     </div>
-  <input type="hidden" name="city" id="city"
-    <%
-              if(user!=null)
-              {
-    %>
-         value="<%=user.getCity()%>"
-    <%
-              }
-              else
-              {
-    %>
-          value="0"
-    <%
-              }
-    %>
-  >
-  <input type="hidden" name="gender" id="gender"
-    <%
-              if(user!=null)
-              {
-    %>
-         value="<%=user.getGender()%>"
-    <%
-              }
-              else
-              {
-    %>
-         value="<%=genders.get(0).getId()%>"
-    <%
-              }
-    %>
-  >
-  <input type="hidden" name="country" id="country"
-    <%
-              if(user!=null)
-              {
-    %>
-         value="<%=user.getCountry()%>"
-    <%
-              }
-              else
-              {
-    %>
-         value="0"
-    <%
-              }
-    %>
-  >
   <script>
 
     function formatCity (data) {
@@ -317,7 +253,7 @@
       return data.name;
     }
 
-    $('#city_select').select2({
+    $('#city').select2({
       ajax: {
         url : window.location.protocol+'//'+window.location.hostname+':'+window.location.port+'/registration/citiesByCountry',
         dataType:'json',
@@ -325,7 +261,7 @@
         quietMillis: 250,
         data:function(params){
           return{
-            searchId : $('#country_select').select().val(),
+            searchId : $('#country').select().val(),
             name: params.term
           };
         },
@@ -348,18 +284,18 @@
       escapeMarkup: function (m) {
         return m;
       }
-    }).val(<%
-              if(user!=null)
-              { out.print(user.getCity());
-              }
-              else
-              {
-    %>
-    '0'
-    <%
-              }
-    %>).trigger('change');
+    });
+    $("#city").empty();
 
+    <% if (city != null){
+            %>
+    $("#city").append('<option value="<%=city.getId()%>" selected="selected"><%=city.getName()%></option>');
+    $("#city").val("<%=city.getId()%>").trigger("change");
+    setTimeout(function(){
+      $('#select2-city-container').append('<%=city.getName()%>');
+    }, 100);
+    <%
+    }%>
     function checkPasswords()
     {
       var passl = document.getElementById("password");
