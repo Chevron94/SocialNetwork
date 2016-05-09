@@ -191,6 +191,6 @@ public class PeopleController {
         Long idUser = (Long)request.getSession().getAttribute("idUser");
         if(idUser == null)
             return null;
-        return friendRequestService.getNumberOfReceivedUnacceptedFriendRequests(idUser);
+        return friendRequestService.getNumberOfFriendRequests(idUser,false);
     }
 }

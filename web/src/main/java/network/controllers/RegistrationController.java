@@ -9,6 +9,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import network.services.MD5Service;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -32,6 +33,7 @@ import java.util.regex.Pattern;
  */
 @Controller
 public class RegistrationController {
+    private static final Logger logger = Logger.getRootLogger();
     @EJB
     UserDao userService;
     @EJB
@@ -56,18 +58,16 @@ public class RegistrationController {
     List<City> getCities(
             @RequestParam(value="searchId") Long searchId,
             @RequestParam(value="name") String name) {
-        List<City> cities = cityService.getCitiesByCountryIdAndPartOfCityName(searchId, name);
 
-        return cities;
+        return cityService.getCitiesByCountryIdAndPartOfCityName(searchId, name);
     }
 
     @RequestMapping(value = "/registration/countriesByContinent", method = RequestMethod.GET)
     public @ResponseBody
     List<Country> getCountries(
             @RequestParam(value="searchId") Long searchId) {
-        List<Country> countries = countryService.getCountryByContinentId(searchId);
 
-        return countries;
+        return countryService.getCountryByContinentId(searchId);
     }
 
     @RequestMapping(value = "/registration/checkLogin", method = RequestMethod.GET)
@@ -94,7 +94,6 @@ public class RegistrationController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String setRegistration(@ModelAttribute("user") @Valid UserDto user,
                                   BindingResult bindingResult,
-                                  ModelMap modelMap,
                                   Model model,
                                   HttpServletRequest request,
                                   @RequestParam("filePhoto") MultipartFile file) {
@@ -186,7 +185,7 @@ public class RegistrationController {
             userService.update(newUser);
         }
         sendMail(newUser.getEmail(),"Registration","Thanks for signing up for Hello From! Please click the link below to confirm your email address.\n"+"https://www.hello-from.tk/activate/"+newUser.getToken());
-        request.getSession().setAttribute("msg", "Instructions was sent to your email");
+        request.getSession().setAttribute("msg", "Please, check your email for instructions");
         return "redirect:/login";
     }
 
@@ -243,8 +242,9 @@ public class RegistrationController {
         user.setToken(UUID.randomUUID().toString());
         userService.update(user);
         sendMail(user.getEmail(),"Reset password","We have received a password reset request for your Hello From account (hopefully by you).\n" +
+                "Your login: "+user.getLogin()+"\n"+
                 "Please click the link below to reset your password.\n" +
-                "https://hello-from.tk/reset/"+user.getToken()+"\nif you didn't sent password reset request, ignore this message");
+                "https://www.hello-from.tk/reset/"+user.getToken()+"\nIf you didn't send password reset request, ignore this message");
         request.getSession().setAttribute("msg", "Please, check your email for instructions");
         return "redirect:/login";
     }
@@ -287,7 +287,7 @@ public class RegistrationController {
             String command = "echo \""+text+"\" | mail -s \""+topic+"\" "+receiver+" -aFrom:no-reply@hello-from.tk";
             Process proc = Runtime.getRuntime().exec(new String[]{"bash","-c",command});
         }catch (Exception e){
-
+            logger.error(e.fillInStackTrace());
         }
     }
 }

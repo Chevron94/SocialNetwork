@@ -102,7 +102,7 @@ function deleteAlbum(id){
             if (result != null){
 
             }
-            albumStart--;
+ //           albumStart--;
             window.location = createAlbumUrl;
         }
     });

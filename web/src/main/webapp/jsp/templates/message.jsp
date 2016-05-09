@@ -35,6 +35,14 @@
                             <input type="button" class="btn btn-primary" value="Send" onclick="send()">
                         </div>
                     </div>
+                    <script type="text/javascript">
+                        $('#messageText').keydown(function (e) {
+                            if (e.ctrlKey && e.keyCode == 13) {
+                                if($('#messageText').val().trim() != "")
+                                    send();
+                            }
+                        });
+                    </script>
                 </div>
             </div>
             <div class="modal-footer">

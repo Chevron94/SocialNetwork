@@ -9,6 +9,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%
+    if(user.getId().equals(idUser)){
+
     List<Country> countryList = (List<Country>) request
             .getAttribute("countries");
     List<Gender> genders = (List<Gender>) request
@@ -26,7 +28,7 @@
             </div>
             <div class="modal-body">
                 <form action="/profile" class="form-horizontal" modelAttribute="editForm" name="editForm" method="post"
-                      id="editForm">
+                      id="editForm" onsubmit="return validate();">
                     <ul class="nav nav-tabs nav-justified" id="tabMenu">
                         <li class="active"><a data-toggle="tab" href="#generalTab">General info</a></li>
                         <li><a data-toggle="tab" href="#languagesTab">Languages</a></li>
@@ -39,13 +41,13 @@
                                 <!--Login-->
                                 <div class="form-group form-group-sm">
                                     <div class="row" style="margin-left:10%">
-                                        <label class="control-label col-xs-3" for="login">Login<sup>*</sup></label>
+                                        <label class="control-label col-xs-3" for="login">Login<sup style="color: red;">*</sup></label>
                                         <div class="col-xs-7">
                                             <input type="text" id="login" class="form-control" name="login" required
                                                    pattern="^\w+$"
                                                    value="<%=user.getLogin()%>">
-                                            <label class="control-label" for="login" style="font-size: smaller">Can
-                                                contains only A-Z,a-z,0-9,_</label>
+                                            <span class="help-block" style="font-size: smaller">Can
+                                                contains only A-Z,a-z,0-9,_</span>
                                         </div>
                                     </div>
                                 </div>
@@ -56,8 +58,8 @@
                                         <div class="col-xs-7" align="left">
                                             <input type="password" class="form-control" id="oldPassword"
                                                    name="oldPassword" pattern="[A-Za-z0-9_-]{6,64}">
-                                            <label class="control-label" for="password" style="font-size: smaller">Password
-                                                must have length 6-64 and can contains A-Z,a-z,0-9,_,-</label>
+                                            <span class="help-block" style="font-size: smaller">Password
+                                                must have length 6-64 and can contains A-Z,a-z,0-9,_,-</span>
                                         </div>
                                     </div>
                                 </div>
@@ -68,8 +70,8 @@
                                         <div class="col-xs-7" align="left">
                                             <input type="password" class="form-control" id="password" name="password"
                                                    pattern="[A-Za-z0-9_-]{6,64}" onchange="checkPasswords()">
-                                            <label class="control-label" for="password" style="font-size: smaller">Password
-                                                must have length 6-64 and can contains A-Z,a-z,0-9,_,-</label>
+                                            <span class="help-block" style="font-size: smaller">Password
+                                                must have length 6-64 and can contains A-Z,a-z,0-9,_,-</span>
                                         </div>
                                     </div>
                                 </div>
@@ -80,15 +82,13 @@
                                         <div class="col-xs-7" align="left">
                                             <input type="password" class="form-control" id="retype" name="retype"
                                                    pattern="[A-Za-z0-9_-]{6,64}" onchange="checkPasswords()">
-                                            <label class="control-label" for="password" style="font-size: smaller">Password
-                                                must have length 6-64 and can contains A-Z,a-z,0-9,_,-</label>
                                         </div>
                                     </div>
                                 </div>
                                 <!--Email-->
                                 <div class="form-group form-group-sm">
                                     <div class="row" style="margin-left:10%">
-                                        <label class="control-label col-xs-3" for="email">E-mail<sup>*</sup></label>
+                                        <label class="control-label col-xs-3" for="email">E-mail<sup style="color: red;">*</sup></label>
                                         <div class="col-xs-7" align="left">
                                             <input type="email" id="email" class="form-control" name="email" required
                                                    value="<%=user.getEmail()%>">
@@ -98,13 +98,13 @@
                                 <!--Name-->
                                 <div class="form-group form-group-sm">
                                     <div class="row" style="margin-left:10%">
-                                        <label class="control-label col-xs-3" for="name">Name<sup>*</sup></label>
+                                        <label class="control-label col-xs-3" for="name">Name<sup style="color: red;">*</sup></label>
                                         <div class="col-xs-7" align="left">
                                             <input type="text" id="name" class="form-control" pattern="^\w+([\s-]\w+)*$"
                                                    name="name" required
                                                    value="<%=user.getName()%>">
-                                            <label class="control-label" for="name" style="font-size: smaller">Can
-                                                contains only A-Z,a-z,0-9,_,- and space</label>
+                                            <span class="help-block" style="font-size: smaller">Can
+                                                contains only A-Z,a-z,0-9,_,- and space</span>
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@
                                 <div class="form-group form-group-sm">
                                     <div class="row" style="margin-left:10%">
                                         <label class="control-label col-xs-3"
-                                               for="gender_select_1">Gender<sup>*</sup></label>
+                                               for="gender_select_1">Gender<sup style="color: red;">*</sup></label>
                                         <div class="col-xs-7" align="left">
                                             <label class="radio-inline"><input type="radio" name="gender"
                                                                                id="gender_select_1"
@@ -139,21 +139,21 @@
                                 <div class="form-group form-group-sm">
                                     <div class="row" style="margin-left:10%">
                                         <label class="control-label col-xs-3"
-                                               for="birthday">Birthday<sup>*</sup></label>
+                                               for="birthday">Birthday<sup style="color: red;">*</sup></label>
                                         <div class="col-xs-7" align="left">
                                             <input type="date" id="birthday"
                                                    pattern="(19|20)\d\d-((0[1-9]|1[012])-(0[1-9]|[12]\d)|(0[13-9]|1[012])-30|(0[13578]|1[02])-31)"
                                                    placeholder="YYYY-MM-DD" class="form-control" name="birthday"
                                                    required value="<%=user.getBirthday().toString().split(" ")[0]%>">
-                                            <label class="control-label" for="birthday" style="font-size: smaller">Format:
-                                                YYYY-MM-DD. Example: 1990-12-31</label>
+                                            <span class="help-block" style="font-size: smaller">Format:
+                                                YYYY-MM-DD. Example: 1990-12-31</span>
                                         </div>
                                     </div>
                                 </div>
                                 <!--Country-->
                                 <div class="form-group form-group-sm">
                                     <div class="row" style="margin-left:10%">
-                                        <label class="control-label col-xs-3" for="country">Country<sup>*</sup></label>
+                                        <label class="control-label col-xs-3" for="country">Country<sup style="color: red;">*</sup></label>
                                         <div class="col-xs-7" align="left">
                                             <select name="country" class="icon-menu form-control" id="country"
                                                     onchange="updateSelectOptions()">
@@ -182,7 +182,7 @@
                                 <!--City-->
                                 <div class="form-group form-group-sm">
                                     <div class="row" style="margin-left:10%">
-                                        <label class="control-label col-xs-3" for="city">City<sup>*</sup></label>
+                                        <label class="control-label col-xs-3" for="city">City<sup style="color: red;">*</sup></label>
                                         <div class="col-xs-7" align="left">
                                             <select name="city" id="city" class="form-control">
                                             </select>
@@ -210,7 +210,7 @@
                                             LanguageUser languageUser = user.getLanguageUsers().get(i);
                                     %>
                                     <div id="languageGroup<%=i%>" class="form-group form-group-sm">
-                                        <div class="row" style="margin-left:20%">
+                                        <div class="row" style="margin-left:10%">
                                             <label class="control-label col-xs-3" for="languages[<%=i%>]">Language and
                                                 level</label>
                                             <div class="col-xs-7" align="left">
@@ -247,8 +247,8 @@
                                         }%>
                                 </div>
                                 <div class="form-group form-group-sm">
-                                    <div class="row" style="margin-left:20%">
-                                        <div class="col-xs-offset-2 col-xs-6">
+                                    <div class="row" style="margin-left:10%">
+                                        <div class="col-xs-offset-3 col-xs-7">
                                             <button class="btn btn-success" value="Add one more language"
                                                     onclick="addOneLanguage(); return false;"><span
                                                     class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add one
@@ -258,7 +258,7 @@
                                     </div>
                                 </div>
                                 <script type="text/javascript">
-                                    var i = 1;
+                                    var i = <%=user.getLanguageUsers().size()%>;
                                     function addOneLanguage() {
                                         var html = document.getElementById("languageGroup").cloneNode(true);
                                         html.id = "languageGroup" + i;
@@ -268,6 +268,24 @@
                                         html.childNodes[1].childNodes[3].childNodes[3].name = "languageLevels[" + i + "]";
                                         i++;
                                         $('#selects').append(html);
+                                    }
+                                    function validate(){
+                                        if(document.getElementById("error-lang")){
+                                            $('#error-lang').remove();
+                                        }
+                                        var correct = false;
+                                        for(var j = 0; j<i; j++){
+                                            var lang = document.getElementById("languages["+j+"]");
+                                            var langLvl = document.getElementById("languageLevels["+j+"]");
+                                            if (langLvl.options[langLvl.selectedIndex].value>0 && lang.options[lang.selectedIndex].value>0){
+                                                correct = true;
+                                            }
+                                        }
+                                        if(!correct){
+                                            var html = "<div id='error-lang' style='background-color: red'><h2>You don't have any correct pair language-language level</h2></div>";
+                                            $('#languagesInfo').prepend(html);
+                                        }
+                                        return correct;
                                     }
                                 </script>
                             </div>
@@ -289,7 +307,7 @@
     </div>
     <div style="display: none">
         <div id="languageGroup" class="form-group form-group-sm">
-            <div class="row" style="margin-left:20%">
+            <div class="row" style="margin-left:10%">
                 <label class="control-label col-xs-3" for="languages">Language and level</label>
                 <div class="col-xs-7" align="left">
                     <select name="languages" class="form-control" id="languages">
@@ -374,4 +392,5 @@
         });
     </script>
 </div>
+<%}%>
 

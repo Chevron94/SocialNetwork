@@ -60,4 +60,19 @@ public class AlbumDaoImplementation extends GenericDaoImplementation<Album,Long>
             return null;
         }
     }
+
+    @Override
+    public List<Album> getLatestAlbumsByUserId(Long id, Integer count) {
+        String jpa = "SELECT a FROM Album a WHERE a.user.id = :id AND a.name <> 'Main' order by a.creationDate desc, a.name";
+        HashMap<String, Object> parameters = new HashMap<>();
+        parameters.put("id",id);
+        return this.executeQuery(jpa, parameters,0, count);
+    }
+
+    @Override
+    public Long getNumberOfAlbumsByUserId(Long id) {
+        String jpa = "SELECT Count(a) FROM Album a WHERE a.user.id = :id AND a.name <> 'Main' AND EXISTS(SELECT p FROM Photo p WHERE p.album.id = a.id)";
+        em = getEntityManager();
+        return (Long) em.createQuery(jpa).setParameter("id",id).getSingleResult();
+    }
 }

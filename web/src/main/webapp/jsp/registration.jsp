@@ -58,7 +58,7 @@
 
     <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <label class="control-label col-sm-2" for="login">Login<sup>*</sup></label>
+        <label class="control-label col-sm-2" for="login">Login<sup style="color: red;">*</sup></label>
         <div class="col-xs-6">
           <input type="text" id="login" class="form-control" name="login" pattern="^\w+$" required
             <%
@@ -70,23 +70,23 @@
               }
             %>
           >
-          <label class="control-label" for="login" style="font-size: smaller">Can contains only A-Z,a-z,0-9,_</label>
+          <span class="help-block" style="font-size: smaller">Can contains only A-Z,a-z,0-9,_</span>
         </div>
       </div>
     </div>
     <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <label class="control-label col-xs-2" for="password">Password<sup>*</sup></label>
+        <label class="control-label col-xs-2" for="password">Password<sup style="color: red;">*</sup></label>
         <div class="col-xs-6" align="left">
           <input type="password" class="form-control" id="password" name="password" pattern="[A-Za-z0-9_-]{6,64}" required onchange="checkPasswords()">
-          <label class="control-label" for="login" style="font-size: smaller">Password must have length 6-64 and can contains A-Z,a-z,0-9,_,-</label>
+           <span class="help-block" style="font-size: smaller">Password must have length 6-64 and can contains A-Z,a-z,0-9,_,-</span>
         </div>
       </div>
     </div>
 
   <div class="form-group form-group-sm">
     <div class="row" style="margin-left:20%">
-      <label class="control-label col-xs-2" for="retype">Retype password<sup>*</sup></label>
+      <label class="control-label col-xs-2" for="retype">Retype password<sup style="color: red;">*</sup></label>
       <div class="col-xs-6" align="left">
         <input type="password" class="form-control" id="retype" name="retype" pattern="[A-Za-z0-9_-]{6,64}" required onchange="checkPasswords()">
       </div>
@@ -95,7 +95,7 @@
 
     <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <label class="control-label col-xs-2" for="email">E-mail<sup>*</sup></label>
+        <label class="control-label col-xs-2" for="email">E-mail<sup style="color: red;">*</sup></label>
         <div class="col-xs-6" align="left">
           <input type="email" id="email" class="form-control" name="email" required
             <%
@@ -112,7 +112,7 @@
     </div>
     <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <label class="control-label col-xs-2" for="name">Name<sup>*</sup></label>
+        <label class="control-label col-xs-2" for="name">Name<sup style="color: red;">*</sup></label>
         <div class="col-xs-6" align="left">
           <input type="text" id="name" class="form-control" pattern="^\w+([\s-]\w+)*$" name="name" required
             <%
@@ -124,7 +124,7 @@
               }
             %>
           >
-          <label class="control-label" for="name" style="font-size: smaller">Can contains only A-Z,a-z,0-9,_,- and space</label>
+           <span class="help-block" style="font-size: smaller">Can contains only A-Z,a-z,0-9,_,- and space</span>
         </div>
       </div>
     </div>
@@ -146,10 +146,10 @@
     </div>
     <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <label class="control-label col-xs-2" for="gender_select_1">Gender<sup>*</sup></label>
+        <label class="control-label col-xs-2" for="gender_select_1">Gender<sup style="color: red;">*</sup></label>
         <div class="col-xs-6" align="left">
-          <label class="radio-inline"><input type="radio" name="gender_select" id="gender_select_1" value="<%=genders.get(0).getId()%>" <%=(user==null || user.getGender().equals(genders.get(0).getId()))?"checked":""%>><%=genders.get(0).getName()%></label>
-          <label class="radio-inline"><input type="radio" name="gender_select" id="gender_select_2" value="<%=genders.get(1).getId()%>" <%=(user!=null && user.getGender().equals(genders.get(1).getId()))?"checked":""%>><%=genders.get(1).getName()%></label>
+          <label class="radio-inline"><input type="radio" name="gender" id="gender_select_2" value="<%=genders.get(1).getId()%>" <%=(user==null || user.getGender().equals(genders.get(1).getId()))?"checked":""%>><%=genders.get(1).getName()%></label>
+          <label class="radio-inline"><input type="radio" name="gender" id="gender_select_1" value="<%=genders.get(0).getId()%>" <%=(user!=null && user.getGender().equals(genders.get(0).getId()))?"checked":""%>><%=genders.get(0).getName()%></label>
         </div>
       </div>
     </div>
@@ -164,7 +164,7 @@
     </script>
     <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <label class="control-label col-xs-2" for="birthday">Birthday<sup>*</sup></label>
+        <label class="control-label col-xs-2" for="birthday">Birthday<sup style="color: red;">*</sup></label>
         <div class="col-xs-6" align="left">
           <input type="date" id="birthday" pattern="(19|20)\d\d-((0[1-9]|1[012])-(0[1-9]|[12]\d)|(0[13-9]|1[012])-30|(0[13578]|1[02])-31)" placeholder="YYYY-MM-DD" class="form-control" name="birthday" required
             <%
@@ -176,15 +176,15 @@
               }
             %>
           >
-          <label class="control-label" for="birthday" style="font-size: smaller">Format: YYYY-MM-DD. Example: 1990-12-31</label>
+          <span class="help-block" style="font-size: smaller">Format: YYYY-MM-DD. Example: 1990-12-31</span>
         </div>
       </div>
     </div>
     <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <label class="control-label col-xs-2" for="country_select">Country<sup>*</sup></label>
+        <label class="control-label col-xs-2" for="country">Country<sup style="color: red;">*</sup></label>
         <div class="col-xs-6" align="left">
-          <select name="country_select" class="icon-menu form-control" id="country_select" onchange="updateSelectOptions()">
+          <select name="country" class="icon-menu form-control" id="country" onchange="updateSelectOptions()">
             <option value="0" selected>Select country</option>
             <% for (Country aCountryList : countryList) {
             %>
@@ -209,9 +209,9 @@
     </div>
     <div class="form-group form-group-sm">
       <div class="row" style="margin-left:20%">
-        <label class="control-label col-xs-2" for="city_select">City<sup>*</sup></label>
+        <label class="control-label col-xs-2" for="city">City<sup style="color: red;">*</sup></label>
         <div class="col-xs-6" align="left">
-          <select name="city_select" id="city_select"  class="js-example-data-ajax form-control">
+          <select name="city" id="city"  class="js-example-data-ajax form-control">
             <% if (city != null){
             %>
             <option value="<%=city.getId()%>" selected="selected"><%=city.getName()%></option>

@@ -142,6 +142,9 @@ function updateMainPhoto(idUser,idPhoto){
             ajax : 'true'},function(data){
             if (data === "true"){
                 alert("Success");
+                if(path == '/profile' || path=='/user'+idUser){
+                    window.location = '/profile';
+                }
             }else if(data === "false"){
                 alert("You already have this photo as main")
             }else alert("Error");

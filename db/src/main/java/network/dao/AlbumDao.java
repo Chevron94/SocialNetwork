@@ -16,4 +16,6 @@ public interface AlbumDao extends GenericDao<Album,Long> {
     public Album getAlbumByUserIdAndName(Long id, String name);
     public Long getCountPhotosInAlbum(Long id);
     public List<Album> getAlbumsByUserId(Long id, Integer start, Integer limit);
+    public List<Album> getLatestAlbumsByUserId(Long id, Integer count);
+    public Long getNumberOfAlbumsByUserId(Long id);
 }

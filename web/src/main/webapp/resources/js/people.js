@@ -145,7 +145,7 @@ function loadMore(start,sender,list){
                     html+= '<div class="col-xs-12 img_wrap_big" style="background-image: url('+data[i].photoURL+')"></div>';
                 }
                 html+=                  '</div>' +
-                    '<div class="row" align="center" style="margin-top: 1%; margin-bottom: 1%;">';
+                    '<div class="row" align="center" style="margin-top: 3%; margin-bottom: 3%;">';
                 if (list == 'friends' || list == 'sent'){
                     html+= '<button id="add_'+data[i].id+'" style="display: none" type="button" class="Add btn btn-success btn-xs" onclick="acceptRequest('+data[i].id+','+idUser+'); return false">Add'+
                         '</button>\n';
@@ -178,7 +178,7 @@ function loadMore(start,sender,list){
                                                     'Login'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
-                                                    '<a href="/user'+data[i].id+'"><label class="control-label">'+data[i].login+'</label></a>'+
+                                                    '<a href="/user'+data[i].id+'"><b>'+data[i].login+'</b></a>'+
                                                 '</div>'+
                                             '</div>'+
                                             '<div class="row  table-fixed">'+
@@ -186,7 +186,7 @@ function loadMore(start,sender,list){
                                                     'Name'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
-                                                    '<label class="control-label">'+data[i].name+'</label>'+
+                                                    '<b>'+data[i].name+'</b>'+
                                                 '</div>'+
                                             '</div>'+
                                             '<div class="row table-fixed">'+
@@ -194,7 +194,7 @@ function loadMore(start,sender,list){
                                                     'Birthday'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
-                                                    '<label class="control-label">'+date.customFormat("#YYYY#-#MM#-#DD#") +'</label>'+
+                                                    '<b>'+date.customFormat("#YYYY#-#MM#-#DD#") +'</b>'+
                                                 '</div>'+
                                             '</div>'+
                                             '<div class="row table-fixed">'+
@@ -202,9 +202,9 @@ function loadMore(start,sender,list){
                                                     'From'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
-                                                    '<label class="control-label">'+
+                                                    '<b>'+
                                                         '<img style="height: 18px" src="'+data[i].country.flagURL+'"> '+data[i].city.name + ' (' + data[i].country.name +')'+
-                                                    '</label>'+
+                                                    '</b>'+
                                                 '</div>'+
                                             '</div>'+
                                             '<div class="row table-fixed">'+
@@ -212,7 +212,7 @@ function loadMore(start,sender,list){
                                                     'Gender'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
-                                                    '<label class="control-label">'+data[i].gender.name+'</label>'+
+                                                    '<b>'+data[i].gender.name+'</b>'+
                                                 '</div>'+
                                             '</div>'+
                                             '<div class="row table-fixed" style="margin-bottom: 1%">'+
@@ -220,6 +220,7 @@ function loadMore(start,sender,list){
                                                     'Languages'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">';
+                                                    html+='<ui style="list-style: none;">';
                                                     for(var j = 0; j<data[i].languageUsers.length; j++){
                                                         var lang = data[i].languageUsers[j];
                                                         var style = '';
@@ -253,7 +254,7 @@ function loadMore(start,sender,list){
                                                         }
                                                     html += '<li><span style="'+style+'" class="label">'+lang.language.name+" ("+lang.languageLevel.name+")"+'</span></li>';
                                                     }
-                                                html+='</div>'+
+                                                html+='</ui></div>'+
                                             '</div>'+
                                     '</div>'+
                                 '</div>'+
@@ -303,7 +304,7 @@ function initPage(){
     $('#searchButton').prop('disabled', true);
     setTimeout(function(){
         $('#searchButton').prop('disabled', false);
-    }, 3000);
+    }, 2000);
     var path = window.location.pathname;
     if(path == '/users'){
         $('#otherUsers').html('');

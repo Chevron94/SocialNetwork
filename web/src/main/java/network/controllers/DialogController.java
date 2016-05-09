@@ -1,14 +1,12 @@
 package network.controllers;
 
-import network.dao.DialogDao;
-import network.dao.MessageDao;
-import network.dao.UserDao;
-import network.dao.UserDialogDao;
+import network.dao.*;
 import network.dto.MessageDto;
 import network.entity.Dialog;
 import network.entity.Message;
 import network.entity.User;
 import network.entity.UserDialog;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,7 +40,7 @@ public class DialogController {
     public String getDialog(HttpServletRequest request, Model model)
     {
         Long idUser = (Long)request.getSession().getAttribute("idUser");
-        User user=null;
+        User user;
         if (idUser == null)
         {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -52,9 +50,8 @@ public class DialogController {
         {
             user = userService.getUserById(idUser);
         }
-        idUser = user.getId();
         model.addAttribute("user", user);
-        List<Dialog> dialogs = dialogService.getDialogsByUserId(idUser,0,10);
+       /* List<Dialog> dialogs = dialogService.getDialogsByUserId(idUser,0,10);
         for(Dialog dialog:dialogs){
             if(dialog.getPrivate()){
                 List<UserDialog> userDialogs = new ArrayList<>();
@@ -70,7 +67,11 @@ public class DialogController {
         if (dialogs.size()>0){
             List<Message> messages = messageService.getMessagesByDialogId(dialogs.get(0).getId(),0,20);
             model.addAttribute("messages",messages);
-        }
+        }*/
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("list","friends");
+        List<User> friends = userService.getUsersByCustomFilter(user.getId(),params,0,Integer.MAX_VALUE);
+        model.addAttribute("friends",friends);
         return "dialog";
     }
 
@@ -155,7 +156,7 @@ public class DialogController {
                 userDialogService.create(receiverUserDialog);
                 userDialogService.create(senderUserDialog);
             }
-            Message message = new Message(sender,dialog,text,new Date(),false);
+            Message message = new Message(sender,dialog, StringUtils.replaceEach(text, new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"}),new Date(),false);
             message = messageService.create(message);
             dialog.setLastMessageDate(message.getDateTime());
             dialogService.update(dialog);
@@ -172,5 +173,37 @@ public class DialogController {
             result.add(new HashMap.SimpleEntry<Long, Long>(dialog.getId(),messageService.getCountUnreadMessagesByUserIdAndDialogId(idUser,dialog.getId())));
         }
         return result;
+    }
+
+    @RequestMapping(value = "/dialogs", method = RequestMethod.POST)
+    public @ResponseBody Dialog createNewConversation(@RequestParam(value = "name") String name, @RequestParam("users[]") Long[] users){
+        Dialog dialog;
+        if(users.length == 2){
+            dialog = dialogService.getDialogByTwoUser(users[0],users[1]);
+            if(dialog == null){
+                User first = userService.getUserById(users[0]);
+                User second = userService.getUserById(users[1]);
+                dialog = new Dialog(first.getLogin()+" / "+second.getLogin(),true);
+                dialog.setLastMessageDate(new Date());
+                dialog = dialogService.create(dialog);
+                userDialogService.create(new UserDialog(dialog,first));
+                UserDialog receiver = userDialogService.create(new UserDialog(dialog,second));
+                List<UserDialog> userDialogs = new ArrayList<>();
+                userDialogs.add(receiver);
+                dialog.setUserDialogs(userDialogs);
+                return dialog;
+            }
+            List<UserDialog> userDialogs = new ArrayList<>();
+            userDialogs.add(userDialogService.getUserDialogByPrivateDialogIdAndOtherUserId(dialog.getId(),users[1]));
+            dialog.setUserDialogs(userDialogs);
+        }else{
+            dialog = new Dialog(StringUtils.replaceEach(name, new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"}),false);
+            dialog.setLastMessageDate(new Date());
+            dialog = dialogService.create(dialog);
+            for(Long id:users){
+                userDialogService.create(new UserDialog(dialog,userService.getUserById(id)));
+            }
+        }
+        return dialog;
     }
 }

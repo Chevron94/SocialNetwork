@@ -79,21 +79,21 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
     }
 
     public List<User> getUsersByCityId(Long id, Integer start, Integer limit) {
-        String jpa = "SELECT u FROM User u WHERE u.city.id = :id";
+        String jpa = "SELECT u FROM User u WHERE u.city.id = :id AND u.confirmed = true";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
         return this.executeQuery(jpa, parameters, start, limit);
     }
 
     public List<User> getUsersByGenderId(Long id, Integer start, Integer limit) {
-        String jpa = "SELECT u FROM User u WHERE u.gender.id = :id";
+        String jpa = "SELECT u FROM User u WHERE u.gender.id = :id AND u.confirmed = true";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
         return this.executeQuery(jpa, parameters, start, limit);
     }
 
     public List<User> getUsersByCountryId(Long id, Integer start, Integer limit) {
-        String jpa = "SELECT u FROM User u WHERE u.country.id = :id";
+        String jpa = "SELECT u FROM User u WHERE u.country.id = :id AND u.confirmed = true";
         HashMap<String,Object> parameters = new HashMap<String, Object>();
         parameters.put("id",id);
         return this.executeQuery(jpa, parameters, start, limit);
@@ -176,6 +176,7 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
                 }
             }
         }
+        jpa+="AND u.confirmed = true";
         return this.executeQuery(jpa, parameters, start, limit);
     }
 }

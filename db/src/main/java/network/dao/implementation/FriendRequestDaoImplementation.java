@@ -74,8 +74,14 @@ public class FriendRequestDaoImplementation extends GenericDaoImplementation<Fri
     }
 
     @Override
-    public Long getNumberOfReceivedUnacceptedFriendRequests(Long idReceiver) {
-        String jpa = "SELECT COUNT(f) FROM FriendRequest f WHERE f.receiver.id = :id AND f.confirmed='FALSE'";
-        return (Long) em.createQuery(jpa).setParameter("id", idReceiver).getSingleResult();
+    public Long getNumberOfFriendRequests(Long idUser, Boolean accepted) {
+        String jpa;
+        if(accepted){
+            jpa = "SELECT COUNT(f) FROM FriendRequest f WHERE (f.receiver.id = :id OR f.sender.id = :id) AND f.confirmed= true ";
+        }else {
+            jpa = "SELECT COUNT(f) FROM FriendRequest f WHERE f.receiver.id = :id AND f.confirmed= false ";
+        }
+
+        return (Long) getEntityManager().createQuery(jpa).setParameter("id", idUser).getSingleResult();
     }
 }

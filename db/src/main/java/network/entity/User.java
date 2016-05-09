@@ -1,8 +1,12 @@
 package network.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.*;
 
 /**
@@ -64,27 +68,33 @@ public class User {
 
     
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sender", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sender")
+    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<FriendRequest> senders = new ArrayList<FriendRequest>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiver", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiver")
+    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<FriendRequest> receivers = new ArrayList<FriendRequest>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<LanguageUser> languageUsers = new ArrayList<LanguageUser>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<Message> messages = new ArrayList<Message>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<UserDialog> userDialogs = new ArrayList<UserDialog>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<Album> albums = new ArrayList<Album>();
 

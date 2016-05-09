@@ -69,6 +69,12 @@
     background-size: cover;
 }
 
+.img_wrap_profile {
+    height: 75px;
+    background-position: center,center;
+    background-size: cover;
+}
+
 .img_wrap_big {
     height: 150px;
     background-position: center,center;

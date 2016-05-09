@@ -24,11 +24,11 @@
 <body onload="loadAlbums(<%=requestUser.getId()%>,albumStart,6)">
 <br>
 <%@include file="templates/header.jsp" %>
-<a href="/user<%=requestUser.getId()%>"><h2 style="margin: 1%"><%=requestUser.getLogin()%>
-</h2></a>
 <div class="row" style="margin: 1%">
+    <a class="btn btn-info" href="/user<%=requestUser.getId()%>"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> <b><%=requestUser.getLogin()%>'s profile
+    </b></a>
     <%if (idUser.equals(requestUser.getId())) {%>
-    <button class="btn btn-success" value="Create Album" data-toggle="modal" data-target="#albumWindow">Create Album
+    <button class="btn btn-success" value="Create Album" data-toggle="modal" data-target="#albumWindow"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Album
     </button>
     <%}%>
 </div>
@@ -38,7 +38,7 @@
             <div class="col-xs-12" id="albumsField">
             </div>
         </div>
-        <div class="row">
+        <div class="row" align="center">
             <button class="btn btn-info" id="loadMore" value="LoadMore" style="display: none"
                     onclick="loadAlbums(<%=requestUser.getId()%>,albumStart,6);">LoadMore
             </button>
@@ -81,6 +81,5 @@
         </div>
     </div>
 </div>
-
 </body>
 </html>

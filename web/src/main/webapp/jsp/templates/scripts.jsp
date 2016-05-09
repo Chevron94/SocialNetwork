@@ -18,7 +18,8 @@
 <script type="text/javascript" src="/resources/js/dropdown.js"></script>
 <script type="text/javascript" src="/resources/js/albums.js"></script>
 <script type="text/javascript" src="/resources/js/photo.js"></script>
-
+<script type="text/javascript" src="/resources/js/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css" type="text/css"/>
 <link href="/resources/css/modal.css" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/jquery-ui.css">
 <link href="/resources/css/bootstrap.min.css" rel="stylesheet">

@@ -3,12 +3,8 @@ package network.controllers;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import network.dao.*;
-import network.dto.LanguageDto;
 import network.dto.UserDto;
-import network.entity.Album;
-import network.entity.FriendRequest;
-import network.entity.Photo;
-import network.entity.User;
+import network.entity.*;
 import network.services.MD5Service;
 import org.apache.commons.io.IOUtils;
 import org.springframework.security.core.Authentication;
@@ -24,9 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.*;
 import java.util.*;
-import java.util.Date;
 
 /**
  * Created by roman on 10/4/15.
@@ -55,7 +49,7 @@ public class ProfileController {
     CityDao cityService;
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public String getMainProfile(Model model, HttpServletRequest request) {
+    public String getMainProfile(HttpServletRequest request) {
         Long idUser = (Long)request.getSession().getAttribute("idUser");
         if (idUser == null)
         {
@@ -132,10 +126,17 @@ public class ProfileController {
             model.addAttribute("friends", users);
             model.addAttribute("user", user);
             Long idRequestUser=Long.valueOf(id);
-            if(idRequestUser!=idUser){
+            if(!Objects.equals(idRequestUser, idUser)){
                 FriendRequest friendRequest = friendRequestService.getFriendRequestByTwoUsersId(idUser,idRequestUser);
                 model.addAttribute("friendRequest",friendRequest);
             }
+            albums = albumService.getLatestAlbumsByUserId(user.getId(),3);
+            for(Album a:albums){
+                a.setPhotos(photoService.getPhotosByAlbumId(a.getId(),0,1));
+            }
+            model.addAttribute("albums", albums);
+            model.addAttribute("numberOfAlbums",albumService.getNumberOfAlbumsByUserId(user.getId()));
+            model.addAttribute("numberOfFriends",friendRequestService.getNumberOfFriendRequests(user.getId(),true));
             model.addAttribute("languages", languageService.readAll());
             model.addAttribute("languageLevels", languageLevelService.readAll());
             model.addAttribute("countries", countryService.readAll());
@@ -164,6 +165,29 @@ public class ProfileController {
                 user.setEmail(userDto.getEmail());
                 user.setDescription(userDto.getDescription());
                 user = userService.update(user);
+                HashMap<Long,Long> used = new HashMap<>();
+                for(int i = 0; i<userDto.getLanguages().size(); i++){
+                    if (userDto.getLanguages().get(i) > 0 && userDto.getLanguageLevels().get(i) > 0 && !used.containsKey(userDto.getLanguages().get(i))){
+                        used.put(userDto.getLanguages().get(i),userDto.getLanguageLevels().get(i));
+                    }
+                }
+                List<LanguageUser> languageUsers = languageUserService.getLanguagesByUser(user,0,Integer.MAX_VALUE);
+                for(LanguageUser languageUser:languageUsers){
+                    if(used.containsKey(languageUser.getLanguage().getId())){
+                        if(!used.get(languageUser.getLanguage().getId()).equals(languageUser.getLanguageLevel().getId())){
+                            languageUser.setLanguageLevel(languageLevelService.getLanguageLevelById(used.get(languageUser.getLanguage().getId())));
+                            languageUserService.update(languageUser);
+                        }
+                        used.remove(languageUser.getLanguage().getId());
+                    }else {
+                        languageUserService.delete(languageUser.getId());
+                    }
+                }
+                if(!used.isEmpty()) {
+                    for (HashMap.Entry<Long, Long> lang : used.entrySet()) {
+                        languageUserService.create(new LanguageUser(user, languageService.getLanguageById(lang.getKey()), languageLevelService.getLanguageLevelById(lang.getValue())));
+                    }
+                }
             }else {
                 model.addAttribute("error","Incorrect password");
             }
@@ -178,7 +202,7 @@ public class ProfileController {
                                                  @RequestParam("idPhoto") Long idPhoto,
                                                  HttpServletRequest request){
         Long idUser = (Long)request.getSession().getAttribute("idUser");
-        if (idRequestUser == idUser){
+        if (idRequestUser.equals(idUser)){
             Album album = albumService.getAlbumByUserIdAndName(idRequestUser,"Main");
             Photo photo = photoService.getPhotoByID(idPhoto);
             User user = userService.getUserById(idRequestUser);

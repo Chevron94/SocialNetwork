@@ -8,31 +8,18 @@ import java.util.List;
  * Created by roman on 10/1/15.
  */
 public class UserDto {
-    @Size(min = 3, message = "Поле \"Login\" должно быть длиннее 3 символов")
     private String login;
-    @Size(min = 8, message = "Поле \"Password\" должно быть длиннее 8 символов")
     private String password;
     private String Oldpassword;
-    @Size(min = 1, message = "Поле \"Name\" не заполнено")
     private String name;
-    @Size(min = 1, message = "Поле \"Photo\" не заполнено")
     private String photo;
-    @Size(min = 1, message = "Поле \"E-mail\" не заполнено")
     private String email;
-    @NotNull(message = "Поле \"Birthday\" не заполнено")
     private String birthday;
-
-    @NotNull(message = "Поле \"Gender\" не заполнено")
     private Long gender;
-    @NotNull(message = "Поле \"City\" не заполнено")
     private Long city;
-    @NotNull(message = "Поле \"Country\" не заполнено")
     private Long country;
-
     List<Long> languages;
     List<Long> languageLevels;
-
-    @Size(min=50, message = "Поле \"About me\" должно содержать не менее 50 символов")
     private String description;
 
     public List<Long> getLanguages() {

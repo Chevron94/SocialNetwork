@@ -9,6 +9,7 @@ import network.entity.Album;
 import network.entity.Photo;
 import network.entity.User;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -66,6 +67,8 @@ public class AlbumController {
         Long idUser = getUserId(request);
         Long idRequestUser = Long.valueOf(id);
         List<Album> albums = albumService.getAlbumsByUserId(idRequestUser,0,5);
+        if (albums == null || albums.size()==0)
+            return "404";
         for(Album a:albums){
             a.setPhotos(photoService.getPhotosByAlbumId(a.getId(),0,6));
         }
@@ -78,6 +81,8 @@ public class AlbumController {
     public String getAlbum(@PathVariable("id") Long id, HttpServletRequest request,  Model model){
         Long userId = getUserId(request);
         Album album = albumService.getAlbumById(id);
+        if (album == null)
+            return "404";
         model.addAttribute("album",album);
         return "album";
     }
@@ -126,7 +131,7 @@ public class AlbumController {
         if(userId!=idCreator){
             return null;
         }
-        Album album = albumService.getAlbumByUserIdAndName(userId,name);
+        Album album = albumService.getAlbumByUserIdAndName(userId, StringUtils.replaceEach(name, new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"}));
         if (album!=null){
             return 0l;
         }
@@ -160,7 +165,7 @@ public class AlbumController {
         if(userId!=idCreator){
             return null;
         }else try{
-            if(albumService.getAlbumByUserIdAndName(id,newName) == null){
+            if(albumService.getAlbumByUserIdAndName(id,StringUtils.replaceEach(newName, new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"})) == null){
                 album.setName(newName);
                 albumService.update(album);
                 return true;

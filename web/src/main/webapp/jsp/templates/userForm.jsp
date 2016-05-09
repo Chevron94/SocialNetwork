@@ -144,7 +144,7 @@
                     </div>
                     <div class="form-group form-group-sm">
                         <div class="row" style="margin-bottom: 3%">
-                            <label class=" control-label col-xs-3 " for="languages-select">Language</label>
+                            <label class=" control-label col-xs-3 " for="languages-select">Languages</label>
                             <div class="col-xs-9">
                                 <select name="languages-select" multiple="multiple" id="languages-select" class="form-control"
                                         onchange="updateValues('languages-select','language')">
@@ -159,6 +159,13 @@
                             </div>
                         </div>
                     </div>
+
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        $('#languages-select').multiselect();
+                    });
+                </script>
+
                     <div class="form-group form-group-sm">
                         <div class="row" style="margin-bottom: 3%">
                             <div class="col-xs-offset-3 col-xs-9">
@@ -166,7 +173,6 @@
                             </div>
                         </div>
                     </div>
-
                 <input type="hidden" name="continent" id="continent" value="0">
                 <input type="hidden" name="country" id="country" value="0">
                 <input type="hidden" name="city" id="city" value="0">

@@ -22,21 +22,26 @@
 <body onload="loadPhotos(<%=album.getId()%>,curPhoto,24)">
 <br>
 <%@include file="templates/header.jsp" %>
-<div class="row" style="margin: 1%">
-    <a href="/user<%=album.getUser().getId()%>/albums"><h6><%=album.getUser().getLogin()%>'s albums</h6></a>
-</div>
-<div class="row" id="titleName" style="margin: 1%">
+<div class="row" id="titleName" style="margin-left: 1%; margin-right: 1%">
     <h2><%=album.getName()%></h2>
 </div>
 
+
+<div class="row" style="margin: 1%" id="controlButtons">
+    <a class="btn btn-info" href="/user<%=album.getUser().getId()%>/albums"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> <b><%=album.getUser().getLogin()%>'s albums</b></a>
+    <%
+        if (idUser.equals(album.getUser().getId()) && !album.getName().equals("Main")) {
+    %>
+        <button class="btn btn-success" id="uploadPhotosButton" value="Add photos" data-toggle="modal" href="#uploadWindow"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add photos</button>
+        <button class="btn btn-warning" value="Rename album" data-toggle="modal" href="#renameWindow"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Rename album</button>
+        <button class="btn btn-danger" id="deleteAlbumButton" value="Delete album" data-toggle="modal" href="#deleteWindow"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span> Delete album</button>
+    <%
+        }
+    %>
+</div>
 <%
     if (idUser.equals(album.getUser().getId()) && !album.getName().equals("Main")) {
 %>
-<div class="row" style="margin: 1%" id="controlButtons">
-        <button class="btn btn-success" id="uploadPhotosButton" value="Add photos" data-toggle="modal" href="#uploadWindow">Add photos</button>
-        <button class="btn btn-warning" value="Rename album" data-toggle="modal" href="#renameWindow">Rename album</button>
-        <button class="btn btn-danger" id="deleteAlbumButton" value="Delete album" data-toggle="modal" href="#deleteWindow">Delete album</button>
-</div>
 <div class="row form-group form-group-sm" style="margin: 1%" id="editField">
     <input class="form-control" type="text" id="newName" style="display: none" value="">
     <button class="btn-primary" style="display: none" value="Submit">Submit</button>
@@ -51,7 +56,7 @@
 
             </div>
         </div>
-        <div class="row">
+        <div class="row" align="center">
             <button class="btn btn-info" id="loadMore" value="LoadMore" style="display: none" onclick="loadPhotos(<%=album.getId()%>,curPhoto,12);">LoadMore</button>
         </div>
     </div>

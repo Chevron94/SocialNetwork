@@ -6,34 +6,17 @@ var $chatWindow;
 var $dialog;
 var path = window.location.pathname;
 var audio = new Audio('/resources/audio/message.mp3');
+audio.volume = 0.9;
 var loadMoreDialogsUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/dialogs/loadMore';
 var loadOneDialogUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/dialogs/';
 var unreadMessagesUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/unreadMessages';
+var newDialogUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + window.location.pathname;
 var unreadMessages;
 var openDialog;
 var startMessage = 0;
 
-function chatClick(idDialog, firstClick) {
+function loadMoreMessages(idDialog) {
     var url = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/dialog/getMessages';
-    if (document.getElementById('dialog'+idDialog)){
-        document.getElementById('dialog' + idDialog + "Unread").innerHTML = '';
-        $('#dialog' + idDialog).removeClass("btn-danger");
-        $('#dialog' + idDialog).addClass("btn-default");
-    }
-    if (idDialog.toString() in unreadMessages) {
-        delete unreadMessages[idDialog.toString()];
-        window.sessionStorage.setItem('unreadMessages', JSON.stringify(unreadMessages));
-    }
-    if (Object.keys(unreadMessages).length == 0) {
-        $('#dialogsLink').html('Dialogs');
-    } else {
-        $('#dialogsLink').html('Dialogs <b>(+' + Object.keys(unreadMessages).length + ')</b>');
-    }
-    if(idDialog.toString() != $('#dialogId').val() || firstClick){
-        startMessage = 0;
-        $('#loadMoreMessages').hide();
-        document.getElementById('loadMoreMessages').onclick = function(){chatClick(idDialog,false);};
-    }
     $.getJSON(url,
         {
             idDialog: idDialog,
@@ -52,7 +35,7 @@ function chatClick(idDialog, firstClick) {
                 }
                 messageLine +=
                     '<span class="chat-img pull-left">' +
-                    '<div class="img_wrap btn btn-link" style="width: 55px; background-image: url('+data[i].avatar+')" onclick="window.location.href='+"'/user"+data[i].senderId+"';"+'"></div>' +
+                    '<div class="img_wrap btn btn-link" style="width: 55px; background-image: url(' + data[i].avatar + ')" onclick="window.location.href=' + "'/user" + data[i].senderId + "';" + '"></div>' +
                     '</span>' +
                     '<div class="chat-body clearfix">' +
                     '<div class="header">' +
@@ -62,31 +45,57 @@ function chatClick(idDialog, firstClick) {
                     '<p>' + text + '</p>' +
                     '</div>' +
                     '</li>';
-                if(len<20){
+                if (len < 20) {
                     $('#loadMoreMessages').hide()
-                }else  $('#loadMoreMessages').show();
+                } else  $('#loadMoreMessages').show();
             }
             $('#dialogName').html($('#' + idDialog).html());
-            if (startMessage == 0){
+            if (startMessage == 0) {
                 $('#response').html("");
             }
             $('#response').prepend(messageLine);
             if ($('#dialogId').val() != '0') {
                 $('#dialog' + $('#dialogId').val()).removeClass("active");
             }
-            if (document.getElementById('dialog'+idDialog)) {
+            if (document.getElementById('dialog' + idDialog)) {
                 $('#dialog' + idDialog).addClass("active");
             }
             $('#dialogId').val(idDialog);
             openDialog = idDialog;
-            window.sessionStorage.setItem("openDialog",JSON.stringify(openDialog));
-            if(startMessage == 0){
+            window.sessionStorage.setItem("openDialog", JSON.stringify(openDialog));
+            if (startMessage == 0) {
                 var elem = document.getElementById('tableDiv');
                 elem.scrollTop = elem.scrollHeight;
                 sendMessage('', idUser, idDialog);
             }
-            startMessage+=len;
+            startMessage += len;
         })
+}
+
+function chatClick(idDialog) {
+
+    if (document.getElementById('dialog' + idDialog)) {
+        document.getElementById('dialog' + idDialog + "Unread").innerHTML = '';
+        $('#dialog' + idDialog).removeClass("btn-danger");
+        $('#dialog' + idDialog).addClass("btn-default");
+    }
+    if (idDialog.toString() in unreadMessages) {
+        delete unreadMessages[idDialog.toString()];
+        window.sessionStorage.setItem('unreadMessages', JSON.stringify(unreadMessages));
+    }
+    if (Object.keys(unreadMessages).length == 0) {
+        $('#dialogsLink').html('Dialogs');
+    } else {
+        $('#dialogsLink').html('Dialogs <b>(+' + Object.keys(unreadMessages).length + ')</b>');
+    }
+    if (idDialog.toString() != $('#dialogId').val()) {
+        startMessage = 0;
+        $('#loadMoreMessages').hide();
+        document.getElementById('loadMoreMessages').onclick = function () {
+            loadMoreMessages(idDialog);
+        };
+        loadMoreMessages(idDialog);
+    }
 }
 
 function loadMoreDialogs() {
@@ -100,11 +109,11 @@ function loadMoreDialogs() {
             var len = data.length;
             for (var i = 0; i < len; i++) {
                 if (data[i].id.toString() in unreadMessages) {
-                    html += '<div id="dialog' + data[i].id + '" class="row btn btn-danger btn-block" style="margin: 1%" onclick="return chatClick(' + data[i].id + ',true)">\n';
+                    html += '<div id="dialog' + data[i].id + '" class="row btn btn-danger btn-block" style="margin: 1%" onclick="return chatClick(' + data[i].id + ')">\n';
                 } else {
-                    html += '<div id="dialog' + data[i].id + '" class="row btn btn-default btn-block" style="margin: 1%" onclick="return chatClick(' + data[i].id + ',true)">\n';
+                    html += '<div id="dialog' + data[i].id + '" class="row btn btn-default btn-block" style="margin: 1%" onclick="return chatClick(' + data[i].id + ')">\n';
                 }
-                var picUrl ='';
+                var picUrl = '';
 
                 if (data[i].private) {
                     picUrl = data[i].userDialogs[0].user.photoURL;
@@ -114,13 +123,16 @@ function loadMoreDialogs() {
                     //html += '<img src="/resources/images/system/group.jpg" alt="User Avatar" class="img img-responsive" style="position: absolute" />\n';
                 }
                 html += '<div class="col-xs-3">\n' +
-                    '<div class="row img_wrap" style="background-image:url('+picUrl+')">\n';
+                    '<div class="row img_wrap" style="background-image:url(' + picUrl + ')">\n';
                 html +=
-                    '</div>\n' +
-                    '<div class="row">\n' +
-                    '<span class="label label-success" style="display: inline-block">Online</span>\n' +
-                    '</div>\n' +
-                    '</div>\n' +
+                    '</div>\n';
+                if (data[i].private) {
+                    html += '<div class="row">\n' +
+                        '<span class="label label-success" style="display: inline-block">Online</span>\n' +
+                        '</div>\n';
+                }
+
+                html += '</div>\n' +
                     '<div class="col-xs-offset-2 col-xs-7">\n' +
                     '<div class="row" align="left">\n' +
                     '<label class="control-label">' + data[i].name + '</label>\n' +
@@ -147,9 +159,9 @@ function loadMoreDialogs() {
                 $('#loadMoreDialogsButton').show()
             }
             if (dialogStart == 0 && len > 0) {
-                if (openDialog != null && openDialog > 0){
-                    chatClick(openDialog,true);
-                }else{
+                if (openDialog != null && openDialog > 0) {
+                    chatClick(openDialog, true);
+                } else {
                     $('#dialog' + data[0].id).trigger('click');
                 }
             }
@@ -159,7 +171,6 @@ function loadMoreDialogs() {
 }
 
 function onMessageReceived(evt) {
-    //var msg = eval('(' + evt.data + ')');
     var msg = JSON.parse(evt.data); // native API
     if (path == '/dialogs') {
         var isNew = false;
@@ -169,7 +180,7 @@ function onMessageReceived(evt) {
                 isReadEvent = true;
                 var messages = document.getElementById("response").childNodes;
                 for (var i = 0; i < messages.length; i++) {
-                    var userId = messages[i].firstChild.firstChild.getAttribute("href");
+                    var userId = messages[i].childNodes[1].firstChild.firstChild.getAttribute("href");
                     userId = userId.substr(5);
                     if (messages[i].classList.contains("unread") && userId != msg.senderId) {
                         messages[i].classList.remove("unread");
@@ -185,7 +196,7 @@ function onMessageReceived(evt) {
                 else messageLine += '<li class="left clearfix unread">';
                 messageLine +=
                     '<span class="chat-img pull-left">' +
-                    '<div class="img_wrap btn btn-link" style="width: 55px; background-image: url('+msg.avatar+')" onclick="window.location.href='+"'/user"+msg.senderId+"';"+'"></div>' +
+                    '<div class="img_wrap btn btn-link" style="width: 55px; background-image: url(' + msg.avatar + ')" onclick="window.location.href=' + "'/user" + msg.senderId + "';" + '"></div>' +
                     '</span>' +
                     '<div class="chat-body clearfix">' +
                     '<div class="header">' +
@@ -196,7 +207,7 @@ function onMessageReceived(evt) {
                     '<p>' + text + '</p>' +
                     '</div>' +
                     '</li>';
-                startMessage +=1;
+                startMessage += 1;
                 $chatWindow.append(messageLine);
                 var elem = document.getElementById('tableDiv');
                 elem.scrollTop = elem.scrollHeight;
@@ -258,6 +269,8 @@ function onMessageReceived(evt) {
                     $('#dialogsLink').html('Dialogs <b>(+' + Object.keys(unreadMessages).length + ')</b>');
                     audio.play();
                 }
+            } else {
+                isReadEvent = true;
             }
         }
         if (!isNew && !isReadEvent) {
@@ -281,13 +294,13 @@ function sendMessage(messageText, sender, dialog) {
     var msg;
     if (sender == null && messageText == null && dialog == null) {
         if ($message.val().trim() != "") {
-            msg = '{"messageText":"' + $message.val().trim() + '", "sender":"'
+            msg = '{"messageText":"' + $message.val().trim().replace(new RegExp('"','g'),'\\"') + '", "sender":"'
                 + $nickName.val() + '", "senderId":"' + idUser + '", "received":"","dialog":"' + $dialog.val() + '"}';
             wsocket.send(msg);
         }
         $message.val('').focus();
     } else {
-        msg = '{"messageText":"' + messageText.trim() + '", "sender":"'
+        msg = '{"messageText":"' + messageText.trim().replace(new RegExp('"','g'),'\\"') + '", "sender":"'
             + sender + '", "senderId":"' + idUser + '","received":"","dialog":"' + dialog + '"}';
         wsocket.send(msg);
     }
@@ -347,14 +360,79 @@ function pageLoad() {
         $message = $('#message');
         $chatWindow = $('#response');
         $dialog = $('#dialogId');
-        if (window.sessionStorage.getItem("openDialog") == null){
+        if (window.sessionStorage.getItem("openDialog") == null) {
             openDialog = 0;
             window.sessionStorage.setItem("openDialog", JSON.stringify(openDialog));
-        }else {
+        } else {
             openDialog = JSON.parse(window.sessionStorage.getItem("openDialog"));
         }
 
         $('.chat-wrapper h4').text('Chat # ' + $nickName.val());
         $message.focus();
     }
+}
+function createDialog() {
+    var name = $('#dialogName').val().trim();
+    if (name != "") {
+        $('#dialogName').val("");
+        var users = "";
+        users += idUser;
+        var i = 0;
+        var friends = document.getElementsByName("users");
+        for (var j = 0; j < friends.length; j++) {
+            if (friends[j].checked) {
+                users += "," + friends[j].value;
+                friends[j].checked = false;
+                i++;
+            }
+        }
+        if (i>0){
+            $.post(newDialogUrl,
+                {
+                    name: name,
+                    users: [users],
+                    ajax: true
+                }, function (data) {
+                    data = JSON.parse(data);
+                    var id = data.id;
+                    if (!document.getElementById('dialog' + id)) {
+                        var html = '<div id="dialog' + data.id + '" class="row btn btn-default btn-block" style="margin: 1%" onclick="return chatClick(' + data.id + ')">\n' +
+                            '<div class="col-xs-3">\n' +
+                            '<div class="row" style="height: 60px; overflow: hidden; position: relative;">\n';
+                        if (data.private) {
+                            html += '<img src="' + data.userDialogs[0].user.photoURL + '" alt="User Avatar" class="img img-responsive" style="position: absolute" />\n';
+                        } else {
+                            html += '<img src="/resources/images/system/group.jpg" alt="User Avatar" class="img img-responsive" style="position: absolute" />\n';
+                        }
+                        html +=
+                            '</div>\n';
+                        if (data.private) {
+                            html += '<div class="row">\n' +
+                                '<span class="label label-success" style="display: inline-block">Online</span>\n' +
+                                '</div>\n';
+                        }
+                        html += '</div>\n' +
+                            '<div class="col-xs-offset-2 col-xs-7">\n' +
+                            '<div class="row" align="left">\n' +
+                            '<label class="control-label">' + data.name + '</label>\n' +
+                            '</div>\n' +
+                            '<div class="row" align="left">\n';
+                        if (data.private) {
+                            html += '<label class="control-label"><img style="height: 20px" src="' + data.userDialogs[0].user.country.flagURL + '">' + data.userDialogs[0].user.city.name + '</label>\n';
+                        }
+                        html += '</div>\n' +
+                            '<div class="row">\n' +
+                            '<span id="dialog' + data.id + 'Unread" class="badge"></span>\n' +
+                            '</div>\n' +
+                            '</div>\n' +
+                            '</div>';
+                        $('#dialogs').prepend(html);
+                        dialogStart++;
+                    }
+                    chatClick(data.id, true);
+                }
+            );
+        }else alert("Nobody selected")
+
+    } else alert("Name can't be empty");
 }
