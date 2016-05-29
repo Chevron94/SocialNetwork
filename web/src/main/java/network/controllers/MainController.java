@@ -79,6 +79,11 @@ public class MainController{
             model.addObject("msg", success);
             request.getSession().removeAttribute("msg");
         }
+        String err = (String) request.getSession().getAttribute("error");
+        if (err != null){
+            model.addObject("error",err);
+            request.getSession().removeAttribute("error");
+        }
         model.setViewName("login");
         return model;
     }

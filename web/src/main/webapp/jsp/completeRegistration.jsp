@@ -35,7 +35,7 @@
     <div id="selects">
         <div id="languageGroup1" class="form-group form-group-sm">
             <div class="row" style="margin-left:20%">
-                <label class="control-label col-xs-2" for="languages[0]">Language and level<sup>*</sup></label>
+                <label class="control-label col-xs-2" for="languages[0]">Language and level<sup style="color: red">*</sup></label>
                 <div class="col-xs-6" align="left">
                     <select name="languages[0]" class="form-control select" id="languages[0]">
                         <option value="0" selected>Select language</option>

@@ -244,7 +244,7 @@ public class RegistrationController {
         sendMail(user.getEmail(),"Reset password","We have received a password reset request for your Hello From account (hopefully by you).\n" +
                 "Your login: "+user.getLogin()+"\n"+
                 "Please click the link below to reset your password.\n" +
-                "https://www.hello-from.tk/reset/"+user.getToken()+"\nIf you didn't send password reset request, ignore this message");
+                "https://www.hello-from.tk/reset/"+user.getToken()+"\nIf you didn't send password reset request, ignore this message.");
         request.getSession().setAttribute("msg", "Please, check your email for instructions");
         return "redirect:/login";
     }

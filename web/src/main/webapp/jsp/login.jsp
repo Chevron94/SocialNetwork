@@ -49,7 +49,7 @@
                     <div class="form-group form-group-sm">
                         <div class="row">
                             <div class="col-xs-3">
-                                <label class="control-label" for="emailInput">Your email<sup>*</sup></label>
+                                <label class="control-label" for="emailInput">Your email<sup style="color: red;">*</sup></label>
                             </div>
                             <div class="col-xs-9">
                                 <input type="email" id="emailInput" class="form-control" name="emailInput" required>

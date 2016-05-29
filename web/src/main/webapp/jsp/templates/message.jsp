@@ -24,7 +24,7 @@
                     </div>
                     <div class="row" style="margin-top: 1%">
                         <div class="col-xs-3" align="left">
-                            <label for="messageText" class="control-label">Message:</label>
+                            <label for="messageText" class="control-label">Message</label>
                         </div>
                         <div class="col-xs-9" align="right">
                             <textarea id="messageText" style="resize: none" required class="form-control" rows="3"></textarea>
