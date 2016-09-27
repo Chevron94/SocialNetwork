@@ -284,8 +284,8 @@ public class RegistrationController {
 
     public static void sendMail(String receiver, String topic, String text){
         try{
-            String command = "echo \"\$0\" | mail -s \"\$1\" \$2 -aFrom:no-reply@hello-from.tk";
-            Process proc = Runtime.getRuntime().exec(new String[]{"bash", "-c", command, text, top});
+            String command = "echo \""+text+"\" | mail -s \""+topic+"\" "+receiver+" -aFrom:no-reply@hello-from.tk";
+            Process proc = Runtime.getRuntime().exec(new String[]{"bash","-c",command});
         }catch (Exception e){
             logger.error(e.fillInStackTrace());
         }
