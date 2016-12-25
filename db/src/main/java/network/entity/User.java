@@ -43,15 +43,21 @@ public class User {
     private Boolean confirmed;
 
     @Column(name="ROLE")
+    @JsonIgnore
     private int role;
 
     @Column(name = "IS_LOCKED")
+    @JsonIgnore
     private Boolean isLocked;
+
+    @Column(name = "ONLINE")
+    private Boolean online;
 
     @Column(name = "DESCRIPTION", columnDefinition = "TEXT", nullable = true)
     private String description;
 
     @Column(name = "TOKEN", nullable = true)
+    @JsonIgnore
     private String token;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -71,32 +77,32 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "sender")
     @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<FriendRequest> senders = new ArrayList<FriendRequest>();
+    private transient List<FriendRequest> senders = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiver")
     @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<FriendRequest> receivers = new ArrayList<FriendRequest>();
+    private transient List<FriendRequest> receivers = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<LanguageUser> languageUsers = new ArrayList<LanguageUser>();
+    private transient List<LanguageUser> languageUsers = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<Message> messages = new ArrayList<Message>();
+    private transient List<Message> messages = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<UserDialog> userDialogs = new ArrayList<UserDialog>();
+    private transient List<UserDialog> userDialogs = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<Album> albums = new ArrayList<Album>();
+    private transient List<Album> albums = new ArrayList<>();
 
 
 
@@ -113,6 +119,7 @@ public class User {
         this.city = city;
         this.gender = gender;
         this.isLocked = false;
+        this.online = false;
     }
 
     public Country getCountry() {
@@ -291,6 +298,14 @@ public class User {
         this.token = token;
     }
 
+    public Boolean getOnline() {
+        return online;
+    }
+
+    public void setOnline(Boolean online) {
+        this.online = online;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -317,9 +332,6 @@ public class User {
                 ", email='" + email + '\'' +
                 ", birthday=" + birthday +
                 ", photoURL='" + photoURL + '\'' +
-                ", confirmed=" + confirmed +
-                ", role=" + role +
-                ", isLocked=" + isLocked +
                 ", city=" + city +
                 ", country=" + country +
                 ", gender=" + gender +

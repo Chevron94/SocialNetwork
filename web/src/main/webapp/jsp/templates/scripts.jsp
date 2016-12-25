@@ -12,7 +12,10 @@
 <script src="/resources/js/jquery-ui.js"></script>
 <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/resources/js/select2.full.js"></script>
-<script type="text/javascript" src="/resources/js/dialog.js"></script>
+<script type="text/javascript" src="/resources/js/notifications.js"></script>
+<script type="text/javascript" src="/resources/js/sockets/dialog.js"></script>
+<script type="text/javascript" src="/resources/js/sockets/online.js"></script>
+<script type="text/javascript" src="/resources/js/sockets/friends.js"></script>
 <script type="text/javascript" src="/resources/js/message.js"></script>
 <script type="text/javascript" src="/resources/js/people.js"></script>
 <script type="text/javascript" src="/resources/js/dropdown.js"></script>

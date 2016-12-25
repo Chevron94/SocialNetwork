@@ -48,6 +48,8 @@
 <%if(idUser!=null){
 %>
 <script type="text/javascript">
+    connectToOnlineService();
+ //   connectToFriendsService();
     connectToChatServer();
 </script>
 <%

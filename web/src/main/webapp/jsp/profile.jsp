@@ -158,18 +158,20 @@
                 <%if(numberOfAlbums>0){
                 %>
                 <%
-                    for(int i = 0; i<albums.size();i++){
-                        if(albums.get(i).getPhotos()!=null && albums.get(i).getPhotos().size()>0){
+                    for (Album album : albums) {
+                        if (album.getPhotos() != null && album.getPhotos().size() > 0) {
                 %>
                 <div class="row" style="margin-top: 1%; margin-bottom: 1%;">
                     <div class="col-xs-12">
                         <div class="row">
-                            <div class="col-xs-12 img_wrap_big btn" style="background-image: url(<%=albums.get(i).getPhotos().get(0).getPhotoUrl()%>)" data-toggle="modal" data-target="#photoViewer"
-                                 onclick="showPhoto(<%=albums.get(i).getPhotos().get(0).getId()%>,'<%=albums.get(i).getPhotos().get(0).getPhotoUrl()%>',<%=user.getId()%>,<%=albums.get(i).getId()%>,'<%=simpleDateFormat.format(albums.get(i).getPhotos().get(0).getUploaded())%>',0)"></div>
+                            <div class="col-xs-12 img_wrap_big btn"
+                                 style="background-image: url(<%=album.getPhotos().get(0).getPhotoUrl()%>)"
+                                 data-toggle="modal" data-target="#photoViewer"
+                                 onclick="showPhoto(<%=album.getPhotos().get(0).getId()%>,'<%=album.getPhotos().get(0).getPhotoUrl()%>',<%=user.getId()%>,<%=album.getId()%>,'<%=simpleDateFormat.format(album.getPhotos().get(0).getUploaded())%>',0)"></div>
                         </div>
                         <div class="row">
-                            <a href="/albums/<%=albums.get(i).getId()%>"><p
-                                    class="word"><%=albums.get(i).getName()%>
+                            <a href="/albums/<%=album.getId()%>"><p
+                                    class="word"><%=album.getName()%>
                             </p></a>
                         </div>
                     </div>
@@ -193,6 +195,7 @@
                             </div>
                             <div class="col-xs-9">
                                <%=user.getName()%>
+                                <span id="status<%=user.getId()%>" class="label label-success" style="display: <%=user.getOnline() ? "inline-block" : "none"%>">Online</span>
                             </div>
                         </div>
 

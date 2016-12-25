@@ -3,10 +3,14 @@ package network.service;
 import network.dao.FriendRequestDao;
 import network.dao.implementation.FriendRequestDaoImplementation;
 import network.entity.FriendRequest;
+import network.service.events.FriendEvent;
+import network.service.events.FriendRequestEvent;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -17,6 +21,10 @@ import java.util.Map;
  */
 @Stateless
 public class FriendRequestService extends FriendRequestDaoImplementation implements FriendRequestDao {
+
+    @Inject
+    @FriendRequestEvent
+    Event<FriendEvent> friendEvent;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -76,7 +84,10 @@ public class FriendRequestService extends FriendRequestDaoImplementation impleme
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
     public FriendRequest create(FriendRequest friendRequest) {
-        return super.create(friendRequest);
+        friendRequest = super.create(friendRequest);
+        FriendEvent event = new FriendEvent(friendRequest);
+        friendEvent.fire(event);
+        return friendRequest;
     }
 
     @Override
@@ -89,7 +100,10 @@ public class FriendRequestService extends FriendRequestDaoImplementation impleme
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 
     public FriendRequest update(FriendRequest friendRequest) {
-        return super.update(friendRequest);
+        friendRequest = super.update(friendRequest);
+        FriendEvent event = new FriendEvent(friendRequest);
+        friendEvent.fire(event);
+        return friendRequest;
     }
 
     @Override

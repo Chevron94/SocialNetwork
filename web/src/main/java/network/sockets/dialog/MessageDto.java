@@ -1,6 +1,5 @@
-package network.dto;
+package network.sockets.dialog;
 
-import network.entity.Dialog;
 import network.entity.Message;
 
 import java.text.SimpleDateFormat;
@@ -14,7 +13,7 @@ public class MessageDto {
     private String messageText;
     private String sender;
     private String senderId;
-    private String receiverDialog;
+    private String dialogId;
     private Date receivedDate;
     private String received;
     private Boolean read;
@@ -28,7 +27,7 @@ public class MessageDto {
         messageText = message.getText();
         sender = message.getUser().getLogin();
         senderId = message.getUser().getId().toString();
-        receiverDialog = message.getDialog().getId().toString();
+        dialogId = message.getDialog().getId().toString();
         receivedDate = message.getDateTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         received = (simpleDateFormat.format(receivedDate));
@@ -92,12 +91,12 @@ public class MessageDto {
         this.id = id;
     }
 
-    public String getReceiverDialog() {
-        return receiverDialog;
+    public String getDialogId() {
+        return dialogId;
     }
 
-    public void setReceiverDialog(String receiverDialog) {
-        this.receiverDialog = receiverDialog;
+    public void setDialogId(String dialogId) {
+        this.dialogId = dialogId;
     }
 
     public String getSenderId() {
@@ -115,7 +114,7 @@ public class MessageDto {
                 ", messageText='" + messageText + '\'' +
                 ", sender='" + sender + '\'' +
                 ", senderId='" + senderId + '\'' +
-                ", receiverDialog='" + receiverDialog + '\'' +
+                ", dialogId='" + dialogId + '\'' +
                 ", receivedDate=" + receivedDate +
                 ", received='" + received + '\'' +
                 '}';

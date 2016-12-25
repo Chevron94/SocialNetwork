@@ -21,8 +21,8 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
     }
 
     public User Login(String login, String password) {
-        String jpa = "SELECT u FROM User u WHERE u.login = :login and u.password = :password";
-        HashMap<String,Object> parameters = new HashMap<String,Object>();
+        String jpa = "SELECT u FROM User u WHERE u.login = :login and u.password = :password and u.confirmed = true";
+        HashMap<String,Object> parameters = new HashMap<>();
         parameters.put("login", login);
         parameters.put("password", password);
         List<User> users = this.executeQuery(jpa, parameters);
@@ -35,7 +35,7 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
     @Override
     public User getUserByToken(String token, Boolean confirmed) {
         String jpa = "SELECT u FROM User u WHERE u.token = :token AND u.confirmed = :confirmed";
-        HashMap<String,Object> parameters = new HashMap<String,Object>();
+        HashMap<String,Object> parameters = new HashMap<>();
         parameters.put("token", token);
         parameters.put("confirmed", confirmed);
         List<User> users = this.executeQuery(jpa, parameters);
@@ -46,8 +46,8 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
     }
 
     public User getUserByLogin(String login) {
-        String jpa = "SELECT u FROM User u WHERE u.login = :login";
-        HashMap<String,Object> parameters = new HashMap<String, Object>();
+        String jpa = "SELECT u FROM User u WHERE u.login = :login and u.confirmed = true";
+        HashMap<String,Object> parameters = new HashMap<>();
         parameters.put("login",login);
         List<User> users = this.executeQuery(jpa, parameters);
         if (users.size() == 0){
@@ -57,8 +57,8 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
     }
 
     public User getUserByEmail(String email) {
-        String jpa = "SELECT u FROM User u WHERE u.email = :email";
-        HashMap<String,Object> parameters = new HashMap<String, Object>();
+        String jpa = "SELECT u FROM User u WHERE u.email = :email and u.confirmed = true";
+        HashMap<String,Object> parameters = new HashMap<>();
         parameters.put("email",email);
         List<User> users = this.executeQuery(jpa, parameters);
         if (users.size() == 0){
@@ -68,8 +68,8 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
     }
 
     public User getUserById(Long id) {
-        String jpa = "SELECT u FROM User u WHERE u.id = :id";
-        HashMap<String,Object> parameters = new HashMap<String, Object>();
+        String jpa = "SELECT u FROM User u WHERE u.id = :id and u.confirmed = true";
+        HashMap<String,Object> parameters = new HashMap<>();
         parameters.put("id",id);
         List<User> users = this.executeQuery(jpa, parameters);
         if (users.size() == 0){
@@ -80,40 +80,46 @@ public class UserDaoImplementation extends GenericDaoImplementation<User,Long> i
 
     public List<User> getUsersByCityId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT u FROM User u WHERE u.city.id = :id AND u.confirmed = true";
-        HashMap<String,Object> parameters = new HashMap<String, Object>();
+        HashMap<String,Object> parameters = new HashMap<>();
         parameters.put("id",id);
         return this.executeQuery(jpa, parameters, start, limit);
     }
 
     public List<User> getUsersByGenderId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT u FROM User u WHERE u.gender.id = :id AND u.confirmed = true";
-        HashMap<String,Object> parameters = new HashMap<String, Object>();
+        HashMap<String,Object> parameters = new HashMap<>();
         parameters.put("id",id);
         return this.executeQuery(jpa, parameters, start, limit);
     }
 
     public List<User> getUsersByCountryId(Long id, Integer start, Integer limit) {
         String jpa = "SELECT u FROM User u WHERE u.country.id = :id AND u.confirmed = true";
-        HashMap<String,Object> parameters = new HashMap<String, Object>();
+        HashMap<String,Object> parameters = new HashMap<>();
         parameters.put("id",id);
         return this.executeQuery(jpa, parameters, start, limit);
     }
 
     public List<User> getUsersByCustomFilter(Long idUser, HashMap<String,Object> params, Integer start, Integer limit) {
-
-        HashMap<String,Object> parameters = new HashMap<String, Object>();
+        HashMap<String,Object> parameters = new HashMap<>();
         parameters.put("idUser",idUser);
         String jpa = "SELECT DISTINCT u FROM User u, LanguageUser lu";
         String list = (String) params.get("list");
         if(list!= null) {
             jpa+= ", FriendRequest f ";
-            if (list.equals("friends")) {
-                jpa+="WHERE (f.sender.id = :idUser OR f.receiver.id = :idUser) AND (f.sender.id = u.id OR f.receiver.id = u.id) AND u.id <> :idUser AND f.confirmed = true ";
-            }else if(list.equals("received")){
-                jpa+="WHERE (f.receiver.id = :idUser AND u.id = f.sender.id) AND f.confirmed = false ";
-            }else if(list.equals("sent")){
-                jpa+="WHERE (f.sender.id = :idUser AND u.id = f.receiver.id) AND f.confirmed = false ";
-            }else jpa+="WHERE u.id NOT IN (SELECT DISTINCT u1.id FROM User u1, FriendRequest f1 WHERE (f1.sender.id = :idUser OR f1.receiver.id = :idUser) AND (f1.sender.id = u1.id OR f1.receiver.id = u1.id)) AND u.id <> :idUser ";
+            switch (list) {
+                case "friends":
+                    jpa += "WHERE (f.sender.id = :idUser OR f.receiver.id = :idUser) AND (f.sender.id = u.id OR f.receiver.id = u.id) AND u.id <> :idUser AND f.confirmed = true ";
+                    break;
+                case "received":
+                    jpa += "WHERE (f.receiver.id = :idUser AND u.id = f.sender.id) AND f.confirmed = false ";
+                    break;
+                case "sent":
+                    jpa += "WHERE (f.sender.id = :idUser AND u.id = f.receiver.id) AND f.confirmed = false ";
+                    break;
+                default:
+                    jpa += "WHERE u.id NOT IN (SELECT DISTINCT u1.id FROM User u1, FriendRequest f1 WHERE (f1.sender.id = :idUser OR f1.receiver.id = :idUser) AND (f1.sender.id = u1.id OR f1.receiver.id = u1.id)) AND u.id <> :idUser ";
+                    break;
+            }
         }
 
 

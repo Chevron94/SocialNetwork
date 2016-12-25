@@ -1,5 +1,5 @@
-var wsocket;
-var serviceLocation = "wss://" + document.location.host + "/dialog";
+var dialogWebSocket;
+var serviceMessagesLocation = "wss://" + document.location.host + "/sockets/dialog";
 var $nickName;
 var $message;
 var $chatWindow;
@@ -127,8 +127,14 @@ function loadMoreDialogs() {
                 html +=
                     '</div>\n';
                 if (data[i].private) {
+                    var status;
+                    if (data[i].userDialogs[0].user.online) {
+                        status = "inline-block"
+                    } else {
+                        status = "none";
+                    }
                     html += '<div class="row">\n' +
-                        '<span class="label label-success" style="display: inline-block">Online</span>\n' +
+                        '<span id="status'+data[i].userDialogs[0].user.id+'" class="label label-success" style="display: '+status+'">Online</span>\n' +
                         '</div>\n';
                 }
 
@@ -172,11 +178,14 @@ function loadMoreDialogs() {
 
 function onMessageReceived(evt) {
     var msg = JSON.parse(evt.data); // native API
+    if (!(msg.senderId === idUser.toString()) && !(msg.messageText === '')) {
+        sendNotification(msg.sender,{ body: msg.messageText, dir: 'auto', icon: msg.avatar })
+    }
     if (path == '/dialogs') {
         var isNew = false;
         var isReadEvent = false;
-        if ($dialog.val() == msg.receiver) {
-            if (msg.messageText == "") {
+        if ($dialog.val() === msg.receiver) {
+            if (msg.messageText === "") {
                 isReadEvent = true;
                 var messages = document.getElementById("response").childNodes;
                 for (var i = 0; i < messages.length; i++) {
@@ -233,11 +242,13 @@ function onMessageReceived(evt) {
                                 html += '<img src="/resources/images/system/group.jpg" alt="User Avatar" class="img img-responsive" style="position: absolute" />\n';
                             }
                             html +=
-                                '</div>\n' +
-                                '<div class="row">\n' +
-                                '<span class="label label-success" style="display: inline-block">Online</span>\n' +
-                                '</div>\n' +
-                                '</div>\n' +
+                                '</div>\n';
+                            if (data.private){
+                                html +=    '<div class="row">\n' +
+                                    '<span id="status'+data.userDialogs[0].user.id+'" class="label label-success" style="display: inline-block">Online</span>\n' +
+                                    '</div>\n';
+                            }
+                            html+=    '</div>\n' +
                                 '<div class="col-xs-offset-2 col-xs-7">\n' +
                                 '<div class="row" align="left">\n' +
                                 '<label class="control-label">' + data.name + '</label>\n' +
@@ -279,7 +290,7 @@ function onMessageReceived(evt) {
             $('#dialogs').prepend(html);
         }
     } else {
-        if (!(msg.senderId == idUser.toString())) {
+        if (!(msg.senderId === idUser.toString())) {
             if (msg.receiver in unreadMessages) {
                 unreadMessages[msg.receiver] = unreadMessages[msg.receiver] + 1;
             } else unreadMessages[msg.receiver] = 1;
@@ -296,23 +307,24 @@ function sendMessage(messageText, sender, dialog) {
         if ($message.val().trim() != "") {
             msg = '{"messageText":"' + $message.val().trim().replace(new RegExp('"','g'),'\\"') + '", "sender":"'
                 + $nickName.val() + '", "senderId":"' + idUser + '", "received":"","dialog":"' + $dialog.val() + '"}';
-            wsocket.send(msg);
+            dialogWebSocket.send(msg);
         }
         $message.val('').focus();
     } else {
         msg = '{"messageText":"' + messageText.trim().replace(new RegExp('"','g'),'\\"') + '", "sender":"'
             + sender + '", "senderId":"' + idUser + '","received":"","dialog":"' + dialog + '"}';
-        wsocket.send(msg);
+        dialogWebSocket.send(msg);
     }
 }
 function connectToChatServer() {
-    wsocket = new WebSocket(serviceLocation);
-    wsocket.onopen = function () {
-        var msg = '{"id":"' + idUser + '", "sender":""'
-            + ', "received":""}';
-        wsocket.send(msg);
+    dialogWebSocket = new WebSocket(serviceMessagesLocation);
+    dialogWebSocket.onopen = function () {
+        dialogWebSocket.send(
+            "{" +
+                '"senderId" : "' + idUser + '"' +
+            "}");
     };
-    wsocket.onmessage = onMessageReceived;
+    dialogWebSocket.onmessage = onMessageReceived;
     if (window.sessionStorage.getItem("unreadMessages") == null) {
         $.getJSON(
             unreadMessagesUrl,
@@ -395,6 +407,12 @@ function createDialog() {
                 }, function (data) {
                     data = JSON.parse(data);
                     var id = data.id;
+                    var status;
+                    if (userDialogs[0].user.online){
+                        status ="inline-block"
+                    } else {
+                        status= "none";
+                    }
                     if (!document.getElementById('dialog' + id)) {
                         var html = '<div id="dialog' + data.id + '" class="row btn btn-default btn-block" style="margin: 1%" onclick="return chatClick(' + data.id + ')">\n' +
                             '<div class="col-xs-3">\n' +
@@ -408,7 +426,7 @@ function createDialog() {
                             '</div>\n';
                         if (data.private) {
                             html += '<div class="row">\n' +
-                                '<span class="label label-success" style="display: inline-block">Online</span>\n' +
+                                '<span id="status'+data.userDialogs[0].user.id+'" class="label label-success" style="display: '+status+'">Online</span>\n' +
                                 '</div>\n';
                         }
                         html += '</div>\n' +

@@ -1,9 +1,8 @@
-package network.dialogs;
+package network.sockets.dialog;
 
 /**
  * Created by roman on 10/4/15.
  */
-import network.dto.MessageDto;
 
 import javax.json.Json;
 import javax.websocket.EncodeException;
@@ -30,12 +29,12 @@ public class DialogMessageEncoder implements Encoder.Text<MessageDto> {
                 .add("senderId", chatMessage.getSenderId())
                 .add("read",chatMessage.getRead())
                 .add("avatar",chatMessage.getAvatar())
-                .add("receiver", chatMessage.getReceiverDialog())
+                .add("receiver", chatMessage.getDialogId())
                 .add("received", chatMessage.getReceived()).build()
                 .toString();
         return Json.createObjectBuilder()
                 .add("senderId",chatMessage.getSenderId())
-                .add("receiver",chatMessage.getReceiverDialog())
+                .add("receiver",chatMessage.getDialogId())
                 .add("messageText", chatMessage.getMessageText()).build().toString();
     }
 }

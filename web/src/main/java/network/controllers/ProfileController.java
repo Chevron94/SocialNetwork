@@ -26,7 +26,7 @@ import java.util.*;
  * Created by roman on 10/4/15.
  */
 @Controller
-public class ProfileController {
+public class ProfileController extends GenericController {
     @EJB
     UserDao userService;
     @EJB
@@ -104,14 +104,7 @@ public class ProfileController {
     @RequestMapping(value = "/user{id}", method = RequestMethod.GET)
     public String getUserProfile(Model model, HttpServletRequest request, @PathVariable String id) {
 
-        Long idUser = (Long)request.getSession().getAttribute("idUser");
-        if (idUser == null)
-        {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            User loginUser = userService.getUserByLogin(auth.getName());
-            request.getSession().setAttribute("idUser",loginUser.getId());
-            idUser = loginUser.getId();
-        }
+        Long idUser = getUserId(request);
         User user = userService.getUserById(Long.valueOf(id));
         if (user != null) {
             HashMap<String, Object> params = new HashMap<>();

@@ -73,7 +73,6 @@ public class MessageService extends MessageDaoImplementation implements MessageD
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-
     public Message create(Message message) {
         message = super.create(message);
         MessageEvent event = new MessageEvent(message);

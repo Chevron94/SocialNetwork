@@ -97,7 +97,7 @@
       <div class="row" style="margin-left:20%">
         <label class="control-label col-xs-2" for="email">E-mail<sup style="color: red;">*</sup></label>
         <div class="col-xs-6" align="left">
-          <input type="email" id="email" class="form-control" name="email" required
+          <input type="email" id="email" class="form-control" name="email" pattern="^\w+@\w+\.\w+" required
             <%
               if(user!=null)
               {

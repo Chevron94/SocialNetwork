@@ -1,6 +1,5 @@
-package network.dialogs;
+package network.sockets.dialog;
 
-import network.dto.MessageDto;
 import org.apache.commons.lang3.StringUtils;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -30,17 +29,22 @@ public class DialogMessageDecoder implements Decoder.Text<MessageDto> {
         JsonObject obj = Json.createReader(new StringReader(tmp))
                 .readObject();
         try {
+            //connect
+            message.setSenderId(obj.getString("senderId"));
+            //read
+            message.setDialogId(obj.getString("dialog"));
+            //send
             message.setMessageText(obj.getString("messageText"));
             message.setMessageText(StringUtils.replaceEach(obj.getString("messageText"), new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"}));
-            message.setReceiverDialog(obj.getString("dialog"));
+            message.setDialogId(obj.getString("dialog"));
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
             message.setSender(obj.getString("sender"));
             message.setSenderId(obj.getString("senderId"));
             Date date = new Date();
             message.setReceivedDate((date));
             message.setReceived(simpleDateFormat.format(date));
-        }catch (NullPointerException e){
-            message.setId((obj.getString("id")));
+        }catch (NullPointerException ignored){
+
         }
         return message;
     }

@@ -1,13 +1,12 @@
 package network.controllers;
 
 import network.dao.*;
-import network.dto.MessageDto;
+import network.sockets.dialog.MessageDto;
 import network.entity.Dialog;
 import network.entity.Message;
 import network.entity.User;
 import network.entity.UserDialog;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,11 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by roman on 10/4/15.
@@ -92,7 +87,7 @@ public class DialogController {
             }
         }
         if (ok) {
-            List<Message> messages = messageService.getMessagesByDialogId(Long.valueOf(idDialog), startMessage, 20);
+            List<Message> messages = messageService.getMessagesByDialogId(idDialog, startMessage, 20);
             List<MessageDto> messagesDto = new ArrayList<>();
             for (Message message : messages) {
                 MessageDto m = new MessageDto(message);
@@ -144,7 +139,7 @@ public class DialogController {
     @RequestMapping(value = "/message", method = RequestMethod.POST)
     public @ResponseBody Boolean getOrCreateDialog(@RequestParam(value = "idSender") Long idSender, @RequestParam(value = "idReceiver") Long idReceiver,@RequestParam(value = "text") String text, HttpServletRequest request){
         Long userId = (Long)(request.getSession().getAttribute("idUser"));
-        if(userId==idSender  && idReceiver!=idSender){
+        if(Objects.equals(userId, idSender) && !Objects.equals(idReceiver, idSender)){
             User sender = userService.getUserById(idSender);
             User receiver = userService.getUserById(idReceiver);
             Dialog dialog = dialogService.getDialogByTwoUser(idSender,idReceiver);
@@ -170,7 +165,7 @@ public class DialogController {
         List<HashMap.Entry<Long,Long>> result = new ArrayList<>();
         List<Dialog> dialogs = dialogService.getDialogsWithUnreadMessagesByUserId(idUser);
         for(Dialog dialog:dialogs){
-            result.add(new HashMap.SimpleEntry<Long, Long>(dialog.getId(),messageService.getCountUnreadMessagesByUserIdAndDialogId(idUser,dialog.getId())));
+            result.add(new HashMap.SimpleEntry<>(dialog.getId(), messageService.getCountUnreadMessagesByUserIdAndDialogId(idUser, dialog.getId())));
         }
         return result;
     }

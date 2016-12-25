@@ -98,25 +98,29 @@ public class RegistrationController {
                                   HttpServletRequest request,
                                   @RequestParam("filePhoto") MultipartFile file) {
         if (bindingResult.hasErrors()) {
-            List<String> validationErrors = new ArrayList<String>();
+            List<String> validationErrors = new ArrayList<>();
             for (FieldError error : bindingResult.getFieldErrors()) {
                 validationErrors.add(error.getDefaultMessage());
             }
         }
-        List<String> validationErrors = new ArrayList<String>();
+        List<String> validationErrors = new ArrayList<>();
         if (userService.getUserByLogin(user.getLogin()) != null) {
             validationErrors.add("Login is already used");
         }
 
-        Pattern p = Pattern.compile("^\\w+$");
-        Pattern q = Pattern.compile("^\\w+([\\s-]\\w+)*$");
-        Matcher m = p.matcher(user.getLogin());
+        Pattern loginPattern = Pattern.compile("^\\w+$");
+        Pattern emailPattern = Pattern.compile("^\\w+@\\w+\\.\\w+");
+        Matcher m = loginPattern.matcher(user.getLogin());
         if (!m.matches()) {
             validationErrors.add("Login must be contains only latin symbols and digits");
         }
-        m = q.matcher(user.getName());
+        m = loginPattern.matcher(user.getName());
         if (!m.matches()) {
-            validationErrors.add("Name must be contains only latin symbols, digits, '-',_,or space");
+            validationErrors.add("Name must be contains only latin symbols and digits");
+        }
+        m = emailPattern.matcher(user.getEmail());
+        if (!m.matches()){
+            validationErrors.add("Incorrect email");
         }
         user.getCountry();
         user.getCity();

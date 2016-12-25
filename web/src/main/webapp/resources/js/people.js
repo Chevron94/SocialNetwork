@@ -133,6 +133,12 @@ function loadMore(start,sender,list){
             }
             for (var i = 0; i< len; i++) {
                 var date = new Date(data[i].birthday);
+                var status;
+                if (data[i].online) {
+                    status = "display: inline-block"
+                } else {
+                    status = "display: none"
+                }
                 html+='<div id="'+data[i].id+'" class="row scale-text" style="margin: auto; margin-right:1%; border-bottom: 1px solid #ddd;">'+
                         '<div class="col-xs-11">'+
                             '<div class="row" style="margin: auto">'+
@@ -178,7 +184,8 @@ function loadMore(start,sender,list){
                                                     'Login'+
                                                 '</div>'+
                                                 '<div class="col-xs-9">'+
-                                                    '<a href="/user'+data[i].id+'"><b>'+data[i].login+'</b></a>'+
+                                                    '<a href="/user'+data[i].id+'"><b>'+data[i].login+'</b></a>\n'+
+                                                    '<span id="status'+data[i].id+'" class="label label-success" style="'+status+'">Online</span>'+
                                                 '</div>'+
                                             '</div>'+
                                             '<div class="row  table-fixed">'+

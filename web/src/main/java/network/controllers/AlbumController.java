@@ -27,29 +27,19 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Роман on 31.03.2016.
  */
 @Controller
-public class AlbumController {
+public class AlbumController extends GenericController {
     @EJB
     UserDao userService;
     @EJB
     PhotoDao photoService;
     @EJB
     AlbumDao albumService;
-
-    public Long getUserId(HttpServletRequest request){
-        Long idUser = (Long)request.getSession().getAttribute("idUser");
-        if(idUser==null) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            User user = userService.getUserByLogin(auth.getName());
-            request.getSession().setAttribute("idUser", user.getId());
-            idUser = user.getId();
-        }
-        return idUser;
-    }
 
     @RequestMapping(value = "/albums", method = RequestMethod.GET)
     public String getAllAlbums(HttpServletRequest request, Model model){
@@ -128,12 +118,12 @@ public class AlbumController {
     public @ResponseBody
     Long newAlbum(@RequestParam(value = "idCreator") Long idCreator, @RequestParam(value = "name") String name, HttpServletRequest request){
         Long userId = (Long)(request.getSession().getAttribute("idUser"));
-        if(userId!=idCreator){
+        if(!Objects.equals(userId, idCreator)){
             return null;
         }
         Album album = albumService.getAlbumByUserIdAndName(userId, StringUtils.replaceEach(name, new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"}));
         if (album!=null){
-            return 0l;
+            return 0L;
         }
         album = new Album(name,userService.getUserById(userId), new Date());
         album = albumService.create(album);
@@ -146,7 +136,7 @@ public class AlbumController {
         Long userId = (Long)(request.getSession().getAttribute("idUser"));
         Album album = albumService.getAlbumById(id);
         Long idCreator = album.getUser().getId();
-        if(userId!=idCreator){
+        if(!Objects.equals(userId, idCreator)){
             return null;
         }else try{
             albumService.delete(id);
@@ -162,7 +152,7 @@ public class AlbumController {
         Long userId = (Long)(request.getSession().getAttribute("idUser"));
         Album album = albumService.getAlbumById(id);
         Long idCreator = album.getUser().getId();
-        if(userId!=idCreator){
+        if(!Objects.equals(userId, idCreator)){
             return null;
         }else try{
             if(albumService.getAlbumByUserIdAndName(id,StringUtils.replaceEach(newName, new String[]{"&", "\"", "<", ">", "'", "/",}, new String[]{"&amp;", "&quot;", "&lt;", "&gt;", "&apos;", "&#x2F;"})) == null){
@@ -197,7 +187,7 @@ public class AlbumController {
         Long userId = (Long)(request.getSession().getAttribute("idUser"));
         Photo photo = photoService.getPhotoByID(id);
         Long idCreator = photo.getAlbum().getUser().getId();
-        if(userId!=idCreator){
+        if(!Objects.equals(userId, idCreator)){
             return null;
         }else try{
             photoService.delete(id);
