@@ -1,12 +1,8 @@
 package network.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,14 +28,12 @@ public class Dialog {
     private Boolean isPrivate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dialog")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<Message> messages = new ArrayList<Message>();
+    private transient List<Message> messages = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dialog")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<UserDialog> userDialogs = new ArrayList<UserDialog>();
+    private transient List<UserDialog> userDialogs = new ArrayList<>();
 
 
 

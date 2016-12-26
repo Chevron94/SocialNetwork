@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by roman on 9/23/15.
@@ -24,7 +22,7 @@ public class Gender {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "gender")
     @JsonIgnore
-    private transient List<User> users = new ArrayList<User>();
+    private transient List<User> users = new ArrayList<>();
 
     public Gender() {
     }

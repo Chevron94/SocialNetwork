@@ -1,13 +1,11 @@
 package network.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by roman on 13.09.15.
@@ -75,32 +73,26 @@ public class User {
     
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "sender")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<FriendRequest> senders = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiver")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<FriendRequest> receivers = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<LanguageUser> languageUsers = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<Message> messages = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<UserDialog> userDialogs = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
     private transient List<Album> albums = new ArrayList<>();
 

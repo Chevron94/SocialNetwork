@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by roman on 15.09.15.
@@ -26,7 +24,7 @@ public class LanguageLevel {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "languageLevel")
     @JsonIgnore
-    private transient List<LanguageUser> languageUsers = new ArrayList<LanguageUser>();
+    private transient List<LanguageUser> languageUsers = new ArrayList<>();
 
 
 

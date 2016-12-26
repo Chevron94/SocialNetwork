@@ -1,13 +1,11 @@
 package network.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by roman on 14.09.15.
@@ -40,9 +38,8 @@ public class Message {
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "message")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<File> files = new ArrayList<File>();
+    private transient List<File> files = new ArrayList<>();
 
 
 

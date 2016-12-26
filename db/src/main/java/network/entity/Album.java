@@ -1,13 +1,11 @@
 package network.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by roman on 22.09.15.
@@ -33,9 +31,8 @@ public class Album {
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "album")
-    @Cascade({CascadeType.REMOVE})
     @JsonIgnore
-    private transient List<Photo> photos = new ArrayList<Photo>();
+    private transient List<Photo> photos = new ArrayList<>();
 
     public Album() {
     }

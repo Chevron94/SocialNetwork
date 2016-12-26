@@ -1,8 +1,12 @@
 package network.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +27,7 @@ public class Continent {
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "continent")
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     @JsonIgnore
     private transient List<Country> countries = new ArrayList<>();
 
