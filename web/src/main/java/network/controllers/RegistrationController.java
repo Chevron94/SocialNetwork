@@ -19,6 +19,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.ejb.EJB;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.*;
@@ -287,11 +293,28 @@ public class RegistrationController {
     }
 
     public static void sendMail(String receiver, String topic, String text){
-        try{
-            String command = "echo \""+text+"\" | mail -s \""+topic+"\" "+receiver+" -aFrom:no-reply@hello-from.tk";
-            Process proc = Runtime.getRuntime().exec(new String[]{"bash","-c",command});
-        }catch (Exception e){
-            logger.error(e.fillInStackTrace());
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.yandex.ru");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        Session session = Session.getDefaultInstance(props,
+                new javax.mail.Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication("no-reply@hello-from.tk", "Chevron94Vrn");
+                    }
+                });
+        try {
+            javax.mail.Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("no-reply@hello-from.tk"));
+            message.setRecipients(javax.mail.Message.RecipientType.TO, InternetAddress.parse(receiver));
+            message.setSubject(topic);
+            message.setText(text);
+            Transport.send(message);
+        } catch (MessagingException ex) {
+            logger.error(ex);
         }
     }
 }
