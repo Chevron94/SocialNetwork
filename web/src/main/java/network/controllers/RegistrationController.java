@@ -1,34 +1,32 @@
 package network.controllers;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import network.dao.*;
 import network.dto.LanguageDto;
 import network.dto.UserDto;
 import network.entity.*;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import network.services.MD5Service;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.ejb.EJB;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
+import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.*;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -297,6 +295,7 @@ public class RegistrationController {
         props.put("mail.smtp.host", "smtp.yandex.ru");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.ssl.enable","true");
         props.put("mail.smtp.socketFactory.port", "465");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         Session session = Session.getDefaultInstance(props,
@@ -307,7 +306,7 @@ public class RegistrationController {
                     }
                 });
         try {
-            javax.mail.Message message = new MimeMessage(session);
+            Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("no-reply@hello-from.tk"));
             message.setRecipients(javax.mail.Message.RecipientType.TO, InternetAddress.parse(receiver));
             message.setSubject(topic);
