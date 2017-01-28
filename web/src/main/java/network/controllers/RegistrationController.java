@@ -169,6 +169,7 @@ public class RegistrationController {
         newUser.setCity(cityService.getCityById(user.getCity()));
         newUser.setGender(genderService.getGenderById(user.getGender()));
         newUser.setDescription(user.getDescription());
+        newUser.setOnline(false);
         newUser = userService.create(newUser);
         Album album = new Album("Main", newUser, new java.util.Date());
         album = albumService.create(album);
