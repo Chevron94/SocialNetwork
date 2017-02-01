@@ -1,13 +1,11 @@
 package network.controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import network.dao.*;
 import network.dto.LanguageDto;
 import network.dto.UserDto;
 import network.entity.*;
+import network.helpers.FileHelper;
 import network.services.MD5Service;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,20 +15,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.ejb.EJB;
-import javax.mail.*;
 import javax.mail.Message;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Date;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static network.helpers.Constants.*;
 
 /**
  * Created by roman on 10/7/15.
@@ -174,17 +171,11 @@ public class RegistrationController {
         Album album = new Album("Main", newUser, new java.util.Date());
         album = albumService.create(album);
         if (!file.isEmpty()) {
-            Map options = ObjectUtils.asMap(
-                    "cloud_name", "chevron",
-                    "api_key", "955731587757792",
-                    "api_secret", "_An7669JFG-iRVrBjEdxQ1iwnDY");
-            Map uploadResult;
-            Cloudinary cloudinary = new Cloudinary(options);
+            Photo photo;
             try {
-                uploadResult = cloudinary.uploader().upload(stream2file(file.getInputStream()), options);
-                Photo photo = new Photo((String) uploadResult.get("secure_url"),new java.util.Date(), album);
+                photo = new Photo(HOST_URL+"images/" + FileHelper.imageInputStreamToString(file.getInputStream(),newUser.getId(),album.getId()), new java.util.Date(), album);
                 photoService.create(photo);
-                newUser.setPhotoURL((String) uploadResult.get("secure_url"));
+                newUser.setPhotoURL(photo.getPhotoUrl());
                 userService.update(newUser);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -193,7 +184,7 @@ public class RegistrationController {
             newUser.setPhotoURL("/resources/images/system/no-photo.png");
             userService.update(newUser);
         }
-        sendMail(newUser.getEmail(),"Registration","Thanks for signing up for Hello From! Please click the link below to confirm your email address.\n"+"https://www.hello-from.tk/activate/"+newUser.getToken());
+        sendMail(newUser.getEmail(),"Registration","Thanks for signing up for Hello From! Please click the link below to confirm your email address.\n"+HOST_URL+"activate/"+newUser.getToken());
         request.getSession().setAttribute("msg", "Please, check your email for instructions");
         return "redirect:/login";
     }
@@ -253,7 +244,7 @@ public class RegistrationController {
         sendMail(user.getEmail(),"Reset password","We have received a password reset request for your Hello From account (hopefully by you).\n" +
                 "Your login: "+user.getLogin()+"\n"+
                 "Please click the link below to reset your password.\n" +
-                "https://www.hello-from.tk/reset/"+user.getToken()+"\nIf you didn't send password reset request, ignore this message.");
+                HOST_URL+"reset/"+user.getToken()+"\nIf you didn't send password reset request, ignore this message.");
         request.getSession().setAttribute("msg", "Please, check your email for instructions");
         return "redirect:/login";
     }
@@ -283,17 +274,9 @@ public class RegistrationController {
         }
     }
 
-    public File stream2file (InputStream in) throws IOException {
-        final File tempFile = File.createTempFile("stream2file", ".tmp");
-        tempFile.deleteOnExit();
-        FileOutputStream out = new FileOutputStream(tempFile);
-        IOUtils.copy(in, out);
-        return tempFile;
-    }
-
     public static void sendMail(String receiver, String topic, String text){
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.yandex.ru");
+        props.put("mail.smtp.host", SMTP_HOST);
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
         props.put("mail.smtp.ssl.enable","true");
@@ -303,12 +286,12 @@ public class RegistrationController {
                 new javax.mail.Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication("no-reply@hello-from.tk", "Chevron94Vrn");
+                        return new PasswordAuthentication(EMAIL_LOGIN, EMAIL_PASSWORD);
                     }
                 });
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("no-reply@hello-from.tk"));
+            message.setFrom(new InternetAddress(EMAIL_LOGIN));
             message.setRecipients(javax.mail.Message.RecipientType.TO, InternetAddress.parse(receiver));
             message.setSubject(topic);
             message.setText(text);

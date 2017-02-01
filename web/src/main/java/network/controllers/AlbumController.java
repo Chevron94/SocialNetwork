@@ -1,17 +1,12 @@
 package network.controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import network.dao.AlbumDao;
 import network.dao.PhotoDao;
 import network.dao.UserDao;
 import network.entity.Album;
 import network.entity.Photo;
-import network.entity.User;
-import org.apache.commons.io.IOUtils;
+import network.helpers.FileHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,14 +15,12 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+
+import static network.helpers.Constants.HOST_URL;
 
 /**
  * Created by Роман on 31.03.2016.
@@ -53,8 +46,7 @@ public class AlbumController extends GenericController {
         return "albums";
     }
     @RequestMapping(value = "/user{id}/albums", method = RequestMethod.GET)
-    public String getAllAlbums(HttpServletRequest request,  @PathVariable String id, Model model){
-        Long idUser = getUserId(request);
+    public String getAllAlbums(@PathVariable String id, Model model){
         Long idRequestUser = Long.valueOf(id);
         List<Album> albums = albumService.getAlbumsByUserId(idRequestUser,0,5);
         if (albums == null || albums.size()==0)
@@ -68,8 +60,7 @@ public class AlbumController extends GenericController {
     }
     //Getting photos by Album
     @RequestMapping(value = "/albums/{id}", method = RequestMethod.GET)
-    public String getAlbum(@PathVariable("id") Long id, HttpServletRequest request,  Model model){
-        Long userId = getUserId(request);
+    public String getAlbum(@PathVariable("id") Long id, Model model){
         Album album = albumService.getAlbumById(id);
         if (album == null)
             return "404";
@@ -83,15 +74,9 @@ public class AlbumController extends GenericController {
         Album album = albumService.getAlbumById(id);
         List<MultipartFile> files = multipartRequest.getFiles("files");
         for(MultipartFile file:files){
-            Map options = ObjectUtils.asMap(
-                    "cloud_name", "chevron",
-                    "api_key", "955731587757792",
-                    "api_secret", "_An7669JFG-iRVrBjEdxQ1iwnDY");
-            Map uploadResult;
-            Cloudinary cloudinary = new Cloudinary(options);
+            Photo photo;
             try {
-                uploadResult = cloudinary.uploader().upload(stream2file(file.getInputStream()), options);
-                Photo photo = new Photo((String) uploadResult.get("secure_url"),new java.util.Date(), album);
+                photo = new Photo(HOST_URL+"images/" + FileHelper.imageInputStreamToString(file.getInputStream(),userId,album.getId()), new Date(), album);
                 photoService.create(photo);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -136,13 +121,11 @@ public class AlbumController extends GenericController {
         Long userId = (Long)(request.getSession().getAttribute("idUser"));
         Album album = albumService.getAlbumById(id);
         Long idCreator = album.getUser().getId();
-        if(!Objects.equals(userId, idCreator)){
-            return null;
-        }else try{
+        if(Objects.equals(userId, idCreator)){
             albumService.delete(id);
             return true;
-        }catch (Exception e){
-            return false;
+        }else {
+            return null;
         }
     }
 
@@ -170,8 +153,7 @@ public class AlbumController extends GenericController {
     @RequestMapping(value = "/photos", method = RequestMethod.GET)
     public @ResponseBody
     List<Photo> loadMorePhotos(@RequestParam(value = "idAlbum") Long idAlbum,@RequestParam(value = "start") Integer start,@RequestParam(value = "count") Integer count){
-        List<Photo> photos = photoService.getPhotosByAlbumId(idAlbum,start,count);
-        return photos;
+        return photoService.getPhotosByAlbumId(idAlbum,start,count);
     }
     //Get number photos in album
     @RequestMapping(value = "/albums/{id}/photosCnt", method = RequestMethod.GET)
@@ -187,23 +169,11 @@ public class AlbumController extends GenericController {
         Long userId = (Long)(request.getSession().getAttribute("idUser"));
         Photo photo = photoService.getPhotoByID(id);
         Long idCreator = photo.getAlbum().getUser().getId();
-        if(!Objects.equals(userId, idCreator)){
-            return null;
-        }else try{
+        if(Objects.equals(userId, idCreator)){
             photoService.delete(id);
             return true;
-        }catch (Exception e){
-            return false;
+        }else {
+            return null;
         }
-    }
-
-
-//OTHER
-    public File stream2file (InputStream in) throws IOException {
-        final File tempFile = File.createTempFile("stream2file", ".tmp");
-        tempFile.deleteOnExit();
-        FileOutputStream out = new FileOutputStream(tempFile);
-        IOUtils.copy(in, out);
-        return tempFile;
     }
 }

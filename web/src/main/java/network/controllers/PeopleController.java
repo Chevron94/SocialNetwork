@@ -4,15 +4,12 @@ import network.dao.*;
 import network.entity.Album;
 import network.entity.FriendRequest;
 import network.entity.User;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.BadRequestException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +55,6 @@ public class PeopleController extends GenericController {
 
     @RequestMapping(value = "/user{id}/friends", method = RequestMethod.GET)
     public String usersFriends(Model model, HttpServletRequest request, @PathVariable String id) {
-        Long idUser = getUserId(request);
         model.addAttribute("continents", continentService.readAll());
         model.addAttribute("languages", languageService.readAll());
         model.addAttribute("idRequestUser", Long.valueOf(id));

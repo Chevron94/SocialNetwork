@@ -46,23 +46,6 @@ public class DialogController {
             user = userService.getUserById(idUser);
         }
         model.addAttribute("user", user);
-       /* List<Dialog> dialogs = dialogService.getDialogsByUserId(idUser,0,10);
-        for(Dialog dialog:dialogs){
-            if(dialog.getPrivate()){
-                List<UserDialog> userDialogs = new ArrayList<>();
-                userDialogs.add(userDialogService.getUserDialogByPrivateDialogIdAndOtherUserId(dialog.getId(),idUser));
-                dialog.setUserDialogs(userDialogs);
-                String[] names = dialog.getName().split("/");
-                if (names[0].trim().equals(user.getLogin())){
-                    dialog.setName(names[1].trim());
-                }else dialog.setName(names[0].trim());
-            }
-        }
-        model.addAttribute("dialogs",dialogs);
-        if (dialogs.size()>0){
-            List<Message> messages = messageService.getMessagesByDialogId(dialogs.get(0).getId(),0,20);
-            model.addAttribute("messages",messages);
-        }*/
         HashMap<String, Object> params = new HashMap<>();
         params.put("list","friends");
         List<User> friends = userService.getUsersByCustomFilter(user.getId(),params,0,Integer.MAX_VALUE);

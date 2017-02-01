@@ -1,12 +1,10 @@
 package network.controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import network.dao.*;
 import network.dto.UserDto;
 import network.entity.*;
+import network.helpers.FileHelper;
 import network.services.MD5Service;
-import org.apache.commons.io.IOUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,11 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
+
+import static network.helpers.Constants.HOST_URL;
 
 /**
  * Created by roman on 10/4/15.
@@ -67,23 +64,16 @@ public class ProfileController extends GenericController {
     public String updatePhoto(@RequestParam("photoInput") MultipartFile file, HttpServletRequest request){
         Long idUser = (Long)request.getSession().getAttribute("idUser");
         if (!file.isEmpty()) {
-            Map options = ObjectUtils.asMap(
-                    "cloud_name", "chevron",
-                    "api_key", "955731587757792",
-                    "api_secret", "_An7669JFG-iRVrBjEdxQ1iwnDY");
-            Map uploadResult;
-            Cloudinary cloudinary = new Cloudinary(options);
             try {
-                uploadResult = cloudinary.uploader().upload(stream2file(file.getInputStream()), options);
                 Album album = albumService.getAlbumByUserIdAndName(idUser,"Main");
                 User user = userService.getUserById(idUser);
                 if(album == null){
                     album = new Album("Main",user, new Date());
                     album = albumService.create(album);
                 }
-                Photo photo = new Photo((String) uploadResult.get("secure_url"),new java.util.Date(), album);
+                Photo photo = new Photo(HOST_URL+"images/" + FileHelper.imageInputStreamToString(file.getInputStream(),user.getId(), album.getId()),new java.util.Date(), album);
                 photoService.create(photo);
-                user.setPhotoURL((String) uploadResult.get("secure_url"));
+                user.setPhotoURL(photo.getPhotoUrl());
                 userService.update(user);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -91,15 +81,6 @@ public class ProfileController extends GenericController {
         }
         return "redirect:/profile";
     }
-
-    public File stream2file (InputStream in) throws IOException {
-        final File tempFile = File.createTempFile("stream2file", ".tmp");
-        tempFile.deleteOnExit();
-        FileOutputStream out = new FileOutputStream(tempFile);
-        IOUtils.copy(in, out);
-        return tempFile;
-    }
-
 
     @RequestMapping(value = "/user{id}", method = RequestMethod.GET)
     public String getUserProfile(Model model, HttpServletRequest request, @PathVariable String id) {
