@@ -11,10 +11,10 @@ public class Constants {
     public static final String SMTP_HOST;// = "smtp.yandex.ru";
 
     static {
-        HOST_URL = System.getProperty("HOST_URL");
-        FILES_PATH = System.getProperty("FILES_PATH");
-        EMAIL_LOGIN = System.getProperty("EMAIL_LOGIN");
-        EMAIL_PASSWORD = System.getProperty("EMAIL_PASSWORD");
-        SMTP_HOST = System.getProperty("SMTP_HOST");
-    }
+        HOST_URL = System.getenv().get("HOST_URL");
+        FILES_PATH = System.getenv().get("FILES_PATH");
+        EMAIL_LOGIN = System.getenv().get("EMAIL_LOGIN");
+        EMAIL_PASSWORD = System.getenv().get("EMAIL_PASSWORD");
+        SMTP_HOST = System.getenv().get("SMTP_HOST");
+        }
 }
