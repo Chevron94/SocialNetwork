@@ -183,6 +183,34 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemProperties>
+                        <property>
+                            <name>HOST_URL</name>
+                            <value>${HOST_URL}</value>
+                        </property>
+                        <property>
+                            <name>FILES_PATH</name>
+                            <value>${FILES_PATH}</value>
+                        </property>
+                        <property>
+                            <name>EMAIL_LOGIN</name>
+                            <value>${EMAIL_LOGIN}</value>
+                        </property>
+                        <property>
+                            <name>EMAIL_PASSWORD</name>
+                            <value>${EMAIL_PASSWORD}</value>
+                        </property>
+                        <property>
+                            <name>SMTP_HOST</name>
+                            <value>${SMTP_HOST}</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
